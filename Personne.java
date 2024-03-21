@@ -35,31 +35,45 @@ class Bandit extends Personne implements Movable{
     private List<Butin> poches = new LinkedList<Butin>();
 
 
-    public Bandit(String name , int taille_train , int ammo_init){
+    public Bandit(String name){
         id = super.create_id();
         nom = name;
-        position = taille_train-1;
-        ammo = ammo_init;
+        position = Train.NB_WAGON-1;
+        ammo = Train.NB_MUNITIONS;
         toit = true;
     }
 
     @Override
-    public void move(Direction d){return ;};
+    public void move(Direction d){
+        if(d.dir()==2 && !toit) toit = true;
+        else if (d.dir()==-2 && toit) toit = false;
+        else {
+            if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
+                return ;
+            }
+            position += d.dir();
+        }
+    };
 }
 
 class Marchall extends Personne implements Movable{
     double nevrosite;
 
-    public Marchall(double nev){
+    public Marchall(){
         id = super.create_id();
         nom = "Marshall";
         position = 0;
-        nevrosite = nev;
+        nevrosite = Train.NEVROSITE_MARSHALL;
 
     }
 
     @Override
-    public void move(Direction d){return ;};
+    public void move(Direction d){
+        if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
+            return ;
+        }
+        position += d.dir();
+    };
 
 }
 
