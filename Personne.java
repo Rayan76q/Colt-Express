@@ -88,7 +88,4 @@ class Passager extends Personne{
         nom = "";
         poche =  Butin.values()[r.nextInt(2)];
     }
-
-
-
 }

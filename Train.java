@@ -14,7 +14,7 @@ public class Train {
     public String toString(){
         return "this train has: \n - "+NB_WAGON +" wagons.\n - "+
                 NB_JOEURS + " players.\n - "+NB_MUNITIONS +" munitions.\n - "
-                +"One marshall that is "+NEVROSITE__MARSHALL +" over 1 crazy.";
+                +"One marshall that is "+NEVROSITE_MARSHALL +" over 1 crazy.";
     }
 }
 
@@ -31,8 +31,8 @@ abstract class Wagon {
     protected List<Butin> loot_toit; //loot droppé sur le toit du wagon
 
     public String toString(){
-        return "This is Wagon number " + position +".\nIt has :\n  - "+ interieur.length +
-                " people inside it.\n - "+ toit.length +" bandits on the roof.\n";
+        return "This is Wagon number " + position +".\nIt has :\n  - "+ interieur.size() +
+                " people inside it.\n - "+ toit.size() +" bandits on the roof.\n";
     }
 }
 
@@ -79,5 +79,6 @@ class Locomotive extends Wagon{
         loot_int = new LinkedList<Butin>();
         loot_toit = new LinkedList<Butin>();
         toit = new ArrayList<Bandit>();
+        magot_dispo = true;
     }
 }
