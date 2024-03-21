@@ -15,6 +15,7 @@ public class Train {
     public String toString(){
         return "this train has: \n - "+NB_WAGON +" wagons.\n - "+
                 NB_JOEURS + " players.\n - "+NB_MUNITIONS +" munitions.\n - "
+                +NB_PASSAGER_PAR_WAGON_MAX+" passagers maximum.\n - "
                 +"One marshall that is "+NEVROSITE_MARSHALL +" over 1 crazy.";
     }
 
