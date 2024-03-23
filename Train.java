@@ -9,7 +9,7 @@ public class Train {
     public static final int NB_JOEURS = 4;
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
-    public static final Wagon[NB_WAGON] WAGON;
+    public static final Wagon[] WAGON = new Wagon[NB_WAGON];
 
     @Override
     public String toString(){
@@ -31,7 +31,6 @@ public class Train {
 
 
 abstract class Wagon {
-    Train ;
     static protected int size = 0;    //compteur pour la construction
     protected int position;
 
