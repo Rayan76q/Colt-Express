@@ -11,12 +11,25 @@ public class Train {
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final Wagon[] WAGON = new Wagon[NB_WAGON];
 
+    public static void main(String[] args) {
+        Train train = new Train();
+        System.out.println(train.toString());
+    }
+
     @Override
     public String toString(){
-        return "this train has: \n - "+NB_WAGON +" wagons.\n - "+
-                NB_JOEURS + " players.\n - "+NB_MUNITIONS +" munitions.\n - "
-                +NB_PASSAGER_PAR_WAGON_MAX+" passagers maximum.\n - "
-                +"One marshall that is "+NEVROSITE_MARSHALL +" over 1 crazy.";
+//        String acc = "this train has: \n - "+NB_WAGON +" wagons.\n - "+
+//                NB_JOEURS + " players.\n - "+NB_MUNITIONS +" munitions.\n - "
+//                +NB_PASSAGER_PAR_WAGON_MAX+" passagers maximum in one wagon.\n - "
+//                +"One marshall that is "+NEVROSITE_MARSHALL +" over 1 nevrosite.\n"+"Now for the wagons:\n";
+        String acc = "Les wagons du trains : \n";
+        for (int i = 0; i <NB_WAGON ; i++) {
+            acc += "----------- \n";
+            acc += WAGON[i].toString();
+        }
+        acc += " END. \n";
+        return acc;
+
     }
 
     public Train(){
@@ -40,8 +53,17 @@ abstract class Wagon {
     protected List<Butin> loot_toit; //loot droppé sur le toit du wagon
 
     public String toString(){
-        return "This is Wagon number " + position +".\nIt has :\n  - "+ interieur.size() +
-                " people inside it.\n - "+ toit.size() +" bandits on the roof.\n";
+        String inside = "";
+        String top = " ";
+        for (Personne personne : interieur) {
+            inside += (personne.toString()+", ");
+        }
+        for (Bandit bandit : toit) {
+            top += (bandit.toString() +", ");
+        }
+
+        return "C'est le Wagon no " + position +".\nil a :\n - "+ interieur.size() +
+                " individuels dedans : "+inside+"\n - "+ toit.size() +" bandits sur le toit : "+top+"\n";
     }
 }
 
@@ -72,9 +94,9 @@ class Locomotive extends Wagon{
     @Override
     public String toString() {
         if (magot_dispo) {
-            return "this is the locomotive.\n" + super.toString() + "and it has its magot!\n";
+            return "C'est la locomotive.\n"+ "elle contient le magot!\n"+ super.toString();
         }
-        return "this is the locomotive.\n" + super.toString() + "and its magot got stolen!\n";
+        return "C'est la locomotive.\n"+ "elle ne contient pas le magot!\n"+ super.toString();
     }
 
     private Butin mag = Butin.MAGOT ;

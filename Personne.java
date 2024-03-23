@@ -24,7 +24,9 @@ public abstract class Personne {
     }
 
     @Override
-    public String toString() {return nom;}
+    public String toString() {
+        return nom;
+    }
 }
 
 
@@ -93,7 +95,7 @@ class Passager extends Personne{
         Random r = new Random();
         id = super.create_id();
         position = r.nextInt(Train.NB_WAGON-1)+1;
-        nom = "";
+        nom = "damn";
         poche =  Butin.values()[r.nextInt(2)];
     }
 }
