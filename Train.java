@@ -39,7 +39,7 @@ public class Train {
     public Train(){
         WAGON[0] = new Locomotive();
         for (int i = 1; i < NB_WAGON ; i++) {
-            WAGON[i] = new Cabine();
+            WAGON[i] = new Cabine(i);
         }
     }
 
@@ -78,6 +78,17 @@ abstract class Wagon {
     }
 
 
+    public List<Passager> liste_passager(){
+        List<Passager> res = new LinkedList<Passager>();
+        for (Personne p : interieur){
+            if(p instanceof Passager)
+                res.add((Passager) p);
+        }
+        return res;
+    }
+
+
+
     public void enleve_personne(Personne p){
         interieur.remove(p);
         toit.remove((Bandit)p);
@@ -96,8 +107,7 @@ abstract class Wagon {
 
 class Cabine extends Wagon{
 
-
-    public Cabine(){
+    public Cabine(int p){
         assert size > 0;
         Random r = new Random();
         position = size;
@@ -107,7 +117,7 @@ class Cabine extends Wagon{
         toit = new ArrayList<Bandit>();
         interieur = new ArrayList<Personne>();
         for (int i = 0; i < r.nextInt(Train.NB_PASSAGER_PAR_WAGON_MAX-1)+1; i++) {
-            interieur.add(new Passager());
+            interieur.add(new Passager(p));
         }
     }
 }
