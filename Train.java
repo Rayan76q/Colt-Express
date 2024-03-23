@@ -9,12 +9,29 @@ public class Train {
     public static final int NB_JOEURS = 4;
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
+    public static final Wagon[NB_WAGON] WAGON;
+
+    @Override
+    public String toString(){
+        return "this train has: \n - "+NB_WAGON +" wagons.\n - "+
+                NB_JOEURS + " players.\n - "+NB_MUNITIONS +" munitions.\n - "
+                +NB_PASSAGER_PAR_WAGON_MAX+" passagers maximum.\n - "
+                +"One marshall that is "+NEVROSITE_MARSHALL +" over 1 crazy.";
+    }
+
+    public Train(){
+        WAGON[0] = new Locomotive();
+        for (int i = 1; i < NB_WAGON ; i++) {
+            WAGON[i] = new Cabine();
+        }
+    }
 }
 
 
 
 
 abstract class Wagon {
+    Train ;
     static protected int size = 0;    //compteur pour la construction
     protected int position;
 
@@ -23,8 +40,10 @@ abstract class Wagon {
     protected List<Bandit> toit;
     protected List<Butin> loot_toit; //loot droppé sur le toit du wagon
 
-
-
+    public String toString(){
+        return "This is Wagon number " + position +".\nIt has :\n  - "+ interieur.size() +
+                " people inside it.\n - "+ toit.size() +" bandits on the roof.\n";
+    }
 }
 
 
@@ -49,6 +68,16 @@ class Cabine extends Wagon{
 
 
 class Locomotive extends Wagon{
+    private boolean magot_dispo;
+
+    @Override
+    public String toString() {
+        if (magot_dispo) {
+            return "this is the locomotive.\n" + super.toString() + "and it has its magot!\n";
+        }
+        return "this is the locomotive.\n" + super.toString() + "and its magot got stolen!\n";
+    }
+
     private Butin mag = Butin.MAGOT ;
 
     public Locomotive(){
@@ -60,5 +89,6 @@ class Locomotive extends Wagon{
         loot_int = new LinkedList<Butin>();
         loot_toit = new LinkedList<Butin>();
         toit = new ArrayList<Bandit>();
+        magot_dispo = true;
     }
 }
