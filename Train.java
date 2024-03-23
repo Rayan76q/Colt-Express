@@ -9,7 +9,11 @@ public class Train {
     public static final int NB_JOEURS = 4;
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
-    public static final Wagon[] WAGON = new Wagon[NB_WAGON];
+
+
+
+
+    private Wagon[] WAGON = new Wagon[NB_WAGON];
 
     public static void main(String[] args) {
         Train train = new Train();
@@ -38,6 +42,13 @@ public class Train {
             WAGON[i] = new Cabine();
         }
     }
+
+
+    public Wagon[] get_Wagon(){
+        return WAGON;
+    }
+
+
 }
 
 
@@ -65,6 +76,20 @@ abstract class Wagon {
         return "C'est le Wagon no " + position +".\nil a :\n - "+ interieur.size() +
                 " individuels dedans : "+inside+"\n - "+ toit.size() +" bandits sur le toit : "+top+"\n";
     }
+
+
+    public void enleve_personne(Personne p){
+        interieur.remove(p);
+        toit.remove((Bandit)p);
+    }
+
+    public void ajoute_personne(Personne p , Boolean roof){
+        if(roof) {
+            assert  p instanceof Bandit;
+            toit.add((Bandit) p);}
+        else interieur.add(p);
+    }
+
 }
 
 

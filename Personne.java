@@ -57,6 +57,8 @@ class Bandit extends Personne implements Movable{
             if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
                 return ;
             }
+            Wagon[] wagons = T.get_Wagon();
+
             position += d.dir();
         }
     };
