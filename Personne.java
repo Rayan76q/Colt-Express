@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.ArrayList ;
 
 interface Movable {
-    public void move(Direction d);
+    public void move(Train T, Direction d);
 }
 
 public abstract class Personne {
@@ -16,11 +16,10 @@ public abstract class Personne {
 
 
     protected int create_id() {
-        Random r = new Random();
-        int id;
-        do{
-            id = r.nextInt(Train.NB_JOEURS+ Train.NB_WAGON*100);
-        }while(ids.contains(id)) ;
+        int id=0;
+        while(ids.contains(id)){
+            id++;
+        }
         return id;
     }
 
@@ -43,8 +42,13 @@ class Bandit extends Personne implements Movable{
         toit = true;
     }
 
+
+    public void braque(Train T){
+        return ;
+    }
+
     @Override
-    public void move(Direction d){
+    public void move(Train T , Direction d){
         if(d.dir()==2 && !toit) toit = true;
         else if (d.dir()==-2 && toit) toit = false;
         else {
@@ -54,6 +58,10 @@ class Bandit extends Personne implements Movable{
             position += d.dir();
         }
     };
+
+    public void tir(Train train, Direction dir) {
+        return;
+    }
 }
 
 class Marchall extends Personne implements Movable{
@@ -68,7 +76,7 @@ class Marchall extends Personne implements Movable{
     }
 
     @Override
-    public void move(Direction d){
+    public void move(Train T ,Direction d){
         if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
             return ;
         }
