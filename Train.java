@@ -17,7 +17,25 @@ public class Train {
 
     public static void main(String[] args) {
         Train train = new Train();
-        System.out.println(train.toString());
+        System.out.println(train);
+        System.out.println(train.get_Wagon()[0]);
+        Deplacement dep = new Deplacement((Marchall)train.get_Wagon()[0].interieur.getFirst(),train,Direction.ARRIERE);
+        dep.executer();
+        System.out.println(train.get_Wagon()[0]);
+        System.out.println(train.get_Wagon()[1]);
+        Bandit bandit= new Bandit("Natasha");
+        Bandit bandit2 = new Bandit("Paul");
+        train.get_Wagon()[bandit.position].interieur.add(bandit);
+        train.get_Wagon()[bandit2.position].interieur.add(bandit2);
+        System.out.println(train.get_Wagon()[bandit.position]);
+        System.out.println(train.get_Wagon()[bandit2.position]);
+        dep = new Deplacement(bandit,train,Direction.AVANT);
+        dep.executer();
+        System.out.println(train.get_Wagon()[bandit.position]);
+        System.out.println(train.get_Wagon()[bandit2.position]);
+        dep = new Deplacement(bandit,train,Direction.HAUT);
+        dep.executer();
+        System.out.println(train.get_Wagon()[bandit.position]);
     }
 
     @Override

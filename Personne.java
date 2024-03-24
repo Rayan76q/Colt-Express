@@ -46,7 +46,7 @@ class Bandit extends Personne implements Movable, Visable{
         nom = name;
         position = Train.NB_WAGON-1;
         ammo = Train.NB_MUNITIONS;
-        toit = true;
+        toit = false;
     }
 
 
@@ -112,14 +112,13 @@ class Bandit extends Personne implements Movable, Visable{
     @Override
     public void move(Train T , Direction d){
         Wagon[] wagons = T.get_Wagon();
-
+        wagons[position].enleve_personne(this);
         if(d.dir()==2) toit = true;
         else if (d.dir()==-2) toit = false;
         else {
             if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
                 return ;
             }
-            wagons[position].enleve_personne(this);
             position += d.dir();
         }
         wagons[position].ajoute_personne(this,toit);
@@ -129,7 +128,7 @@ class Bandit extends Personne implements Movable, Visable{
         if(this.ammo>0){
             int d = dir.dir();
             if ((d == 2 || d == -2)) throw new AssertionError("tu ne peux pas tirer verticalement");
-            if ((d == -1 && this.position == 0 )||(d == 1 && this.position == Train.NB_WAGON)) {
+            if ((d == -1 && this.position == 0 )||(d == 1 && this.position == Train.NB_WAGON-1)) {
                 throw new AssertionError("tu ne peux pas tirer de ce cote");
             }
             Wagon current_wagg = train.get_Wagon()[this.position+d];
@@ -191,9 +190,12 @@ class Marchall extends Personne implements Movable{
     @Override
     public void move(Train T ,Direction d){
         if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
+            System.out.println("ayyyo");
             return ;
         }
+        T.get_Wagon()[position].interieur.remove(this);
         position += d.dir();
+        T.get_Wagon()[position].interieur.add(this);
     }
 
     //@Override
