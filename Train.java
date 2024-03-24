@@ -87,6 +87,15 @@ abstract class Wagon {
         return res;
     }
 
+    public List<Bandit> liste_bandit(){
+        List<Bandit> res = new LinkedList<Bandit>();
+        for (Personne p : interieur){
+            if(p instanceof Bandit)
+                res.add((Bandit) p);
+        }
+        return res;
+    }
+
 
 
     public void enleve_personne(Personne p){

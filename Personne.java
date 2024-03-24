@@ -28,6 +28,7 @@ public abstract class Personne {
     public String toString() {
         return nom;
     }
+    public abstract void lache_butin(Wagon wagon);
 }
 
 
@@ -48,6 +49,16 @@ class Bandit extends Personne implements Movable{
 
     public void ajoute_butin(Butin b){
         poches.add(b);
+    }
+
+    public void lache_butin(Wagon wagon){
+        Random random = new Random();
+        if (!this.poches.isEmpty()){
+            int randomIndex = random.nextInt(this.poches.size());
+            Butin dropped_loot = this.poches.get(randomIndex);
+            this.poches.remove(randomIndex);
+            wagon.loot_int.add(dropped_loot);
+        }
     }
 
 
@@ -111,7 +122,31 @@ class Bandit extends Personne implements Movable{
     };
 
     public void tir(Train train, Direction dir) {
-        return;
+        if(this.ammo>0){
+            int d = dir.dir();
+            if ((d == 2 || d == -2)) throw new AssertionError("tu ne peux pas tirer verticalement");
+            if ((d == -1 && this.position == 0 )||(d == 1 && this.position == Train.NB_WAGON)) {
+                throw new AssertionError("tu ne peux pas tirer de ce cote");
+            }
+            Wagon current_wagg = train.get_Wagon()[this.position+d];
+            this.ammo--;
+            if(this.toit){
+                List<Bandit> list = current_wagg.toit;
+                int size_bound = list.size();
+                Random random = new Random();
+                int randomIndex = random.nextInt(size_bound);
+                Bandit bandit = list.get(randomIndex);
+                bandit.lache_butin(current_wagg);
+            }
+            else{
+                List<Personne> list = current_wagg.interieur;
+                int size_bound = list.size();
+                Random random = new Random();
+                int randomIndex = random.nextInt(size_bound);
+                Personne personne = list.get(randomIndex);
+                personne.lache_butin(current_wagg);
+            }
+        }
     }
 }
 
@@ -148,6 +183,8 @@ class Marchall extends Personne implements Movable{
         position += d.dir();
     };
 
+    @Override
+    public void lache_butin(Wagon wagon){};
 
 
 }
@@ -168,5 +205,13 @@ class Passager extends Personne{
     public void cede(Bandit b){
         b.ajoute_butin(poche);
         poche = null;
+    }
+
+    public void lache_butin(Wagon wagon){
+        if(poche != null){
+            Butin dropped_loot = poche;
+            wagon.loot_int.add(dropped_loot);
+            poche = null;
+        }
     }
 }
