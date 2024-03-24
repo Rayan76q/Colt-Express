@@ -28,6 +28,7 @@ public abstract class Personne {
         while(ids.contains(id)){
             id++;
         }
+        ids.add(id);
         return id;
     }
 
@@ -236,7 +237,7 @@ class Passager extends Personne implements Hitable{
         Random r = new Random();
         id = super.create_id();
         position = p;
-        nom = "damn";
+        nom = "passager_"+id;
         poche =  Butin.values()[r.nextInt(2)];
     }
 

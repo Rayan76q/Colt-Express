@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Random;
 
 public class Train {
-    public static final int NB_WAGON = 4;
+    public static int NB_WAGON = 4;
     public static final int NB_MUNITIONS = 6;
     public static final double DEFAULT_PRECISION = 0.9;
     public static final int DEFAULT_HP = 6;
-    public static final int NB_JOEURS = 4;
+    public static int NB_JOUEURS = 4;
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
@@ -16,35 +16,6 @@ public class Train {
 
 
     private Wagon[] WAGON = new Wagon[NB_WAGON];
-
-    public static void main(String[] args) {
-        Train train = new Train();
-        System.out.println(train);
-        System.out.println(train.get_Wagon()[0]);
-        Deplacement dep = new Deplacement((Marchall)train.get_Wagon()[0].interieur.get(0),train,Direction.ARRIERE);
-        dep.executer();
-        System.out.println(train.get_Wagon()[0]);
-        System.out.println(train.get_Wagon()[1]);
-        Bandit bandit= new Bandit("Natasha");
-        Bandit bandit2 = new Bandit("Paul");
-        train.get_Wagon()[bandit.position].interieur.add(bandit);
-        train.get_Wagon()[bandit2.position].interieur.add(bandit2);
-        System.out.println(train.get_Wagon()[bandit.position]);
-        System.out.println(train.get_Wagon()[bandit2.position]);
-        dep = new Deplacement(bandit,train,Direction.AVANT);
-        dep.executer();
-        System.out.println(train.get_Wagon()[bandit.position]);
-        System.out.println(train.get_Wagon()[bandit2.position]);
-        dep = new Deplacement(bandit,train,Direction.HAUT);
-        dep.executer();
-        dep = new Deplacement(bandit,train,Direction.BAS);
-        dep.executer();
-        System.out.println(train.get_Wagon()[bandit.position]);
-        Tir tir = new Tir(bandit2,train,Direction.AVANT);
-        tir.executer();
-        System.out.println(train.get_Wagon()[bandit.position]);
-        System.out.println(bandit.get_hitPoints());
-    }
 
     @Override
     public String toString(){
@@ -67,6 +38,13 @@ public class Train {
         for (int i = 1; i < NB_WAGON ; i++) {
             WAGON[i] = new Cabine(i);
         }
+    }
+    public Train(int player_number){
+        assert(player_number <=6 && player_number>=3):"On ne peut pas jouer avec ce nombre de joeurs.";
+        this.NB_JOUEURS = player_number;
+        this.NB_WAGON = player_number;
+        WAGON[0] = new Locomotive();
+        for (int i = 1; i < NB_WAGON ; i++)  WAGON[i] = new Cabine(i);
     }
 
 
