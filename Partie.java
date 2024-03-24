@@ -6,7 +6,13 @@ public class Partie {
     boolean mode_extra;
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n\n");
+        System.out.println("Hello gamer! would you like to play the special mode or not?");
+        System.out.println("Answer by 1 (for yes) or 0 (for no): ");
         Partie partie = new Partie();
+        partie.mode_extra = (scanner.nextInt() != 0);
+        scanner.nextLine();
         partie.initialisation_partie();
         System.out.println(partie.train);
     }
@@ -44,10 +50,6 @@ public class Partie {
     public void initialisation_partie(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n\n");
-        System.out.println("Hello gamer! would you like to play the special mode or not?");
-        System.out.println("Answer by 1 (for yes) or 0 (for no): ");
-        this.mode_extra = (scanner.nextInt() != 0);
-        scanner.nextLine(); // Consume newline character
         System.out.print("Enter the number of players: ");
         int numOfPersons = scanner.nextInt();
         System.out.println(numOfPersons);
