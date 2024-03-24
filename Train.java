@@ -6,11 +6,12 @@ import java.util.Random;
 public class Train {
     public static final int NB_WAGON = 4;
     public static final int NB_MUNITIONS = 6;
+    public static final double DEFAULT_PRECISION = 0.9;
+    public static final int DEFAULT_HP = 6;
     public static final int NB_JOEURS = 4;
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
-
 
 
 
@@ -103,7 +104,7 @@ abstract class Wagon {
     }
 
 
-    public List<Passager> liste_passager(){
+    public List<Passager> liste_passagers(){
         List<Passager> res = new LinkedList<Passager>();
         for (Personne p : interieur){
             if(p instanceof Passager)
@@ -112,7 +113,7 @@ abstract class Wagon {
         return res;
     }
 
-    public List<Bandit> liste_bandit(){
+    public List<Bandit> liste_bandits_int(){
         List<Bandit> res = new LinkedList<Bandit>();
         for (Personne p : interieur){
             if(p instanceof Bandit)

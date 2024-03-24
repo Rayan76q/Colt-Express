@@ -3,6 +3,8 @@ import java.util.Random ;
 import java.util.LinkedList;
 import java.util.ArrayList ;
 
+import static java.lang.Math.abs;
+
 interface Movable {
     List<Direction> mouvements_possibles();
     void move(Train T, Direction d);
@@ -39,6 +41,7 @@ public abstract class Personne {
 class Bandit extends Personne implements Movable, Hitable{
     private boolean toit;
     private int ammo;
+    private double precision;
 
     private int hitPoints;
     private List<Butin> poches = new LinkedList<Butin>();
@@ -48,7 +51,8 @@ class Bandit extends Personne implements Movable, Hitable{
         position = Train.NB_WAGON-1;
         ammo = Train.NB_MUNITIONS;
         toit = false;
-        hitPoints = 6;
+        hitPoints = Train.DEFAULT_HP;
+        precision = Train.DEFAULT_PRECISION;
     }
 
     public int get_hitPoints(){
@@ -91,8 +95,8 @@ class Bandit extends Personne implements Movable, Hitable{
         }
         else{
             if(r.nextBoolean()){ //Braque un passager
-                index_butin = r.nextInt(wagon_actuelle.liste_passager().size());
-                wagon_actuelle.liste_passager().get(index_butin).cede(this);
+                index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
+                wagon_actuelle.liste_passagers().get(index_butin).cede(this);
             }
             else{
                 index_butin = r.nextInt(wagon_actuelle.loot_int.size());
@@ -139,35 +143,44 @@ class Bandit extends Personne implements Movable, Hitable{
     }
 
     public void tir(Train train, Direction dir) {
-        if(this.ammo>0){ //Peut donner la possiblité de bluffer un tir , faire sembler d'avoir des balles
+        Random random = new Random();
+        if(this.ammo>0) { //Peut donner la possiblité de bluffer un tir , faire sembler d'avoir des balles
             assert mouvements_possibles().contains(dir);
             int d = dir.dir();
-            Wagon current_wagg = train.get_Wagon()[this.position+d];
-            this.ammo--;
-            if(this.toit){
+            if (d == 2) {  // tir vers le toit d'un wagon du bas
+                Wagon current_wagg = train.get_Wagon()[this.position];
                 List<Bandit> list = current_wagg.toit;
-                while(list.isEmpty() && !(current_wagg.position == 0 || current_wagg.position == Train.NB_WAGON-1 )){
-                    current_wagg = train.get_Wagon()[current_wagg.position+d];
+                if(random.nextDouble()<=0.9) {
+                    int randomIndex = random.nextInt(list.size());
+                    list.get(randomIndex).est_vise(current_wagg);
+                }
+            }
+            else if(d == -2 || !toit){ //tir vers un wagon : tir venant du toit ou tir venant d'un coté
+                Wagon current_wagg = train.get_Wagon()[this.position + (d < 0 ? d : (d+2)%2)];
+                List<Passager> passagers_cibles = current_wagg.liste_passagers();
+                List<Bandit> bandits_cibles = current_wagg.liste_bandits_int();
+                if (random.nextDouble() > 0.9) {
+                    int randomIndex = random.nextInt(passagers_cibles.size());
+                    passagers_cibles.get(randomIndex).est_vise(current_wagg);
+                } else {
+                    int randomIndex = random.nextInt(bandits_cibles.size());
+                    bandits_cibles.get(randomIndex).est_vise(current_wagg);
+                }
+            }
+            else { //tir d'un toit vers un autre
+                Wagon current_wagg = train.get_Wagon()[this.position + d];
+                this.ammo--;
+                List<Bandit> list = current_wagg.toit;
+                while (list.isEmpty() && !(current_wagg.position == 0 || current_wagg.position == Train.NB_WAGON - 1)) {
+                    current_wagg = train.get_Wagon()[current_wagg.position + d];
                     list = current_wagg.toit;
                 }
-                if(!list.isEmpty()){
+                if (!list.isEmpty()) {
                     int size_bound = list.size();
-                    Random random = new Random();
                     int randomIndex = random.nextInt(size_bound);
                     Bandit bandit = list.get(randomIndex);
                     bandit.est_vise(current_wagg);
                 }
-            }
-            else{
-                List<Personne> list = current_wagg.interieur;
-                int size_bound = list.size();
-                Random random = new Random();
-                int randomIndex = random.nextInt(size_bound);
-                Personne personne = list.get(randomIndex);
-                if (personne instanceof Passager)
-                    ((Passager)personne).est_vise(current_wagg);
-                else if (personne instanceof Bandit)
-                    ((Bandit)personne).est_vise(current_wagg);
             }
         }
     }
