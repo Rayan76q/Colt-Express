@@ -9,6 +9,7 @@ public class Train {
     public static final int NB_JOEURS = 4;
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
+    public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
 
 
 
@@ -19,7 +20,7 @@ public class Train {
         Train train = new Train();
         System.out.println(train);
         System.out.println(train.get_Wagon()[0]);
-        Deplacement dep = new Deplacement((Marchall)train.get_Wagon()[0].interieur.getFirst(),train,Direction.ARRIERE);
+        Deplacement dep = new Deplacement((Marchall)train.get_Wagon()[0].interieur.get(0),train,Direction.ARRIERE);
         dep.executer();
         System.out.println(train.get_Wagon()[0]);
         System.out.println(train.get_Wagon()[1]);
@@ -98,7 +99,7 @@ abstract class Wagon {
         }
 
         return "C'est le Wagon no " + position +".\nil a :\n - "+ interieur.size() +
-                " individuels dedans : "+inside+"\n - "+ toit.size() +" bandits sur le toit : "+top+"\n";
+                " individus dedans : "+inside+"\n - "+ toit.size() +" bandits sur le toit : "+top+"\n";
     }
 
 
@@ -132,6 +133,15 @@ abstract class Wagon {
             assert  p instanceof Bandit;
             toit.add((Bandit) p);}
         else interieur.add(p);
+    }
+
+
+    public void perte_loot_toit(){  //Un loot du toit disparait avec une certaine proba
+        Random r = new Random();
+        if(r.nextDouble() < Train.PROBA_PERTE_LOOT_TOIT){
+            int rand_index = r.nextInt(toit.size());
+            toit.remove(rand_index);
+        }
     }
 
 }

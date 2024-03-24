@@ -8,7 +8,8 @@ interface Movable {
     void move(Train T, Direction d);
 }
 
-interface Visable{
+interface Hitable{
+    void drop_butin(Wagon w);
     void est_vise(Wagon wagon);
 }
 
@@ -35,7 +36,7 @@ public abstract class Personne {
 }
 
 
-class Bandit extends Personne implements Movable, Visable{
+class Bandit extends Personne implements Movable, Hitable{
     private boolean toit;
     private int ammo;
 
@@ -53,26 +54,29 @@ class Bandit extends Personne implements Movable, Visable{
     public int get_hitPoints(){
         return this.hitPoints;
     }
-
-    public void set_hitPoints(int i){
-        assert(i>=0 && i<=6):"hitPoints pas valable";
-        this.hitPoints = i;
-    }
+    public int get_ammo(){return this.ammo;}
 
     public void ajoute_butin(Butin b){
         poches.add(b);
     }
-
-    @Override
-    public void est_vise(Wagon wagon){
-        this.hitPoints -= 1;
-        Random random = new Random();
+    public void drop_butin(Wagon w){
         if (!this.poches.isEmpty()){
+            Random random = new Random();
             int randomIndex = random.nextInt(this.poches.size());
             Butin dropped_loot = this.poches.get(randomIndex);
             this.poches.remove(randomIndex);
-            wagon.loot_int.add(dropped_loot);
+            if(toit)
+                w.loot_toit.add(dropped_loot);
+            else
+                w.loot_int.add(dropped_loot);
         }
+    }
+
+    @Override
+    public void est_vise(Wagon wagon){
+        if(this.hitPoints>0)
+            this.hitPoints -= 1;
+        drop_butin(wagon);
     }
 
 
@@ -135,12 +139,9 @@ class Bandit extends Personne implements Movable, Visable{
     }
 
     public void tir(Train train, Direction dir) {
-        if(this.ammo>0){
+        if(this.ammo>0){ //Peut donner la possiblité de bluffer un tir , faire sembler d'avoir des balles
+            assert mouvements_possibles().contains(dir);
             int d = dir.dir();
-            if ((d == 2 || d == -2)) throw new AssertionError("tu ne peux pas tirer verticalement");
-            if ((d == -1 && this.position == 0 )||(d == 1 && this.position == Train.NB_WAGON-1)) {
-                throw new AssertionError("tu ne peux pas tirer de ce cote");
-            }
             Wagon current_wagg = train.get_Wagon()[this.position+d];
             this.ammo--;
             if(this.toit){
@@ -214,7 +215,7 @@ class Marchall extends Personne implements Movable{
 
 }
 
-class Passager extends Personne implements Visable{
+class Passager extends Personne implements Hitable{
 
     private Butin poche;
 
@@ -232,11 +233,18 @@ class Passager extends Personne implements Visable{
         poche = null;
     }
 
-    public void est_vise(Wagon wagon){
+    @Override
+    public void drop_butin(Wagon w) {
         if(poche != null){
             Butin dropped_loot = poche;
-            wagon.loot_int.add(dropped_loot);
+            w.loot_int.add(dropped_loot);
             poche = null;
         }
+    }
+
+    @Override
+    public void est_vise(Wagon wagon){
+       drop_butin(wagon);
+       wagon.interieur.remove(this); //passager est cliniquement mort
     }
 }
