@@ -35,7 +35,13 @@ public class Train {
         System.out.println(train.get_Wagon()[bandit2.position]);
         dep = new Deplacement(bandit,train,Direction.HAUT);
         dep.executer();
+        dep = new Deplacement(bandit,train,Direction.BAS);
+        dep.executer();
         System.out.println(train.get_Wagon()[bandit.position]);
+        Tir tir = new Tir(bandit2,train,Direction.AVANT);
+        tir.executer();
+        System.out.println(train.get_Wagon()[bandit.position]);
+        System.out.println(bandit.get_hitPoints());
     }
 
     @Override

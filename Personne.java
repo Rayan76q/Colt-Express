@@ -38,17 +38,26 @@ public abstract class Personne {
 class Bandit extends Personne implements Movable, Visable{
     private boolean toit;
     private int ammo;
+
+    private int hitPoints;
     private List<Butin> poches = new LinkedList<Butin>();
-
-
     public Bandit(String name){
         id = super.create_id();
         nom = name;
         position = Train.NB_WAGON-1;
         ammo = Train.NB_MUNITIONS;
         toit = false;
+        hitPoints = 6;
     }
 
+    public int get_hitPoints(){
+        return this.hitPoints;
+    }
+
+    public void set_hitPoints(int i){
+        assert(i>=0 && i<=6):"hitPoints pas valable";
+        this.hitPoints = i;
+    }
 
     public void ajoute_butin(Butin b){
         poches.add(b);
@@ -56,6 +65,7 @@ class Bandit extends Personne implements Movable, Visable{
 
     @Override
     public void est_vise(Wagon wagon){
+        this.hitPoints -= 1;
         Random random = new Random();
         if (!this.poches.isEmpty()){
             int randomIndex = random.nextInt(this.poches.size());
