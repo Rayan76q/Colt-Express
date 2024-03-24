@@ -136,11 +136,17 @@ class Bandit extends Personne implements Movable, Visable{
             this.ammo--;
             if(this.toit){
                 List<Bandit> list = current_wagg.toit;
-                int size_bound = list.size();
-                Random random = new Random();
-                int randomIndex = random.nextInt(size_bound);
-                Bandit bandit = list.get(randomIndex);
-                bandit.est_vise(current_wagg);
+                while(list.isEmpty() && !(current_wagg.position == 0 || current_wagg.position == Train.NB_WAGON-1 )){
+                    current_wagg = train.get_Wagon()[current_wagg.position+d];
+                    list = current_wagg.toit;
+                }
+                if(!list.isEmpty()){
+                    int size_bound = list.size();
+                    Random random = new Random();
+                    int randomIndex = random.nextInt(size_bound);
+                    Bandit bandit = list.get(randomIndex);
+                    bandit.est_vise(current_wagg);
+                }
             }
             else{
                 List<Personne> list = current_wagg.interieur;
