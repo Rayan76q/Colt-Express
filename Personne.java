@@ -4,8 +4,12 @@ import java.util.LinkedList;
 import java.util.ArrayList ;
 
 interface Movable {
-    public List<Direction> mouvements_possibles();
-    public void move(Train T, Direction d);
+    List<Direction> mouvements_possibles();
+    void move(Train T, Direction d);
+}
+
+interface Visable{
+    void est_vise(Wagon wagon);
 }
 
 public abstract class Personne {
@@ -28,11 +32,10 @@ public abstract class Personne {
     public String toString() {
         return nom;
     }
-    public abstract void lache_butin(Wagon wagon);
 }
 
 
-class Bandit extends Personne implements Movable{
+class Bandit extends Personne implements Movable, Visable{
     private boolean toit;
     private int ammo;
     private List<Butin> poches = new LinkedList<Butin>();
@@ -51,7 +54,8 @@ class Bandit extends Personne implements Movable{
         poches.add(b);
     }
 
-    public void lache_butin(Wagon wagon){
+    @Override
+    public void est_vise(Wagon wagon){
         Random random = new Random();
         if (!this.poches.isEmpty()){
             int randomIndex = random.nextInt(this.poches.size());
@@ -119,7 +123,7 @@ class Bandit extends Personne implements Movable{
             position += d.dir();
         }
         wagons[position].ajoute_personne(this,toit);
-    };
+    }
 
     public void tir(Train train, Direction dir) {
         if(this.ammo>0){
@@ -136,7 +140,7 @@ class Bandit extends Personne implements Movable{
                 Random random = new Random();
                 int randomIndex = random.nextInt(size_bound);
                 Bandit bandit = list.get(randomIndex);
-                bandit.lache_butin(current_wagg);
+                bandit.est_vise(current_wagg);
             }
             else{
                 List<Personne> list = current_wagg.interieur;
@@ -144,7 +148,10 @@ class Bandit extends Personne implements Movable{
                 Random random = new Random();
                 int randomIndex = random.nextInt(size_bound);
                 Personne personne = list.get(randomIndex);
-                personne.lache_butin(current_wagg);
+                if (personne instanceof Passager)
+                    ((Passager)personne).est_vise(current_wagg);
+                else if (personne instanceof Bandit)
+                    ((Bandit)personne).est_vise(current_wagg);
             }
         }
     }
@@ -181,15 +188,15 @@ class Marchall extends Personne implements Movable{
             return ;
         }
         position += d.dir();
-    };
+    }
 
-    @Override
-    public void lache_butin(Wagon wagon){};
+    //@Override
+    //public void est_vise(Wagon wagon){};
 
 
 }
 
-class Passager extends Personne{
+class Passager extends Personne implements Visable{
 
     private Butin poche;
 
@@ -207,7 +214,7 @@ class Passager extends Personne{
         poche = null;
     }
 
-    public void lache_butin(Wagon wagon){
+    public void est_vise(Wagon wagon){
         if(poche != null){
             Butin dropped_loot = poche;
             wagon.loot_int.add(dropped_loot);
