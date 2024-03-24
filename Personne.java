@@ -18,17 +18,11 @@ public abstract class Personne {
     protected int position;
     protected String nom;
 
-    static protected List<Integer> ids = new ArrayList<Integer>();
+    static protected int current_id = 0 ;
 
 
-    protected int create_id() {
-        int id=0;
-        while(ids.contains(id)){
-            id++;
-        }
-        ids.add(id);
-        return id;
-    }
+
+    public int get_id(){ return this.id;}
 
     @Override
     public String toString() {
@@ -44,8 +38,10 @@ class Bandit extends Personne implements Movable, Hitable{
 
     private int hitPoints;
     private List<Butin> poches = new LinkedList<Butin>();
+
+
     public Bandit(String name){
-        id = super.create_id();
+        id = current_id++ ;
         nom = name;
         position = Train.NB_WAGON-1;
         ammo = Train.NB_MUNITIONS;
@@ -58,6 +54,10 @@ class Bandit extends Personne implements Movable, Hitable{
         return this.hitPoints;
     }
     public int get_ammo(){return this.ammo;}
+
+    public List<Butin> getPoches() { return this.poches;}
+
+
 
     public void ajoute_butin(Butin b){
         poches.add(b);
@@ -203,7 +203,7 @@ class Marchall extends Personne implements Movable{
     double nevrosite;
 
     public Marchall(){
-        id = super.create_id();
+        id = current_id ++;
         nom = "Marshall";
         position = 0;
         nevrosite = Train.NEVROSITE_MARSHALL;
@@ -247,7 +247,7 @@ class Passager extends Personne implements Hitable{
 
     public Passager(int p){
         Random r = new Random();
-        id = super.create_id();
+        id = current_id++;
         position = p;
         nom = "passager_"+id;
         poche =  Butin.values()[r.nextInt(2)];
