@@ -3,8 +3,6 @@ import java.util.Random ;
 import java.util.LinkedList;
 import java.util.ArrayList ;
 
-import static java.lang.Math.abs;
-
 interface Movable {
     List<Direction> mouvements_possibles();
     void move(Train T, Direction d);
@@ -183,6 +181,20 @@ class Bandit extends Personne implements Movable, Hitable{
                     bandit.est_vise(current_wagg);
                 }
             }
+        }
+    }
+
+    public void frappe(Train train) {
+        Random rand = new Random();
+        Wagon w = train.get_Wagon()[position];
+        if(toit){
+            int rand_index = rand.nextInt(w.toit.size());
+            w.toit.get(rand_index).est_vise(w);
+        }
+        else {
+            List<Bandit> bandits_cibles = w.liste_bandits_int();
+            int rand_index = rand.nextInt(bandits_cibles.size());
+            bandits_cibles.get(rand_index).est_vise(w);
         }
     }
 }

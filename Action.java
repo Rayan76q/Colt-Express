@@ -48,3 +48,17 @@ class Tir extends Action{
 }
 
 
+class Frappe extends Action{
+
+    public Frappe(Bandit b, Train T){
+        train = T;
+        acteur = b;
+    }
+
+    @Override
+    public void executer() {
+        ((Bandit) acteur).frappe(train);
+    }
+}
+
+
