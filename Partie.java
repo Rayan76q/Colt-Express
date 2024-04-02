@@ -3,7 +3,19 @@ import java.util.ArrayList;
 
 public class Partie {
     Train train;
+
+    private int numeroManche;
+
+    public int getNumeroTour() {
+        return this.numeroManche;
+    }
+
     boolean mode_extra;
+
+
+
+
+
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -70,3 +82,6 @@ public class Partie {
 
 
 }
+
+
+

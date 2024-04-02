@@ -1,37 +1,11 @@
-import java.util.List;
-import java.util.Random ;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.ArrayList ;
+import java.util.List;
+import java.util.Random;
 
-interface Movable {
-    List<Direction> mouvements_possibles();
-    void move(Train T, Direction d);
-}
+public class PersoSpe{}
 
-interface Hitable{
-    void drop_butin(Wagon w);
-    void est_vise(Wagon wagon);
-}
-
-public abstract class Personne {
-    protected int id;
-    protected int position;
-    protected String nom;
-
-    static protected int current_id = 0 ;
-
-
-
-    public int get_id(){ return this.id;}
-
-    @Override
-    public String toString() {
-        return nom;
-    }
-}
-
-
-class Bandit extends Personne implements Movable, Hitable{
+class BanditSpe extends Personne implements Movable{
     private boolean toit;
     private int ammo;
     private double precision;
@@ -40,7 +14,11 @@ class Bandit extends Personne implements Movable, Hitable{
     private List<Butin> poches = new LinkedList<Butin>();
 
 
-    public Bandit(String name){
+
+
+    public boolean estBelle ;
+
+    public BanditSpe(String name){
         id = current_id++ ;
         nom = name;
         position = Train.NB_WAGON-1;
@@ -48,6 +26,7 @@ class Bandit extends Personne implements Movable, Hitable{
         toit = false;
         hitPoints = Train.DEFAULT_HP;
         precision = Train.DEFAULT_PRECISION;
+        estBelle = false;
     }
 
     public int get_hitPoints(){
@@ -77,7 +56,11 @@ class Bandit extends Personne implements Movable, Hitable{
 
     @Override
     public void est_vise(Wagon wagon){
-        if(this.hitPoints>0)
+        if (this.estBelle){
+            System.out.println("Trop Belle pour etre touchee");
+            return;
+        }
+        if(this.hitPoints>0 )
             this.hitPoints -= 1;
         drop_butin(wagon);
     }
@@ -200,86 +183,3 @@ class Bandit extends Personne implements Movable, Hitable{
 }
 
 
-
-
-
-
-
-
-
-
-class Marchall extends Personne implements Movable{
-    double nevrosite;
-
-    public Marchall(){
-        id = current_id ++;
-        nom = "Marshall";
-        position = 0;
-        nevrosite = Train.NEVROSITE_MARSHALL;
-
-    }
-
-    @Override
-    public List<Direction> mouvements_possibles() {
-        List<Direction> res = new ArrayList<Direction>();
-        if (position == 0)
-            res.add(Direction.ARRIERE);
-        else if (position == Train.NB_WAGON - 1)
-            res.add(Direction.AVANT);
-        else {
-            res.add(Direction.AVANT);
-            res.add(Direction.ARRIERE);
-        }
-        return res;
-    }
-
-    @Override
-    public void move(Train T ,Direction d){
-        if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
-            System.out.println("ayyyo");
-            return ;
-        }
-        T.get_Wagon()[position].interieur.remove(this);
-        position += d.dir();
-        T.get_Wagon()[position].interieur.add(this);
-    }
-
-    //@Override
-    //public void est_vise(Wagon wagon){};
-
-
-}
-
-class Passager extends Personne implements Hitable{
-
-    private Butin poche;
-
-    public Passager(int p){
-        Random r = new Random();
-        id = current_id++;
-        position = p;
-        nom = "passager_"+id;
-        poche =  Butin.values()[r.nextInt(2)];
-    }
-
-
-    public void cede(Bandit b){
-        b.ajoute_butin(poche);
-        poche = null;
-    }
-
-    @Override
-    public void drop_butin(Wagon w) {
-        if(poche != null){
-            Butin dropped_loot = poche;
-            w.loot_int.add(dropped_loot);
-            poche = null;
-        }
-    }
-
-    @Override
-    public void est_vise(Wagon wagon){
-       drop_butin(wagon);
-       wagon.interieur.remove(this); //passager est cliniquement mort
-    }
-}
