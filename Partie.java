@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 public class Partie {
 
@@ -7,6 +10,7 @@ public class Partie {
     public static final int DEFAULT_HP = 6;
     public static int NB_JOUEURS = 4;
     public static int NB_MANCHES = 5;   //Revoir le Caractere public de certaines
+    public static final int NB_BANDITS_JOUEUR = 1;
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
@@ -16,7 +20,7 @@ public class Partie {
     private int numeroManche;
 
     private Action[][] matrice_action;
-    private Joueur[] joueurs = new Joueur[NB_JOUEURS];
+    private Joueur[] joueurs;
     private boolean mode_extra;
 
 
@@ -66,26 +70,33 @@ public class Partie {
         System.out.println("\n\n");
         System.out.println("Hello gamer! would you like to play the special mode or not?");
         System.out.println("Answer by 1 (for yes) or 0 (for no): ");
-        this.mode_extra = (scanner.nextInt() != 0);
+        mode_extra = (scanner.nextInt() != 0);
         scanner.nextLine();
         System.out.print("Enter the number of players (default is 4): ");
         int numOfPlayers = scanner.nextInt();
-        this.NB_JOUEURS = numOfPlayers;
-        this.NB_WAGON = numOfPlayers;
+        assert numOfPlayers >0;
+        NB_JOUEURS = numOfPlayers;
+        NB_WAGON = numOfPlayers;
+        this.joueurs = new Joueur[numOfPlayers];
         System.out.print("Enter the number of turns (default is 5 , min is 3): ");
         int tours = scanner.nextInt();
         assert tours >= 3;
-        this.NB_MANCHES = tours;
-        this.matrice_action = new Action[numOfPlayers][DEFAULT_HP];
+        NB_MANCHES = tours;
+        this.matrice_action = new Action[numOfPlayers*NB_BANDITS_JOUEUR][DEFAULT_HP];
         train = new Train();
         scanner.nextLine(); // Consume newline character
         if (!this.mode_extra){
             for (int i = 0; i < numOfPlayers; i++) {
                 System.out.print("Enter the name of player " + (i + 1) + ": ");
                 String name = scanner.nextLine();
-                Bandit bandit = new Bandit(name,Partie.NB_WAGON-1-i%2);
-                System.out.print("Welcome aboard: " + name +"\n");
-                train.get_Wagon()[bandit.position].toit.add(bandit);
+                List<Bandit> pions = new ArrayList<Bandit>();
+                for (int j = 0; j < NB_BANDITS_JOUEUR; j++) {
+                    Bandit bandit = new Bandit(name,Partie.NB_WAGON-1-i%2);
+                    pions.add(bandit);
+                    System.out.print("Welcome aboard: " + name +"\n");
+                    train.get_Wagon()[bandit.position].toit.add(bandit);
+                }
+                joueurs[i] = new Joueur(train,pions);
             }
         }
         else{ //special mode to be implemented
@@ -95,35 +106,41 @@ public class Partie {
 
     private void run(int nb_manches) {
         for (int k = 0; k < nb_manches; k++) {
-
+            System.out.println(train);
             //Planification
             for (Joueur j : joueurs){
+                System.out.println("It's player's " + j.getId() + " Turn: \n");
                 j.joue_manche(matrice_action);
             }
 
             //Execution
-            for (int i = 0; i < NB_JOUEURS; i++) {
-                for (int j = 0; j < DEFAULT_HP; j++) {
+
+            for (int i = 0; i < DEFAULT_HP; i++) {
+                for (int j = 0; j < NB_JOUEURS; j++) {
                     matrice_action[j][i].executer();
                 }
             }
 
-            System.out.println(joueur_en_tete().getId() + "is currently leading.\n");
+            System.out.println(joueur_en_tete()+" in the lead.\n");
         }
 
     }
 
-    public Joueur joueur_en_tete(){
-        int max = 0;
-        Joueur prem = null;
+    public List<Joueur> joueur_en_tete(){
+        int max = joueurs[0].compte_argent();
+        List<Joueur> premiers = new LinkedList<Joueur>();
         for (Joueur j : joueurs){
             int v = j.compte_argent();
             if(v > max){
-                prem = j;
+                premiers = new LinkedList<Joueur>();
+                premiers.add(j);
                 max = v;
             }
+            else if(v == max){
+                premiers.add(j);
+            }
         }
-        return prem;
+        return premiers;
     }
 
 

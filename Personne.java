@@ -18,7 +18,8 @@ public abstract class Personne {
     protected int position;
     protected String nom;
 
-    static protected int current_id = 0 ;
+    static protected int current_id_bandit = 0 ;
+    static protected int getCurrent_id_passager = -2;
 
 
 
@@ -41,7 +42,7 @@ class Bandit extends Personne implements Movable, Hitable{
 
 
     public Bandit(String name,int pos){
-        id = current_id++ ;
+        id = current_id_bandit++ ;
         nom = name;
         position = pos;
         ammo = Partie.NB_MUNITIONS;
@@ -88,6 +89,8 @@ class Bandit extends Personne implements Movable, Hitable{
         Wagon wagon_actuelle = T.get_Wagon()[position];
         int index_butin;
         if(toit){
+            int nb_butins = wagon_actuelle.loot_toit.size();
+            if(nb_butins<1) return;
             index_butin = r.nextInt(wagon_actuelle.loot_toit.size());
             poches.add(wagon_actuelle.loot_toit.get(index_butin));
             wagon_actuelle.loot_toit.remove(index_butin);
@@ -222,7 +225,7 @@ class Marchall extends Personne implements Movable{
     double nevrosite;
 
     public Marchall(){
-        id = current_id ++;
+        id = -1;
         nom = "Marshall";
         position = 0;
         nevrosite = Partie.NEVROSITE_MARSHALL;
@@ -270,9 +273,9 @@ class Passager extends Personne implements Hitable{
 
     public Passager(int p){
         Random r = new Random();
-        id = current_id++;
+        id = getCurrent_id_passager--;
         position = p;
-        nom = "passager_"+id;
+        nom = "passager"+id;
         poche =  Butin.values()[r.nextInt(2)];
     }
 

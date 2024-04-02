@@ -18,6 +18,7 @@ public class Joueur {
     //Pour tester avec affichage textuelle
     public Direction choisie_dir(Bandit b){
         System.out.println("Choose between: " +b.mouvements_possibles() +"\n");
+        System.out.println("0->forward / 1->backward / 2->up / 3->down / 4-> here\n");
         Scanner scanner = new Scanner(System.in);
         int choice;
         do {
@@ -30,11 +31,14 @@ public class Joueur {
     public void joue_manche(Action[][] mat_manche){
         for (Bandit b : pions){ //si il joue plusieurs pions en meme temps (par équipe)
             for (int i = 0; i < b.get_hitPoints(); i++) {
+                System.out.println("Action N°" + (i+1) + "\n");
+                System.out.println("0->braque / 1->bouge / 2->Tir / 3->frappe\n");
                 //Version switch
                 Scanner scanner = new Scanner(System.in);
                 int choice = scanner.nextInt();
                 scanner.nextLine();
                 List<Direction> dirs = b.mouvements_possibles();
+
                 if(choice == 0){ //Braquage
                     mat_manche[b.get_id()][i] = new Braquage(b,train);
                 }
@@ -48,7 +52,7 @@ public class Joueur {
                     mat_manche[b.get_id()][i] = new Frappe(b, train);
                 }
             }
-            for (int i = b.get_hitPoints(); i < mat_manche[b.get_id()].length; i++) {
+            for (int i = b.get_hitPoints(); i < Partie.DEFAULT_HP; i++) {
                 mat_manche[b.get_id()][i] = null; //blessures
             }
         }
@@ -64,5 +68,10 @@ public class Joueur {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String toString(){
+        return "Joueur N°" + id;
     }
 }
