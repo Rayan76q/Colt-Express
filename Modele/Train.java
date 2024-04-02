@@ -111,9 +111,6 @@ abstract class Wagon {
         }
     }
 
-
-
-    public abstract void magot_vole();
 }
 
 
