@@ -1,31 +1,68 @@
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Joueur {
+    private static int current_id = 0;
 
-    private  LinkedList<Action> Cartes ;
+    private Train train;
+    private List<Bandit> pions;
+    private int id;
 
-
-    private BanditSpe Bandit ;
-
-    public Joueur(LinkedList<Action> Cartes , BanditSpe B ){
-        this.Cartes = Cartes ;
-        this.Bandit = B;
+    public Joueur(Train t , List<Bandit> b){
+        train = t;
+        pions = b;
+        id = current_id;
+        current_id++;
     }
 
-    public Action getCartesid(int id) {
-        if (id >= 0 && id < Cartes.size()) {
-            return Cartes.get(id);
-        } else {
-            return null;
+    //Pour tester avec affichage textuelle
+    public Direction choisie_dir(Bandit b){
+        System.out.println("Choose between: " +b.mouvements_possibles() +"\n");
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+        do {
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        }while(!b.mouvements_possibles().contains(Direction.values()[choice]));
+        return Direction.values()[choice];
+    }
+
+    public void joue_manche(Action[][] mat_manche){
+        for (Bandit b : pions){ //si il joue plusieurs pions en meme temps (par équipe)
+            for (int i = 0; i < b.get_hitPoints(); i++) {
+                //Version switch
+                Scanner scanner = new Scanner(System.in);
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+                List<Direction> dirs = b.mouvements_possibles();
+                if(choice == 0){ //Braquage
+                    mat_manche[b.get_id()][i] = new Braquage(b,train);
+                }
+                else if(choice == 1){ //Mouvement
+                    mat_manche[b.get_id()][i] = new Deplacement(b,train , choisie_dir(b));
+                }
+                else if(choice == 2){ // tir
+                    mat_manche[b.get_id()][i] = new Tir(b,train , choisie_dir(b));
+                }
+                else{//Frappe
+                    mat_manche[b.get_id()][i] = new Frappe(b, train);
+                }
+            }
+            for (int i = b.get_hitPoints(); i < mat_manche[b.get_id()].length; i++) {
+                mat_manche[b.get_id()][i] = null; //blessures
+            }
         }
     }
 
-    public void A1(int nCarte) {
-        if (nCarte >= 0 && nCarte < Cartes.size()) {
-            Action carte = getCartesid(nCarte);
-            Pile pile = new Pile();
-            pile.ajouterCarte(carte);   // A Mettre dans partie plutot
-            Cartes.remove(carte);
-
+    public int compte_argent(){
+        int somme = 0;
+        for (Bandit b : pions){
+            somme += b.compte_butins();
         }
+        return somme;
     }
+
+    public int getId() {
+        return id;
+    }
+}

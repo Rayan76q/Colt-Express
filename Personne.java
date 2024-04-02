@@ -40,14 +40,14 @@ class Bandit extends Personne implements Movable, Hitable{
     private List<Butin> poches = new LinkedList<Butin>();
 
 
-    public Bandit(String name){
+    public Bandit(String name,int pos){
         id = current_id++ ;
         nom = name;
-        position = Train.NB_WAGON-1;
-        ammo = Train.NB_MUNITIONS;
-        toit = false;
-        hitPoints = Train.DEFAULT_HP;
-        precision = Train.DEFAULT_PRECISION;
+        position = pos;
+        ammo = Partie.NB_MUNITIONS;
+        toit = true;
+        hitPoints = Partie.DEFAULT_HP;
+        precision = Partie.DEFAULT_PRECISION;
     }
 
     public int get_hitPoints(){
@@ -111,7 +111,7 @@ class Bandit extends Personne implements Movable, Hitable{
         List<Direction> res = new ArrayList<Direction>();
         if(position==0)
             res.add(Direction.ARRIERE);
-        else if(position==Train.NB_WAGON-1)
+        else if(position==Partie.NB_WAGON-1)
             res.add(Direction.AVANT);
         else {
             res.add(Direction.AVANT);
@@ -133,7 +133,7 @@ class Bandit extends Personne implements Movable, Hitable{
         if(d.dir()==2) toit = true;
         else if (d.dir()==-2) toit = false;
         else {
-            if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
+            if(position+d.dir()<0 || position+d.dir()==Partie.NB_WAGON){
                 return ;
             }
             position += d.dir();
@@ -170,7 +170,7 @@ class Bandit extends Personne implements Movable, Hitable{
                 Wagon current_wagg = train.get_Wagon()[this.position + d];
                 this.ammo--;
                 List<Bandit> list = current_wagg.toit;
-                while (list.isEmpty() && !(current_wagg.position == 0 || current_wagg.position == Train.NB_WAGON - 1)) {
+                while (list.isEmpty() && !(current_wagg.position == 0 || current_wagg.position ==Partie.NB_WAGON - 1)) {
                     current_wagg = train.get_Wagon()[current_wagg.position + d];
                     list = current_wagg.toit;
                 }
@@ -197,12 +197,22 @@ class Bandit extends Personne implements Movable, Hitable{
             bandits_cibles.get(rand_index).est_vise(w);
         }
     }
+
+    public void fuit_marshall(Wagon w) {
+        this.hitPoints--;
+        this.drop_butin(w);
+        this.toit = true;
+    }
+
+
+    public int compte_butins(){
+        int somme = 0;
+        for (Butin b : poches){
+            somme += b.valeur();
+        }
+        return somme;
+    }
 }
-
-
-
-
-
 
 
 
@@ -215,7 +225,7 @@ class Marchall extends Personne implements Movable{
         id = current_id ++;
         nom = "Marshall";
         position = 0;
-        nevrosite = Train.NEVROSITE_MARSHALL;
+        nevrosite = Partie.NEVROSITE_MARSHALL;
 
     }
 
@@ -224,7 +234,7 @@ class Marchall extends Personne implements Movable{
         List<Direction> res = new ArrayList<Direction>();
         if (position == 0)
             res.add(Direction.ARRIERE);
-        else if (position == Train.NB_WAGON - 1)
+        else if (position == Partie.NB_WAGON - 1)
             res.add(Direction.AVANT);
         else {
             res.add(Direction.AVANT);
@@ -235,13 +245,17 @@ class Marchall extends Personne implements Movable{
 
     @Override
     public void move(Train T ,Direction d){
-        if(position+d.dir()<0 || position+d.dir()==Train.NB_WAGON){
-            System.out.println("ayyyo");
+        if(position+d.dir()<0 || position+d.dir()==Partie.NB_WAGON){
+            System.out.println("Mouvement Invalide");
             return ;
         }
         T.get_Wagon()[position].interieur.remove(this);
         position += d.dir();
         T.get_Wagon()[position].interieur.add(this);
+        List<Bandit> attrape =  T.get_Wagon()[position].liste_bandits_int();
+        for (Bandit b : attrape){
+            b.fuit_marshall(T.get_Wagon()[position]);
+        }
     }
 
     //@Override
