@@ -108,6 +108,7 @@ public class Partie {
 
     private void run(int nb_manches) {
         for (int k = 0; k < nb_manches; k++) {
+            numeroManche = k;
             System.out.println(train);
             //Planification
             for (Joueur j : joueurs){

@@ -111,6 +111,9 @@ abstract class Wagon {
         }
     }
 
+
+
+    public abstract void magot_vole();
 }
 
 
@@ -134,17 +137,18 @@ class Cabine extends Wagon{
 
 
 class Locomotive extends Wagon{
-    private boolean magot_dispo;
+    private Butin mag = Butin.MAGOT ;
 
     @Override
     public String toString() {
-        if (magot_dispo) {
+        if (mag != null) {
             return "C'est la locomotive.\n"+ "elle contient le magot!\n"+ super.toString();
         }
         return "C'est la locomotive.\n"+ "elle ne contient pas le magot!\n"+ super.toString();
     }
 
-    private Butin mag = Butin.MAGOT ;
+
+    public boolean magot_dispo(){return Butin.MAGOT!=null;}
 
     public Locomotive(){
         assert size==0;
@@ -155,6 +159,9 @@ class Locomotive extends Wagon{
         loot_int = new LinkedList<Butin>();
         loot_toit = new LinkedList<Butin>();
         toit = new ArrayList<Bandit>();
-        magot_dispo = true;
+    }
+
+    public void magot_vole(){
+        mag = null;
     }
 }

@@ -98,11 +98,18 @@ class Bandit extends Personne implements Movable, Hitable{
             wagon_actuelle.loot_toit.remove(index_butin);
         }
         else{
-            if(r.nextBoolean()){ //Braque un passager
-                index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
-                wagon_actuelle.liste_passagers().get(index_butin).cede(this);
+            if(r.nextBoolean()){  //ne prend pas de loot au sol
+                if(position == 0 && ((Locomotive) T.get_Wagon()[0]).magot_dispo()){
+                    poches.add(Butin.MAGOT);
+                    ((Locomotive) T.get_Wagon()[0]).magot_vole();
+                }
+                else {
+                    //Braque un passager
+                    index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
+                    wagon_actuelle.liste_passagers().get(index_butin).cede(this);
+                }
             }
-            else{
+            else{ //loot
                 index_butin = r.nextInt(wagon_actuelle.loot_int.size());
                 poches.add(wagon_actuelle.loot_int.get(index_butin));
                 wagon_actuelle.loot_int.remove(index_butin);
