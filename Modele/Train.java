@@ -1,9 +1,9 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+package Modele;
 
-public class Train {
+import java.util.*;
+
+
+public class Train extends Observable {
 
     private Wagon[] WAGON = new Wagon[Partie.NB_WAGON];
 
@@ -32,7 +32,7 @@ public class Train {
 //                +NB_PASSAGER_PAR_WAGON_MAX+" passagers maximum in one wagon.\n - "
 //                +"One marshall that is "+NEVROSITE_MARSHALL +" over 1 nevrosite.\n"+"Now for the wagons:\n";
         String acc = "Les wagons du trains : \n";
-        for (int i = 0; i <Partie.NB_WAGON ; i++) {
+        for (int i = 0; i < Partie.NB_WAGON ; i++) {
             acc += "----------- \n";
             acc += WAGON[i].toString();
         }

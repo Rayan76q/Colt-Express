@@ -1,7 +1,9 @@
-import java.util.List;
-import java.util.Random ;
+package Modele;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.ArrayList ;
+import java.util.List;
+import java.util.Random;
 
 interface Movable {
     List<Direction> mouvements_possibles();
@@ -114,7 +116,7 @@ class Bandit extends Personne implements Movable, Hitable{
         List<Direction> res = new ArrayList<Direction>();
         if(position==0)
             res.add(Direction.ARRIERE);
-        else if(position==Partie.NB_WAGON-1)
+        else if(position== Partie.NB_WAGON-1)
             res.add(Direction.AVANT);
         else {
             res.add(Direction.AVANT);
@@ -136,7 +138,7 @@ class Bandit extends Personne implements Movable, Hitable{
         if(d.dir()==2) toit = true;
         else if (d.dir()==-2) toit = false;
         else {
-            if(position+d.dir()<0 || position+d.dir()==Partie.NB_WAGON){
+            if(position+d.dir()<0 || position+d.dir()== Partie.NB_WAGON){
                 return ;
             }
             position += d.dir();
@@ -173,7 +175,7 @@ class Bandit extends Personne implements Movable, Hitable{
                 Wagon current_wagg = train.get_Wagon()[this.position + d];
                 this.ammo--;
                 List<Bandit> list = current_wagg.toit;
-                while (list.isEmpty() && !(current_wagg.position == 0 || current_wagg.position ==Partie.NB_WAGON - 1)) {
+                while (list.isEmpty() && !(current_wagg.position == 0 || current_wagg.position == Partie.NB_WAGON - 1)) {
                     current_wagg = train.get_Wagon()[current_wagg.position + d];
                     list = current_wagg.toit;
                 }
@@ -247,8 +249,8 @@ class Marchall extends Personne implements Movable{
     }
 
     @Override
-    public void move(Train T ,Direction d){
-        if(position+d.dir()<0 || position+d.dir()==Partie.NB_WAGON){
+    public void move(Train T , Direction d){
+        if(position+d.dir()<0 || position+d.dir()== Partie.NB_WAGON){
             System.out.println("Mouvement Invalide");
             return ;
         }

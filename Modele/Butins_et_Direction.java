@@ -1,4 +1,6 @@
-import java.util.Random ;
+package Modele;
+
+import java.util.Random;
 enum Butin {
 
     BOURSE("Bourse" , (new Random()).nextInt(500) ) ,

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/colt-express.iml" filepath="$PROJECT_DIR$/.idea/colt-express.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modele/modele.iml" filepath="$PROJECT_DIR$/modele/modele.iml" />
     </modules>
   </component>
 </project>

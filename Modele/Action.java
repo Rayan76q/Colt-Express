@@ -1,3 +1,5 @@
+package Modele;
+
 public abstract class Action<T> {
     protected Train train;
     protected T acteur;
@@ -21,7 +23,7 @@ class Braquage extends Action{
 class Deplacement extends Action{
     private Direction dir;
 
-    public Deplacement(Movable b , Train T ,Direction d){
+    public Deplacement(Movable b , Train T , Direction d){
         train = T;
         acteur = b;
         dir = d;
@@ -35,7 +37,7 @@ class Deplacement extends Action{
 
 class Tir extends Action{
     private Direction dir ;
-    public Tir(Movable b , Train T ,Direction d){
+    public Tir(Movable b , Train T , Direction d){
         train = T;
         acteur = b;
         dir = d;
