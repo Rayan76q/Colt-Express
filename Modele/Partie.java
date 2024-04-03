@@ -154,6 +154,7 @@ public class Partie {
     public int getNumeroTour() {
         return this.numeroManche;
     }
+    public Train getTrain(){return this.train;}
 
 }
 
