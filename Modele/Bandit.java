@@ -31,12 +31,15 @@ public class Bandit extends Personne implements Movable, Hitable{
 
     public List<Butin> getPoches() { return this.poches;}
 
-
+    public void setToit(boolean toit) {
+        this.toit = toit;
+    }
 
     public void ajoute_butin(Butin b){
         poches.add(b);
     }
     public void drop_butin(Wagon w){
+        assert this.position == w.position;
         if (!this.poches.isEmpty()){
             Random random = new Random();
             int randomIndex = random.nextInt(this.poches.size());
@@ -69,7 +72,7 @@ public class Bandit extends Personne implements Movable, Hitable{
             wagon_actuelle.loot_toit.remove(index_butin);
         }
         else{
-            if(r.nextBoolean()){  //ne prend pas de loot au sol
+            if(r.nextBoolean()|| wagon_actuelle.loot_int.isEmpty()){  //ne prend pas de loot au sol
                 if(position == 0 && ((Locomotive) T.get_Wagon()[0]).magot_dispo()){
                     poches.add(Butin.MAGOT);
                     ((Locomotive) T.get_Wagon()[0]).magot_vole();

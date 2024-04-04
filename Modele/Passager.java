@@ -6,6 +6,14 @@ public class Passager extends Personne implements Hitable{
 
     private Butin poche;
 
+    public void setButin(Butin butin){
+        poche = butin;
+    }
+
+    public Butin getPoche(){
+        return poche;
+    }
+
     public Passager(int p){
         Random r = new Random();
         id = getCurrent_id_passager--;
@@ -31,7 +39,7 @@ public class Passager extends Personne implements Hitable{
 
     @Override
     public void est_vise(Wagon wagon){
-       drop_butin(wagon);
-       wagon.interieur.remove(this); //passager est cliniquement mort
+        drop_butin(wagon);
+        wagon.interieur.remove(this); //passager est cliniquement mort
     }
 }
