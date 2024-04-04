@@ -1,9 +1,10 @@
 package Modele;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+
 import java.util.List;
-import java.util.Random;
+
+
+
 
 interface Movable {
     List<Direction> mouvements_possibles();
@@ -19,10 +20,10 @@ public abstract class Personne {
     protected int id;
     protected int position;
     protected String nom;
+    protected String sprite;
 
     static protected int current_id_bandit = 0 ;
     static protected int getCurrent_id_passager = -2;
-
 
 
     public int get_id(){ return this.id;}
@@ -31,6 +32,7 @@ public abstract class Personne {
     public String toString() {
         return nom;
     }
+    public String getSprite(){return sprite;}
 }
 
 

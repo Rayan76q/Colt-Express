@@ -17,7 +17,6 @@ public class PersonneTest  {
     public void createidwork(){
 
         Bandit Rayan = new Bandit("Rayan",0);
-
         assertEquals(0 , Rayan.get_id());
 
         Bandit Antoine = new Bandit("Antoine",0);

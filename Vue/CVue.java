@@ -1,12 +1,11 @@
 package Vue;
 
 import Modele.*;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
+
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 public class CVue {
     static Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -80,15 +79,22 @@ class VuePlateau extends JPanel implements Observer {
     private final static int WIDTH= (int) (CVue.screenWidth/Partie.NB_WAGON - dec);
     private final static int HEIGHT= CVue.screenHeight/8;
 
-    private final static int spriteH = 85;
-    private final static int spriteW = 50;
-    private ImageIcon default_bandit;
-    private ImageIcon passager;
-    private ImageIcon Marshall;
-    public VuePlateau(Train t){
-        this.train = t;
+    private final static int spriteH = 120;
+    private final static int spriteW = 80;
 
-        default_bandit = new ImageIcon(getClass().getResource("images/bandit.png"));
+    private HashMap<Integer , ImageIcon> spriteMap = new HashMap<Integer, ImageIcon>();
+
+    public VuePlateau(Train t){
+
+        this.train = t;
+        for(Wagon w : t.get_Wagon()){
+            for (Bandit b : w.getToit()){
+                spriteMap.put(b.get_id() , new ImageIcon(getClass().getResource(b.getSprite())));
+            }
+            for(Personne p : w.getInterieur()){
+                spriteMap.put(p.get_id() , new ImageIcon(getClass().getResource(p.getSprite())));
+            }
+        }
         train.addObserver(this);
 
         Dimension dim = new Dimension(CVue.screenWidth,
@@ -126,7 +132,11 @@ class VuePlateau extends JPanel implements Observer {
     private void paintPersonne(Graphics g, Wagon w, int x) {
         //Toit
         for (int i = 0; i < w.getToit().size(); i++) {
-            g.drawImage(default_bandit.getImage(), x+i*spriteW+10, HEIGHT,spriteH,spriteW, this);
+            g.drawImage(spriteMap.get(w.getToit().get(i).get_id()).getImage(), x+i*spriteW+20, HEIGHT,spriteH,spriteW, this);
+        }
+
+        for (int i = 0; i < w.getInterieur().size(); i++) {
+            g.drawImage(spriteMap.get(w.getInterieur().get(i).get_id()).getImage(), x+i*spriteW+20, HEIGHT*2,spriteH,spriteW, this);
         }
 
 

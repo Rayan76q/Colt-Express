@@ -4,6 +4,10 @@ import java.util.Random;
 
 public class Passager extends Personne implements Hitable{
 
+    private static String[] sprites = {"../Vue/Images/passagerBarbu.jpg" , "../Vue/Images/passagerFemme.jpg" , "../Vue/Images/passagerJournal.jpg",
+                            "../Vue/Images/passagerRiche.jpg" , "../Vue/Images/passagerVieux.jpg","../Vue/Images/passgerCouple.jpg"};
+
+
     private Butin poche;
 
     public void setButin(Butin butin){
@@ -20,6 +24,7 @@ public class Passager extends Personne implements Hitable{
         position = p;
         nom = "passager"+id;
         poche =  Butin.values()[r.nextInt(2)];
+        sprite = sprites[r.nextInt(sprites.length)];
     }
 
 

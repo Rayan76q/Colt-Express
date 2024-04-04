@@ -1,17 +1,23 @@
 package Modele;
 
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 public class Bandit extends Personne implements Movable, Hitable{
+
     private boolean toit;
     private int ammo;
     private double precision;
 
     private int hitPoints;
     private List<Butin> poches = new LinkedList<Butin>();
+
+
+    //Sprites
+    private static final String[] sprites = {"../Vue/Images/banditHomme.jpg","../Vue/Images/banditFemme.jpg"};
 
 
     public Bandit(String name,int pos){
@@ -22,6 +28,9 @@ public class Bandit extends Personne implements Movable, Hitable{
         toit = true;
         hitPoints = Partie.DEFAULT_HP;
         precision = Partie.DEFAULT_PRECISION;
+
+        Random r = new Random();
+        sprite = sprites[r.nextInt(sprites.length)];
     }
 
     public int get_hitPoints(){
