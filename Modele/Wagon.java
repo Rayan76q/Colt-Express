@@ -28,6 +28,9 @@ public abstract class Wagon {
                 " individus dedans : "+inside+"\n - "+ toit.size() +" bandits sur le toit : "+top+"\n";
     }
 
+    public static void reinitialise(){
+        size = 0;
+    }
 
     public List<Passager> liste_passagers(){
         List<Passager> res = new LinkedList<Passager>();

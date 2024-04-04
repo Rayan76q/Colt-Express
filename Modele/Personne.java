@@ -31,8 +31,12 @@ public abstract class Personne {
     public String toString() {
         return nom;
     }
-}
 
+    public static void reinitialise(){
+        current_id_bandit = 0;
+        getCurrent_id_passager = -2;
+    }
+}
 
 class Bandit extends Personne implements Movable, Hitable{
     private boolean toit;
@@ -203,11 +207,14 @@ class Bandit extends Personne implements Movable, Hitable{
         Random rand = new Random();
         Wagon w = train.get_Wagon()[position];
         if(toit){
+            w.toit.remove(this);
             int rand_index = rand.nextInt(w.toit.size());
             w.toit.get(rand_index).est_vise(w);
+            w.toit.add(this);
         }
         else {
             List<Bandit> bandits_cibles = w.liste_bandits_int();
+            bandits_cibles.remove(this);
             int rand_index = rand.nextInt(bandits_cibles.size());
             bandits_cibles.get(rand_index).est_vise(w);
         }
@@ -260,7 +267,8 @@ class Marchall extends Personne implements Movable{
 
     @Override
     public void move(Train T , Direction d){
-        if(position+d.dir()<0 || position+d.dir()== Partie.NB_WAGON){
+        if(!this.mouvements_possibles().contains(d)){
+        //if(position+d.dir()<0 || position+d.dir()== Partie.NB_WAGON){
             System.out.println("Mouvement Invalide");
             return ;
         }
