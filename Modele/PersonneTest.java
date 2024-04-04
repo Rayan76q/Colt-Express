@@ -64,7 +64,7 @@ public class PersonneTest  {
         Rayan.setToit(false);
         Rayan.drop_butin(wag_test);
 
-        assertFalse(Rayan.getPoches().contains(wag_test.loot_int.getFirst()));
+        assertFalse(Rayan.getPoches().contains(wag_test.loot_int.get(0)));
         assertEquals(1,wag_test.loot_int.size());
         assertEquals(1, Rayan.getPoches().size());
 
