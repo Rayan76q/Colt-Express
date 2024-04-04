@@ -1,13 +1,8 @@
 package Modele;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.LinkedList;
-import java.util.List;
-
 import static org.junit.Assert.*;
-
 
 public class PersonneTest  {
 
@@ -26,6 +21,8 @@ public class PersonneTest  {
         Bandit Samy = new Bandit("Samy",0);
 
         assertEquals(2 , Samy.get_id());
+
+        Personne.reinitialise();
     }
 
 
@@ -38,11 +35,13 @@ public class PersonneTest  {
 
         Rayan.ajoute_butin(b);
 
-        assertEquals(true , Rayan.getPoches().contains(b));
+        assertTrue(Rayan.getPoches().contains(b));
+
     }
 
     @Test
     public void enleve_butin_test(){
+        Wagon.reinitialise();
         Bandit Rayan = new Bandit("Rayan",0);
         Wagon wag_test = new Locomotive();
         Butin b = Butin.BIJOUX ;
@@ -73,6 +72,7 @@ public class PersonneTest  {
         assertEquals(0,Rayan.getPoches().size());
         assertEquals(2,wag_test.loot_int.size());
         assertEquals(0, wag_test.loot_toit.size());
+        Wagon.reinitialise();
     }
 
     @Test
@@ -92,12 +92,9 @@ public class PersonneTest  {
         test_passager.setButin(b);
         bandit.getPoches().add(c);
         LinkedList<Butin> total = new LinkedList<>(bandit.getPoches());
-        System.out.println(total);
         total.add(test_passager.getPoche());
-        System.out.println(total);
         //total.addAll(bandit.getPoches());
         total.addAll(bandit2.getPoches());
-        System.out.println(total);
 
 
         assertEquals(1, bandit.getPoches().size());
@@ -114,6 +111,7 @@ public class PersonneTest  {
         // la liste "total2" pointe vers des objet, donc elle va pointer vers
         // un objet qui n'existe plus donc null.
         assertEquals(total,total2);
+        Wagon.reinitialise();
     }
     @Test
     public void test_move(){
@@ -154,6 +152,7 @@ public class PersonneTest  {
         marshall_mathers.move(train,Direction.ARRIERE);
         assertTrue(train.get_Wagon()[marshall_mathers.position].interieur.contains(marshall_mathers));
         assertFalse(train.get_Wagon()[marshall_mathers.position-1].interieur.contains(marshall_mathers));
+        Wagon.reinitialise();
     }
 
     @Test
@@ -205,10 +204,53 @@ public class PersonneTest  {
 
         assertEquals(bandit2.get_ammo(),bandit.get_ammo());
         assertEquals(bandit.get_hitPoints(),bandit2.get_hitPoints()-1);
+
+        Wagon.reinitialise();
     }
 
     @Test
     public void test_frappe(){
+        Wagon.reinitialise();
+        Butin b = Butin.BIJOUX ;
+        Train train = new Train();
+        Bandit bandit= new Bandit("Natasha",0);
+        Bandit bandit2 = new Bandit("Paul",0);
+        train.get_Wagon()[bandit.position].ajoute_personne(bandit,true);
+        train.get_Wagon()[bandit2.position].ajoute_personne(bandit2,true);
+        bandit.frappe(train);
 
+        assertEquals(bandit2.get_ammo(),bandit.get_ammo());
+        assertEquals(bandit.get_hitPoints(),bandit2.get_hitPoints()+1);
+
+        bandit.ajoute_butin(b);
+        bandit2.frappe(train);
+
+        assertEquals(bandit.get_hitPoints(),bandit2.get_hitPoints());
+        assertFalse(train.get_Wagon()[0].loot_toit.isEmpty());
+        Wagon.reinitialise();
+    }
+
+    @Test
+    public void test_move_marchall(){
+        Wagon.reinitialise();
+        Train train = new Train();
+        Marchall marshall = new Marchall();
+        train.get_Wagon()[0].ajoute_personne(marshall,false);
+        marshall.move(train, Direction.AVANT);
+
+        assertEquals(0,marshall.position);
+        assertTrue(train.get_Wagon()[marshall.position].interieur.contains(marshall));
+
+        marshall.move(train,Direction.ARRIERE);
+
+        assertTrue(train.get_Wagon()[marshall.position].interieur.contains(marshall));
+        assertFalse(train.get_Wagon()[marshall.position-1].interieur.contains(marshall));
+        assertEquals(1,marshall.position);
+
+        marshall.move(train,Direction.HAUT);
+
+        assertEquals(1,marshall.position);
+
+        Wagon.reinitialise();
     }
 }

@@ -30,7 +30,8 @@ public class Marchall extends Personne implements Movable{
 
     @Override
     public void move(Train T , Direction d){
-        if(position+d.dir()<0 || position+d.dir()== Partie.NB_WAGON){
+        if(!this.mouvements_possibles().contains(d)){
+            //if(position+d.dir()<0 || position+d.dir()== Partie.NB_WAGON){
             System.out.println("Mouvement Invalide");
             return ;
         }
@@ -45,6 +46,4 @@ public class Marchall extends Personne implements Movable{
 
     //@Override
     //public void est_vise(Wagon wagon){};
-
-
 }

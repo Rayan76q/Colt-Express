@@ -33,6 +33,9 @@ public abstract class Personne {
         return nom;
     }
     public String getSprite(){return sprite;}
+
+    public static void reinitialise(){
+        current_id_bandit = 0;
+        getCurrent_id_passager = -2;
+    }
 }
-
-

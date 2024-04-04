@@ -22,7 +22,6 @@ public class Train extends Observable {
         return WAGON;
     }
 
-
     @Override
     public String toString(){
 //        String acc = "this train has: \n - "+NB_WAGON +" wagons.\n - "+
