@@ -1,12 +1,28 @@
 package Vue;
 
 import Modele.*;
-
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class CVue {
+    static Toolkit toolkit = Toolkit.getDefaultToolkit();
+    static final Dimension screenSize = toolkit.getScreenSize();
+    static final int screenWidth = screenSize.width;
+    static final int screenHeight = screenSize.height;
+
+
+    //Main graphique
+    public static void main(String[] args) {
+
+        EventQueue.invokeLater(() -> {
+            Partie p = new Partie();
+            CVue vue = new CVue(p);
+        });
+    }
 
     private JFrame frame;
 
@@ -24,9 +40,11 @@ public class CVue {
 
         plateau = new VuePlateau(p.getTrain());
         frame.add(plateau);
+        /*
+        TODO
         tableau_de_bord = new VueCommandes(p);
         frame.add(tableau_de_bord);
-
+        */
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -57,16 +75,24 @@ class VuePlateau extends JPanel implements Observer {
 
     private Train train;
 
-    private final static int TAILLE = 30;
+    //Hauteur et largeur d'un étage d'un wagon
+    private static int dec = 30;
+    private final static int WIDTH= (int) (CVue.screenWidth/Partie.NB_WAGON - dec);
+    private final static int HEIGHT= CVue.screenHeight/8;
 
-
-    public VuePlateau(Train t) {
+    private final static int spriteH = 85;
+    private final static int spriteW = 50;
+    private ImageIcon default_bandit;
+    private ImageIcon passager;
+    private ImageIcon Marshall;
+    public VuePlateau(Train t){
         this.train = t;
 
+        default_bandit = new ImageIcon(getClass().getResource("images/bandit.png"));
         train.addObserver(this);
 
-        Dimension dim = new Dimension(TAILLE*Partie.NB_WAGON,
-                TAILLE*2);
+        Dimension dim = new Dimension(CVue.screenWidth,
+                CVue.screenHeight*7/8 );
         this.setPreferredSize(dim);
     }
 
@@ -76,14 +102,35 @@ class VuePlateau extends JPanel implements Observer {
 
     public void paintComponent(Graphics g) {
         super.repaint();
+        super.paintComponent(g);
         for(int i=0; i<Partie.NB_WAGON; i++) {
-                paint(g, train.get_Wagon()[i], i*TAILLE);
-
+            paintWagon(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
+            paintPersonne(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
         }
     }
 
     //TODO
-    private void paint(Graphics g, Wagon w, int x) {
-        return ;
+    private void paintWagon(Graphics g, Wagon w, int x) {
+        //Dessin du toit
+        g.setColor(Color.BLACK);
+        int y = HEIGHT;
+        g.drawRect(x, y, WIDTH, HEIGHT);
+
+        //Dessin de l'interieur
+        g.setColor(new Color(139, 69, 19, 100)); // Brown color with some transparency
+        y = HEIGHT*2;
+        g.fillRect(x, y, WIDTH, HEIGHT);
+        g.drawRect(x, y, WIDTH, HEIGHT);
+    }
+
+    private void paintPersonne(Graphics g, Wagon w, int x) {
+        //Toit
+        for (int i = 0; i < w.getToit().size(); i++) {
+            g.drawImage(default_bandit.getImage(), x+i*spriteW+10, HEIGHT,spriteH,spriteW, this);
+        }
+
+
+
+
     }
 }

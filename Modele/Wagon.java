@@ -70,6 +70,10 @@ public abstract class Wagon {
         }
     }
 
+
+    public List<Bandit> getToit() {return toit;}
+    public List<Personne> getInterieur() {return interieur;}
+
 }
 
 class Cabine extends Wagon{

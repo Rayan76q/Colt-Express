@@ -25,15 +25,17 @@ public class Partie {
     private Joueur[] joueurs;
     private boolean mode_extra;
 
-
-
-
+    //Main avec afffichage textuelle
     public static void main(String[] args) {
         System.out.println("\n\n");
         Partie partie = new Partie();
-        partie.initialisation_partie();
         System.out.println(partie.train);
         partie.run(NB_MANCHES);
+    }
+
+
+    public Partie() {
+        initialisation_partie();
     }
 
     //    public static void main(String[] args) {
