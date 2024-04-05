@@ -34,16 +34,15 @@ public class CVue {
         frame = new JFrame();
         frame.setTitle("Colt Express");
 
-        frame.setLayout(new FlowLayout());
+        frame.setLayout(new BorderLayout());
 
 
         plateau = new VuePlateau(p.getTrain());
-        frame.add(plateau);
-        /*
-        TODO
+        frame.add(plateau, BorderLayout.NORTH);
+
         tableau_de_bord = new VueCommandes(p);
-        frame.add(tableau_de_bord);
-        */
+        frame.add(tableau_de_bord, BorderLayout.SOUTH);
+
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -56,12 +55,16 @@ class VueCommandes extends JPanel {
 
 
     public VueCommandes(Partie p) {
+        Dimension dim = new Dimension(CVue.screenWidth,
+                CVue.screenHeight*2/9 );
+        this.setPreferredSize(dim);
+
         this.partie = p;
 
-        JButton boutonAvance = new JButton("Action");
-        this.add(boutonAvance);
+        JButton boutonAction = new JButton("Action");
+        this.add(boutonAction);
 
-
+        this.setBorder(BorderFactory.createLineBorder(Color.black));
         //TODO
         //Controleur ctrl = new Controleur(p);
 
@@ -85,6 +88,9 @@ class VuePlateau extends JPanel implements Observer {
     private HashMap<Integer , ImageIcon> spriteMap = new HashMap<Integer, ImageIcon>();
 
     public VuePlateau(Train t){
+        Dimension dim = new Dimension(CVue.screenWidth,
+                CVue.screenHeight*5/9 );
+        this.setPreferredSize(dim);
 
         this.train = t;
         for(Wagon w : t.get_Wagon()){
@@ -97,9 +103,7 @@ class VuePlateau extends JPanel implements Observer {
         }
         train.addObserver(this);
 
-        Dimension dim = new Dimension(CVue.screenWidth,
-                CVue.screenHeight*7/8 );
-        this.setPreferredSize(dim);
+
     }
 
 
@@ -112,10 +116,15 @@ class VuePlateau extends JPanel implements Observer {
         for(int i=0; i<Partie.NB_WAGON; i++) {
             paintWagon(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
             paintPersonne(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
+            /*
+            TODO
+            paintButin();
+            */
+
         }
     }
 
-    //TODO
+
     private void paintWagon(Graphics g, Wagon w, int x) {
         //Dessin du toit
         g.setColor(Color.BLACK);
