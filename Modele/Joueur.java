@@ -8,12 +8,14 @@ public class Joueur {
 
     private Train train;
     private List<Bandit> pions;
-    private int id;
+    private Bandit pionAct;
+    private int id = current_id;
+
 
     public Joueur(Train t , List<Bandit> b){
         train = t;
         pions = b;
-        id = current_id;
+        pionAct = pions.get(0);
         current_id++;
     }
 
@@ -72,8 +74,40 @@ public class Joueur {
         return id;
     }
 
+    public List<Bandit> getPions(){return pions;}
+
     @Override
     public String toString(){
         return "Joueur N°" + id;
     }
+
+    public Bandit getPionAct(){return pionAct;}
+    public boolean getNextPion(){
+        //Si renvoie 0 alors le joueur a fini de jouer
+        int index = getPions().indexOf(pionAct)+1;
+        try {
+            pionAct = getPions().get(index);
+            return true;
+        }
+        catch (IndexOutOfBoundsException e){
+            pionAct = getPions().get(0);
+            return false;
+        }
+
+    }
+
+    public boolean getPrevPion(){
+
+        int index = getPions().indexOf(pionAct)-1;
+        try {
+            pionAct = getPions().get(index);
+            return true;
+        }
+        catch (IndexOutOfBoundsException e){
+            pionAct = getPions().get(0);
+            return false;
+        }
+
+    }
+
 }

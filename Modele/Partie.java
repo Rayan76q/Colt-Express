@@ -1,10 +1,11 @@
 package Modele;
 
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-public class Partie {
+public class Partie extends Observable {
 
     public static int NB_WAGON = 4;
     public static final int NB_MUNITIONS = 6;
@@ -16,6 +17,7 @@ public class Partie {
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
+    public static List<Class<? extends Action>> Actions = new ArrayList<Class<? extends Action>>();
 
     private Train train;
 
@@ -23,7 +25,14 @@ public class Partie {
 
     private Action[][] matrice_action;
     private Joueur[] joueurs;
+    private int joueurAct = 0;
+    private int tempo = 0;
+    private int actionChoisie = -1;
+    private Direction directionChoisie ;
+
     private boolean mode_extra;
+
+
 
     //Main avec afffichage textuelle
     public static void main(String[] args) {
@@ -35,7 +44,16 @@ public class Partie {
 
 
     public Partie() {
+        Actions.add(Deplacement.class);
+        Actions.add(Tir.class);
+        Actions.add(Braquage.class);
+        Actions.add(Frappe.class);
+
         initialisation_partie();
+    }
+
+    public Joueur[] getJoueurs() {
+        return joueurs;
     }
 
     //    public static void main(String[] args) {
@@ -100,7 +118,9 @@ public class Partie {
                     System.out.print("Welcome aboard: " + name +"\n");
                     train.get_Wagon()[bandit.position].toit.add(bandit);
                 }
+
                 joueurs[i] = new Joueur(train,pions);
+
             }
         }
         else{ //special mode to be implemented
@@ -152,11 +172,114 @@ public class Partie {
 
 
 
-
     public int getNumeroTour() {
         return this.numeroManche;
     }
     public Train getTrain(){return this.train;}
+
+    public int getJoueurAct() {
+        return joueurAct;
+    }
+
+    public int getActionChoisie() {
+        return actionChoisie;
+    }
+
+    public void setActionChoisie(int actionChoisie) {
+        assert  actionChoisie>=0 && actionChoisie<4 ;
+        this.actionChoisie = actionChoisie;
+    }
+
+
+    public Action[][] getMatrice_action(){return matrice_action;}
+
+
+    public Action creeActionFinale(){
+        if(actionChoisie == 2 || actionChoisie == 3 ){
+            try {
+                return Actions.get(actionChoisie).getConstructor(Bandit.class , Train.class).newInstance(joueurs[joueurAct].getPionAct() , train);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else{
+            try {
+                return Actions.get(actionChoisie).getConstructor(Bandit.class , Train.class, Direction.class).newInstance(joueurs[joueurAct].getPionAct() , train,directionChoisie);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void confirmeAction() {
+
+        Action actionFinale = creeActionFinale();
+        if(actionFinale != null) {
+            Bandit pionActuelle = joueurs[joueurAct].getPionAct();
+            matrice_action[pionActuelle.get_id()][tempo] = actionFinale;
+            tempo++;
+            if (tempo > pionActuelle.get_hitPoints() - 1) {
+                for (int i = tempo; i < matrice_action[pionActuelle.get_id()].length; i++) {
+                    matrice_action[pionActuelle.get_id()][i] = null;  //blessure
+                }
+                tempo = 0;
+                //le joueur a entrer toutes les actions du pion
+                if (!joueurs[joueurAct].getNextPion()) {
+                    getNextJoueur();
+                    if (joueurAct == 0) { //la phase de planification est terminé , on execute
+                        executerMatrice();
+                    }
+                }
+            }
+
+
+        }
+
+        //passage à l'action suivante
+        actionChoisie = -1;
+        directionChoisie = null;
+        notifyObservers();
+
+    }
+
+    public void executerMatrice(){
+        for (int i = 0; i < matrice_action.length; i++) {
+            for (int j = 0; j < matrice_action[i].length; j++) {
+                if(matrice_action[j][i] != null) {
+                    matrice_action[j][i].executer();
+                }
+            }
+        }
+        notifyObservers();
+        System.out.println(joueur_en_tete()+" est en tête.\n");
+    }
+
+
+
+    public void getNextJoueur(){
+        joueurAct  = (joueurAct+1)%NB_JOUEURS;
+    }
+
+    public void annuleAction() {
+        if(tempo>0){ //revient au tempo précédent
+            tempo--;
+        }
+        else{
+            if(joueurs[joueurAct].getPrevPion()){  //revient au pions précédent
+                tempo = matrice_action[joueurs[joueurAct].getPionAct().get_id()].length-1;
+            }
+        }
+        actionChoisie=-1;
+        directionChoisie = null;
+        notifyObservers();
+    }
+
+    public void setDirectionChoisie(Direction directionChoisie) {
+        this.directionChoisie = directionChoisie;
+    }
+
+    public int getTempo() {return tempo;}
+
 
 }
 
