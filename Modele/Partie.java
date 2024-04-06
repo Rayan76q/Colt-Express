@@ -195,18 +195,26 @@ public class Partie extends Observable {
 
 
     public Action creeActionFinale(){
+
         if(actionChoisie == 2 || actionChoisie == 3 ){
             try {
                 return Actions.get(actionChoisie).getConstructor(Bandit.class , Train.class).newInstance(joueurs[joueurAct].getPionAct() , train);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                return null;
+            }
+        }
+        else if(actionChoisie == 0){
+            try {
+                return Actions.get(actionChoisie).getConstructor(Movable.class , Train.class, Direction.class).newInstance(joueurs[joueurAct].getPionAct() , train,directionChoisie);
+            } catch (Exception e) {
+                return null;
             }
         }
         else{
             try {
                 return Actions.get(actionChoisie).getConstructor(Bandit.class , Train.class, Direction.class).newInstance(joueurs[joueurAct].getPionAct() , train,directionChoisie);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                return null;
             }
         }
     }
@@ -232,13 +240,11 @@ public class Partie extends Observable {
                 }
             }
 
-
+            //passage à l'action suivante
+            actionChoisie = -1;
+            directionChoisie = null;
+            notifyObservers();
         }
-
-        //passage à l'action suivante
-        actionChoisie = -1;
-        directionChoisie = null;
-        notifyObservers();
 
     }
 
