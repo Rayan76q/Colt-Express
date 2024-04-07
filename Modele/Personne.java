@@ -24,6 +24,8 @@ public abstract class Personne {
 
     static protected int current_id_bandit = 0 ;
     static protected int getCurrent_id_passager = -2;
+    public static final int spriteW = 98;
+    public static final int spriteH = 40;
 
 
     public int get_id(){ return this.id;}

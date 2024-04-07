@@ -6,9 +6,10 @@ import Controleur.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
+
+import static Modele.Personne.spriteH;
+import static Modele.Personne.spriteW;
 
 public class CVue {
     static Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -212,13 +213,10 @@ class VuePlateau extends JPanel implements Observer {
     private static int dec = 30;
     private final static int WIDTH= (int) (CVue.screenWidth/Partie.NB_WAGON - dec);
     private final static int HEIGHT= CVue.screenHeight/8;
-    private final static int spriteH = 98;
-    private final static int spriteW = 40;
-    private final static int spriteLoot = 20;
 
 
-    private HashMap<Integer , ImageIcon> spriteMapPersonnes = new HashMap<Integer, ImageIcon>();
-    private HashMap<Butin , ImageIcon> spriteMapButins = new HashMap<Butin , ImageIcon> ();
+    private HashMap<Integer , ImageIcon> spriteMapPersonnes = new HashMap<>();
+    private HashMap<Butin , ImageIcon> spriteMapButins = new HashMap<>();
     private ImageIcon[] coffreSprite = {new ImageIcon(getClass().getResource("Images/safe.png")) , new ImageIcon(getClass().getResource("Images/openSafe.png"))};
 
     public VuePlateau(Train t){
@@ -285,7 +283,7 @@ class VuePlateau extends JPanel implements Observer {
     private void paintPersonne(Graphics g, Wagon w, int x) {
         //Toit
         for (int i = 0; i < w.getToit().size(); i++) {
-            g.drawImage(spriteMapPersonnes.get(w.getToit().get(i).get_id()).getImage(), x+i*(spriteW+5), HEIGHT,spriteW,spriteH, this);
+            g.drawImage(spriteMapPersonnes.get(w.getToit().get(i).get_id()).getImage(), x+i*(spriteW+5), HEIGHT,spriteW, spriteH, this);
         }
         //Interieur
         for (int i = 0; i < w.getInterieur().size(); i++) {
@@ -297,11 +295,13 @@ class VuePlateau extends JPanel implements Observer {
     private void paintButin(Graphics g, Wagon w, int x) {
         //Toit
         for (int i = 0; i < w.getLootToit().size(); i++) {
-            g.drawImage(spriteMapButins.get(w.getLootInt().get(i)).getImage(), x+i*(spriteW+5), HEIGHT,spriteLoot,spriteLoot, this);
+            Butin b = w.getLootToit().get(i);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT,b.getSpriteW(),b.getSpriteH(), this);
         }
         //Interieur
         for (int i = 0; i < w.getLootInt().size(); i++) {
-            g.drawImage(spriteMapButins.get(w.getLootInt().get(i)).getImage(), x+i*(spriteW+5), HEIGHT*2,spriteLoot,spriteLoot, this);
+            Butin b = w.getLootInt().get(i);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*2,b.getSpriteW(),b.getSpriteH(), this);
         }
     }
 }
