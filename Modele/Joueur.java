@@ -78,7 +78,7 @@ public class Joueur {
 
     @Override
     public String toString(){
-        return "Joueur N°" + id;
+        return "Joueur N°" + (id+1);
     }
 
     public Bandit getPionAct(){return pionAct;}

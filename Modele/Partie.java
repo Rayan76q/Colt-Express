@@ -8,7 +8,7 @@ public class Partie extends Observable {
     public static int NB_WAGON = 4;
     public static final int NB_MUNITIONS = 6;
     public static final double DEFAULT_PRECISION = 0.9;
-    public static final int DEFAULT_HP = 6;
+    public static final int DEFAULT_HP = 3;
     public static int NB_JOUEURS = 4;
     public static int NB_MANCHES = 5;   //Revoir le Caractere public de certaines
     public static final int NB_BANDITS_JOUEUR = 1;
@@ -96,7 +96,7 @@ public class Partie extends Observable {
         int numOfPlayers = scanner.nextInt();
         assert numOfPlayers >0;
         NB_JOUEURS = numOfPlayers;
-        NB_WAGON = numOfPlayers;
+        NB_WAGON = numOfPlayers+1;
         this.joueurs = new Joueur[numOfPlayers];
         System.out.print("Enter the number of turns (default is 5 , min is 3): ");
         int tours = scanner.nextInt();
@@ -248,7 +248,6 @@ public class Partie extends Observable {
     }
 
     public void executerMatrice(){
-        System.out.println(matrice_action[0].length);
 
         for (int j = 0; j < matrice_action[0].length; j++) {
             for (int i = 0; i < matrice_action.length; i++) {
@@ -258,13 +257,12 @@ public class Partie extends Observable {
             }
 
         }
-        System.out.println("hey");
 
         String r = "";
         for(Joueur j:joueur_en_tete()){
             r += j.toString()+" ";
         }
-        System.out.println(joueur_en_tete()+" en tête pour ce tour.\n");
+        System.out.println(r+" en tête pour ce tour.\n");
         numeroManche++;
         notifyObservers();
         evenementsPassifs();

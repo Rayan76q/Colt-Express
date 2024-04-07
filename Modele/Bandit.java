@@ -74,11 +74,14 @@ public class Bandit extends Personne implements Movable, Hitable{
         Wagon wagon_actuelle = T.get_Wagon()[position];
         int index_butin;
         if (toit) {
-            int nb_butins = wagon_actuelle.loot_toit.size();
-            if (nb_butins < 1) return;
-            index_butin = r.nextInt(wagon_actuelle.loot_toit.size());
-            poches.add(wagon_actuelle.loot_toit.get(index_butin));
-            wagon_actuelle.loot_toit.remove(index_butin);
+            if(!wagon_actuelle.loot_toit.isEmpty()) {
+                index_butin = r.nextInt(wagon_actuelle.loot_toit.size());
+                poches.add(wagon_actuelle.loot_toit.get(index_butin));
+                wagon_actuelle.loot_toit.remove(index_butin);
+            }
+            else{
+                return ; //toit vide
+            }
         }
         else {
             if (position == 0 && ((Locomotive) T.get_Wagon()[0]).magot_dispo()) {
@@ -202,10 +205,13 @@ public class Bandit extends Personne implements Movable, Hitable{
         this.hitPoints--;
         this.drop_butin(w);
         this.toit = true;
+        w.getInterieur().remove(this);
+        w.getToit().add(this);
     }
 
 
     public int compte_butins(){
+
         int somme = 0;
         for (Butin b : poches){
             somme += b.valeur();
