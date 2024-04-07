@@ -109,7 +109,7 @@ class Locomotive extends Wagon{
     }
 
 
-    public boolean magot_dispo(){return Butin.MAGOT!=null;}
+    public boolean magot_dispo(){return mag!=null;}
 
     public Locomotive(){
         assert size==0;
@@ -122,7 +122,11 @@ class Locomotive extends Wagon{
         toit = new ArrayList<Bandit>();
     }
 
-    public void magot_vole(){
-        mag = null;
+    public void magot_vole(Bandit b)
+    {
+        if(magot_dispo()) {
+            b.ajoute_butin(Butin.MAGOT);
+            mag = null;
+        }
     }
 }

@@ -86,9 +86,8 @@ public class Bandit extends Personne implements Movable, Hitable{
         else {
             if (position == 0 && ((Locomotive) T.get_Wagon()[0]).magot_dispo()) {
                 //vole le magot
-                poches.add(Butin.MAGOT);
-                ((Locomotive) T.get_Wagon()[0]).magot_vole();
-            } else if (r.nextBoolean() && !wagon_actuelle.loot_int.isEmpty()) {  //prend un loot au sol
+                ((Locomotive) T.get_Wagon()[0]).magot_vole(this);
+            } else if ((position==0 ||  r.nextBoolean()) && !wagon_actuelle.loot_int.isEmpty()) {  //prend un loot au sol
                 index_butin = r.nextInt(wagon_actuelle.loot_int.size());
                 poches.add(wagon_actuelle.loot_int.get(index_butin));
                 wagon_actuelle.loot_int.remove(index_butin);
@@ -211,7 +210,6 @@ public class Bandit extends Personne implements Movable, Hitable{
 
 
     public int compte_butins(){
-
         int somme = 0;
         for (Butin b : poches){
             somme += b.valeur();
