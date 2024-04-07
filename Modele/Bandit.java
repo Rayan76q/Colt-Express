@@ -17,7 +17,7 @@ public class Bandit extends Personne implements Movable, Hitable{
 
 
     //Sprites
-    private static final String[] sprites = {"../Vue/Images/banditHomme.jpg","../Vue/Images/banditFemme.jpg"};
+    private static final String[] sprites = {"../Vue/Images/banditHomme.png","../Vue/Images/banditFemme.png"};
 
 
     public Bandit(String name,int pos){
@@ -63,7 +63,7 @@ public class Bandit extends Personne implements Movable, Hitable{
 
     @Override
     public void est_vise(Wagon wagon){
-        if(this.hitPoints>0)
+        if(this.hitPoints>2)
             this.hitPoints -= 1;
         drop_butin(wagon);
     }
@@ -201,7 +201,9 @@ public class Bandit extends Personne implements Movable, Hitable{
     }
 
     public void fuit_marshall(Wagon w) {
-        this.hitPoints--;
+        if(this.hitPoints>2) {
+            this.hitPoints--;
+        }
         this.drop_butin(w);
         this.toit = true;
         w.getInterieur().remove(this);

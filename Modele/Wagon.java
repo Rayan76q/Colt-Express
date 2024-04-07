@@ -76,6 +76,8 @@ public abstract class Wagon {
 
     public List<Bandit> getToit() {return toit;}
     public List<Personne> getInterieur() {return interieur;}
+    public List<Butin> getLootInt() {return loot_int;}
+    public  List<Butin> getLootToit(){return loot_toit;}
 
 }
 
@@ -92,41 +94,6 @@ class Cabine extends Wagon{
         interieur = new ArrayList<Personne>();
         for (int i = 0; i < r.nextInt(Partie.NB_PASSAGER_PAR_WAGON_MAX-1)+1; i++) {
             interieur.add(new Passager(p));
-        }
-    }
-}
-
-
-class Locomotive extends Wagon{
-    private Butin mag = Butin.MAGOT ;
-
-    @Override
-    public String toString() {
-        if (mag != null) {
-            return "C'est la locomotive.\n"+ "elle contient le magot!\n"+ super.toString();
-        }
-        return "C'est la locomotive.\n"+ "elle ne contient pas le magot!\n"+ super.toString();
-    }
-
-
-    public boolean magot_dispo(){return mag!=null;}
-
-    public Locomotive(){
-        assert size==0;
-        position = 0;
-        size++;
-        interieur = new ArrayList<Personne>();
-        interieur.add(new Marchall());
-        loot_int = new LinkedList<Butin>();
-        loot_toit = new LinkedList<Butin>();
-        toit = new ArrayList<Bandit>();
-    }
-
-    public void magot_vole(Bandit b)
-    {
-        if(magot_dispo()) {
-            b.ajoute_butin(Butin.MAGOT);
-            mag = null;
         }
     }
 }

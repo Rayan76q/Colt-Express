@@ -11,7 +11,7 @@ public class Marchall extends Personne implements Movable{
         nom = "Marshall";
         position = 0;
         nevrosite = Partie.NEVROSITE_MARSHALL;
-        sprite = "../Vue/Images/marshall.jpg";
+        sprite = "../Vue/Images/marshall.png";
     }
 
     @Override
