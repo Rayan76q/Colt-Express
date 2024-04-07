@@ -1,10 +1,8 @@
 package Modele;
 
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
 public class Partie extends Observable {
 
     public static int NB_WAGON = 4;
@@ -147,6 +145,7 @@ public class Partie extends Observable {
             }
 
             System.out.println(joueur_en_tete()+" in the lead.\n");
+            evenementsPassifs();
         }
 
     }
@@ -249,17 +248,46 @@ public class Partie extends Observable {
     }
 
     public void executerMatrice(){
-        for (int i = 0; i < matrice_action.length; i++) {
-            for (int j = 0; j < matrice_action[i].length; j++) {
-                if(matrice_action[j][i] != null) {
-                    matrice_action[j][i].executer();
-                }
+        System.out.println(matrice_action[0].length);
+
+        for (int j = 0; j < matrice_action[0].length; j++) {
+            for (int i = 0; i < matrice_action.length; i++) {
+                    if(matrice_action[i][j] != null) {
+                        matrice_action[i][j].executer();
+                    }
             }
+
         }
+        System.out.println("hey");
+
+        String r = "";
+        for(Joueur j:joueur_en_tete()){
+            r += j.toString()+" ";
+        }
+        System.out.println(joueur_en_tete()+" en tête pour ce tour.\n");
+        numeroManche++;
         notifyObservers();
-        System.out.println(joueur_en_tete()+" est en tête.\n");
+        evenementsPassifs();
+        notifyObservers();
     }
 
+    private void evenementsPassifs() {
+        //Gère tous ce qui se passe entre les manches comme les deplacements du marshall
+        for(Wagon w : train.get_Wagon()){
+            w.perte_loot_toit();
+        }
+        //Mouvement du marchall
+        Random r = new Random();
+        Marchall m = train.getMarchall();
+        List<Direction> dirs = m.mouvements_possibles();
+        m.move(train , dirs.get(r.nextInt(dirs.size())));
+        //Fuite
+        Wagon wagonMarshallAct = train.get_Wagon()[m.position];
+        for(Bandit b : wagonMarshallAct.liste_bandits_int()){
+            b.fuit_marshall(wagonMarshallAct);
+        }
+
+    }
 
 
     public void getNextJoueur(){

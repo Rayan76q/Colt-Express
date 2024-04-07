@@ -86,8 +86,8 @@ class VueCommandes extends JPanel implements Observer{
         //Switch le panel de boutons
         CardLayout switcher = new CardLayout();
         boutons.setLayout(switcher);
-        boutons.add(actions,"panel 1");
-        boutons.add(fleches,"panel 2");
+        boutons.add(actions,"card 1");
+        boutons.add(fleches,"card 2");
 
         //Panel de titre
         text.setLayout(new GridLayout(3,1));
@@ -171,7 +171,7 @@ class VueCommandes extends JPanel implements Observer{
 
         //EventListeners
         boutonAction1.addActionListener(e -> partie.confirmeAction());
-        boutonAction2.addActionListener(e -> partie.confirmeAction());
+        boutonAction2.addActionListener(e -> {partie.confirmeAction();switcher.show(boutons,"card 1");});
         boutonSeDeplacer.addActionListener(new ControleurMouvement(p,switcher,boutons));
         boutonTir.addActionListener(new ControleurTir(p,switcher,boutons));
         boutonBraque.addActionListener(e -> partie.setActionChoisie(2));

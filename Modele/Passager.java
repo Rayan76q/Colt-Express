@@ -29,8 +29,10 @@ public class Passager extends Personne implements Hitable{
 
 
     public void cede(Bandit b){
-        b.ajoute_butin(poche);
-        poche = null;
+        if(poche != null) {
+            b.ajoute_butin(poche);
+            poche = null;
+        }
     }
 
     @Override

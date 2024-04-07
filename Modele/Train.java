@@ -4,12 +4,14 @@ package Modele;
 public class Train extends Observable {
 
     private Wagon[] WAGON = new Wagon[Partie.NB_WAGON];
+    private Marchall marchall;
 
     public Train(){
         WAGON[0] = new Locomotive();
         for (int i = 1; i < Partie.NB_WAGON ; i++) {
             WAGON[i] = new Cabine(i);
         }
+        marchall = (Marchall)WAGON[0].getInterieur().get(0); //set le marshall
     }
     public Train(int player_number){
         assert(player_number <=8 && player_number>=2):"On ne peut pas jouer avec ce nombre de joeurs.";
@@ -35,9 +37,12 @@ public class Train extends Observable {
         }
         acc += " END. \n";
         return acc;
-
     }
 
+
+    public Marchall getMarchall() {
+        return marchall;
+    }
 }
 
 

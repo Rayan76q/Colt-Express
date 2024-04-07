@@ -10,7 +10,7 @@ public class Bandit extends Personne implements Movable, Hitable{
 
     private boolean toit;
     private int ammo;
-    private double precision;
+    private final double precision;
 
     private int hitPoints;
     private List<Butin> poches = new LinkedList<Butin>();
@@ -69,36 +69,38 @@ public class Bandit extends Personne implements Movable, Hitable{
     }
 
 
-    public void braque(Train T){
+    public void braque(Train T) {
         Random r = new Random();
         Wagon wagon_actuelle = T.get_Wagon()[position];
         int index_butin;
-        if(toit){
+        if (toit) {
             int nb_butins = wagon_actuelle.loot_toit.size();
-            if(nb_butins<1) return;
+            if (nb_butins < 1) return;
             index_butin = r.nextInt(wagon_actuelle.loot_toit.size());
             poches.add(wagon_actuelle.loot_toit.get(index_butin));
             wagon_actuelle.loot_toit.remove(index_butin);
         }
-        else{
-            if(r.nextBoolean()|| wagon_actuelle.loot_int.isEmpty()){  //ne prend pas de loot au sol
-                if(position == 0 && ((Locomotive) T.get_Wagon()[0]).magot_dispo()){
-                    poches.add(Butin.MAGOT);
-                    ((Locomotive) T.get_Wagon()[0]).magot_vole();
-                }
-                else {
-                    //Braque un passager
-                    index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
-                    wagon_actuelle.liste_passagers().get(index_butin).cede(this);
-                }
-            }
-            else{ //loot
+        else {
+            if (position == 0 && ((Locomotive) T.get_Wagon()[0]).magot_dispo()) {
+                //vole le magot
+                poches.add(Butin.MAGOT);
+                ((Locomotive) T.get_Wagon()[0]).magot_vole();
+            } else if (r.nextBoolean() && !wagon_actuelle.loot_int.isEmpty()) {  //prend un loot au sol
                 index_butin = r.nextInt(wagon_actuelle.loot_int.size());
                 poches.add(wagon_actuelle.loot_int.get(index_butin));
                 wagon_actuelle.loot_int.remove(index_butin);
+            } else if(!wagon_actuelle.getInterieur().isEmpty()){
+                //Braque un passager
+                index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
+                wagon_actuelle.liste_passagers().get(index_butin).cede(this);
+            }
+            else{
+                return ; //wagon vide
             }
         }
+
     }
+
 
 
     @Override

@@ -68,8 +68,8 @@ public abstract class Wagon {
     public void perte_loot_toit(){  //Un loot du toit disparait avec une certaine proba
         Random r = new Random();
         if(r.nextDouble() < Partie.PROBA_PERTE_LOOT_TOIT){
-            int rand_index = r.nextInt(toit.size());
-            toit.remove(rand_index);
+            int rand_index = r.nextInt(loot_toit.size());
+            loot_toit.remove(rand_index);
         }
     }
 
