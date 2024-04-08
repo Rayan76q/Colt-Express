@@ -1,7 +1,6 @@
 package Modele;
 
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -106,31 +105,20 @@ public class Bandit extends Personne implements Movable, Hitable{
 
 
     @Override
-    public List<Direction> mouvements_possibles() {
-        List<Direction> res = new ArrayList<Direction>();
-        if(position==0)
-            res.add(Direction.ARRIERE);
-        else if(position== Partie.NB_WAGON-1)
-            res.add(Direction.AVANT);
-        else {
-            res.add(Direction.AVANT);
-            res.add(Direction.ARRIERE);
-        }
-
-        if(toit)
-            res.add(Direction.BAS);
-        else
-            res.add(Direction.HAUT);
-        return res;
-
+    public List<Direction> mouvementsPossibles(Train t) {
+       return t.mouvementPossibles(true,position,toit);
     }
 
     @Override
     public void move(Train T , Direction d){
+        if(!this.mouvementsPossibles(T).contains(d)){
+            System.out.println("Mouvement Invalide");
+            return ;
+        }
         Wagon[] wagons = T.get_Wagon();
         wagons[position].enleve_personne(this);
-        if(d.dir()==2) toit = true;
-        else if (d.dir()==-2) toit = false;
+        if(d.dir()==-Partie.NB_WAGON) toit = true;
+        else if (d.dir()==Partie.NB_WAGON) toit = false;
         else {
             if(position+d.dir()<0 || position+d.dir()== Partie.NB_WAGON){
                 return ;
@@ -143,7 +131,7 @@ public class Bandit extends Personne implements Movable, Hitable{
     public void tir(Train train, Direction dir) {
         Random random = new Random();
         if(this.ammo>0) { //Peut donner la possiblité de bluffer un tir , faire sembler d'avoir des balles
-            assert mouvements_possibles().contains(dir);
+            assert mouvementsPossibles(train).contains(dir);
             int d = dir.dir();
             if (d == 2) {  // tir vers le toit d'un wagon du bas
                 Wagon current_wagg = train.get_Wagon()[this.position];
@@ -218,4 +206,6 @@ public class Bandit extends Personne implements Movable, Hitable{
         }
         return somme;
     }
+
+    public boolean getToit(){return toit;}
 }

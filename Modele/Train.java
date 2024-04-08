@@ -48,7 +48,24 @@ public class Train extends Observable {
     }
 
 
-
+    public List<Direction> mouvementPossibles(boolean bandit, int position , boolean toit){
+        List<Direction> res = new ArrayList<>();
+        if(position==0)
+            res.add(Direction.ARRIERE);
+        else if(position== Partie.NB_WAGON-1)
+            res.add(Direction.AVANT);
+        else {
+            res.add(Direction.AVANT);
+            res.add(Direction.ARRIERE);
+        }
+        if(bandit) {
+            if (toit)
+                res.add(Direction.BAS);
+            else
+                res.add(Direction.HAUT);
+        }
+        return res;
+    }
 
 
 }

@@ -21,14 +21,14 @@ public class Joueur {
 
     //Pour tester avec affichage textuelle
     public Direction choisie_dir(Bandit b){
-        System.out.println("Choose between: " +b.mouvements_possibles() +"\n");
+        System.out.println("Choose between: " +b.mouvementsPossibles(train) +"\n");
         System.out.println("0->forward / 1->backward / 2->up / 3->down / 4-> here\n");
         Scanner scanner = new Scanner(System.in);
         int choice;
         do {
             choice = scanner.nextInt();
             scanner.nextLine();
-        }while(!b.mouvements_possibles().contains(Direction.values()[choice]));
+        }while(!b.mouvementsPossibles(train).contains(Direction.values()[choice]));
         return Direction.values()[choice];
     }
 
@@ -41,7 +41,7 @@ public class Joueur {
                 Scanner scanner = new Scanner(System.in);
                 int choice = scanner.nextInt();
                 scanner.nextLine();
-                List<Direction> dirs = b.mouvements_possibles();
+                List<Direction> dirs = b.mouvementsPossibles(train);
 
                 if(choice == 0){ //Braquage
                     mat_manche[b.get_id()][i] = new Braquage(b,train);

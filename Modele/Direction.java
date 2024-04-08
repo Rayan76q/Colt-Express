@@ -3,8 +3,8 @@ package Modele;
 public enum Direction{
     AVANT("Avant" , -1),
     ARRIERE("Arrière" , 1),
-    HAUT("Haut" , 2),
-    BAS("Bas",-2),
+    HAUT("Haut" , -Partie.NB_WAGON),
+    BAS("Bas",Partie.NB_WAGON),
     ICI("Ici",0);
 
     private final String nom;

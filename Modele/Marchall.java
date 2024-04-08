@@ -15,22 +15,13 @@ public class Marchall extends Personne implements Movable{
     }
 
     @Override
-    public List<Direction> mouvements_possibles() {
-        List<Direction> res = new ArrayList<Direction>();
-        if (position == 0)
-            res.add(Direction.ARRIERE);
-        else if (position == Partie.NB_WAGON - 1)
-            res.add(Direction.AVANT);
-        else {
-            res.add(Direction.AVANT);
-            res.add(Direction.ARRIERE);
-        }
-        return res;
+    public List<Direction> mouvementsPossibles(Train t) {
+        return t.mouvementPossibles(false,position,false);
     }
 
     @Override
     public void move(Train T , Direction d){
-        if(!this.mouvements_possibles().contains(d)){
+        if(!this.mouvementsPossibles(T).contains(d)){
             System.out.println("Mouvement Invalide");
             return ;
         }

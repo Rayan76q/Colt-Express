@@ -18,6 +18,7 @@ class Braquage extends Action{
     public void executer() {
         ((Bandit) acteur).braque(train);
     }
+
 }
 
 class Deplacement extends Action{
@@ -33,6 +34,8 @@ class Deplacement extends Action{
     public void executer() {
         ((Movable)acteur).move(train, dir);
     }
+
+    public Direction getDir(){return dir;}
 }
 
 class Tir extends Action{

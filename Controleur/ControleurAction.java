@@ -25,7 +25,12 @@ public class ControleurAction implements ActionListener {
         JButton right = (JButton)  panelDirections.getComponent(5);
         JButton down = (JButton)  panelDirections.getComponent(7);
 
-        for (Direction d : partie.getJoueurs()[partie.getJoueurAct()].getPionAct().mouvements_possibles()){
+        down.setEnabled(false);
+        up.setEnabled(false);
+        left.setEnabled(false);
+        right.setEnabled(false);
+
+        for (Direction d : partie.mouvementsPossiblesPostplan()){
             switch (d){
                 case BAS: down.setEnabled(true); break;
                 case HAUT: up.setEnabled(true);break;

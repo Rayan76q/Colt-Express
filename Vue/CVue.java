@@ -250,7 +250,6 @@ class VuePlateau extends JPanel implements Observer {
         train.addObserver(this);
     }
 
-
     public void update() { repaint(); }
 
 

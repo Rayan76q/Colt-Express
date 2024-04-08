@@ -7,7 +7,7 @@ import java.util.List;
 
 
 interface Movable {
-    List<Direction> mouvements_possibles();
+    List<Direction> mouvementsPossibles(Train t);
     void move(Train T, Direction d);
 }
 
@@ -40,4 +40,6 @@ public abstract class Personne {
         current_id_bandit = 0;
         getCurrent_id_passager = -2;
     }
+
+    public int getPosition(){return position;}
 }

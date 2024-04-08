@@ -277,7 +277,7 @@ public class Partie extends Observable {
         //Mouvement du marchall
         Random r = new Random();
         Marchall m = train.getMarchall();
-        List<Direction> dirs = m.mouvements_possibles();
+        List<Direction> dirs = m.mouvementsPossibles(train);
         m.move(train , dirs.get(r.nextInt(dirs.size())));
         //Fuite
         Wagon wagonMarshallAct = train.get_Wagon()[m.position];
@@ -312,7 +312,17 @@ public class Partie extends Observable {
 
     public int getTempo() {return tempo;}
 
-
+    public List<Direction> mouvementsPossiblesPostplan(){
+        Bandit b = joueurs[joueurAct].getPionAct();
+        int positionDep = b.getPosition() +  (b.getToit()? 0 :1)*NB_WAGON;
+        System.out.println(positionDep+"\n");
+        for (int i = 0; i <tempo; i++) {
+            if(matrice_action[b.get_id()][i] instanceof Deplacement){
+                positionDep += ((Deplacement)matrice_action[b.get_id()][i]).getDir().dir();
+            }
+        }
+        return train.mouvementPossibles(true,positionDep%NB_WAGON,positionDep < NB_WAGON);
+    }
 }
 
 
