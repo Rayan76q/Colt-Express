@@ -144,6 +144,14 @@ class VueCommandes extends JPanel implements Observer{
         JButton haut = new JButton("↑");
         JButton bas = new JButton("↓");
         JButton retourActions = new JButton("Retour");
+
+        //Désactive tous les boutons a priori
+        gauche.setEnabled(false);
+        droite.setEnabled(false);
+        haut.setEnabled(false);
+        bas.setEnabled(false);
+
+
         fleches.add(new JLabel());
         fleches.add(haut);
         fleches.add(new JLabel());

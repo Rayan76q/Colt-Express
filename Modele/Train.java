@@ -1,6 +1,9 @@
 package Modele;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Train extends Observable {
 
     private Wagon[] WAGON = new Wagon[Partie.NB_WAGON];
@@ -43,6 +46,10 @@ public class Train extends Observable {
     public Marchall getMarchall() {
         return marchall;
     }
+
+
+
+
 
 }
 

@@ -19,6 +19,22 @@ public class ControleurAction implements ActionListener {
     //needs changing
     public void actionPerformed(ActionEvent e) {
         switcher.next(VueBoutons);
+        JPanel panelDirections = (JPanel) VueBoutons.getComponent(1);
+        JButton up = (JButton)  panelDirections.getComponent(1);
+        JButton left = (JButton) panelDirections.getComponent(3);
+        JButton right = (JButton)  panelDirections.getComponent(5);
+        JButton down = (JButton)  panelDirections.getComponent(7);
+
+        for (Direction d : partie.getJoueurs()[partie.getJoueurAct()].getPionAct().mouvements_possibles()){
+            switch (d){
+                case BAS: down.setEnabled(true); break;
+                case HAUT: up.setEnabled(true);break;
+                case AVANT: left.setEnabled(true);break;
+                case ARRIERE: right.setEnabled(true);break;
+                case ICI:break;
+            }
+        }
+
     }
 }
 
