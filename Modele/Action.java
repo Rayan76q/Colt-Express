@@ -19,6 +19,10 @@ class Braquage extends Action{
         ((Bandit) acteur).braque(train);
     }
 
+    @Override
+    public String toString(){
+        return "Braque";
+    }
 }
 
 class Deplacement extends Action{
@@ -36,6 +40,9 @@ class Deplacement extends Action{
     }
 
     public Direction getDir(){return dir;}
+
+    @Override
+    public String toString() {return "Deplacement " + dir;}
 }
 
 class Tir extends Action{
@@ -50,6 +57,9 @@ class Tir extends Action{
     public void executer() {
         ((Bandit) acteur).tir(train, dir);
     }
+
+    @Override
+    public String toString() {return "Tir " + dir;}
 }
 
 
@@ -64,6 +74,9 @@ class Frappe extends Action{
     public void executer() {
         ((Bandit) acteur).frappe(train);
     }
+
+    @Override
+    public String toString() {return "Frappe";}
 }
 
 
