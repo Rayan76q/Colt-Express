@@ -36,7 +36,7 @@ public class PersonneTest  {
         Rayan.ajoute_butin(b);
 
         assertTrue(Rayan.getPoches().contains(b));
-
+        Personne.reinitialise();
     }
 
     @Test
@@ -73,6 +73,7 @@ public class PersonneTest  {
         assertEquals(2,wag_test.loot_int.size());
         assertEquals(0, wag_test.loot_toit.size());
         Wagon.reinitialise();
+        Personne.reinitialise();
     }
 
     @Test
@@ -112,6 +113,7 @@ public class PersonneTest  {
         // un objet qui n'existe plus donc null.
         assertEquals(total,total2);
         Wagon.reinitialise();
+        Personne.reinitialise();
     }
     @Test
     public void test_move(){
@@ -153,6 +155,7 @@ public class PersonneTest  {
         assertTrue(train.get_Wagon()[marshall_mathers.position].interieur.contains(marshall_mathers));
         assertFalse(train.get_Wagon()[marshall_mathers.position-1].interieur.contains(marshall_mathers));
         Wagon.reinitialise();
+        Personne.reinitialise();
     }
 
     @Test
@@ -206,6 +209,7 @@ public class PersonneTest  {
         assertEquals(bandit.get_hitPoints(),bandit2.get_hitPoints()-1);
 
         Wagon.reinitialise();
+        Personne.reinitialise();
     }
 
     @Test
@@ -228,6 +232,7 @@ public class PersonneTest  {
         assertEquals(bandit.get_hitPoints(),bandit2.get_hitPoints());
         assertFalse(train.get_Wagon()[0].loot_toit.isEmpty());
         Wagon.reinitialise();
+        Personne.reinitialise();
     }
 
     @Test
@@ -252,5 +257,6 @@ public class PersonneTest  {
         assertEquals(1,marshall.position);
 
         Wagon.reinitialise();
+        Personne.reinitialise();
     }
 }

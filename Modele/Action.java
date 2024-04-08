@@ -3,6 +3,12 @@ package Modele;
 public abstract class Action<T> {
     protected Train train;
     protected T acteur;
+
+    Action(T act , Train t){
+        acteur = act;
+        train = t;
+    }
+
     public abstract void executer();
 }
 
@@ -10,8 +16,7 @@ public abstract class Action<T> {
 class Braquage extends Action{
 
     public Braquage(Bandit b , Train T){
-        train = T;
-        acteur = b;
+        super(b,T);
     }
 
     @Override
@@ -25,13 +30,19 @@ class Braquage extends Action{
     }
 }
 
-class Deplacement extends Action{
-    private Direction dir;
+
+abstract class ActionDir extends Action{
+    protected final Direction dir;
+    ActionDir(Object act, Train t,Direction d) {
+        super(act, t);
+        dir = d;
+    }
+    public Direction getDir(){return dir;}
+}
+class Deplacement extends ActionDir{
 
     public Deplacement(Movable b , Train T , Direction d){
-        train = T;
-        acteur = b;
-        dir = d;
+        super(b,T,d);
     }
 
     @Override
@@ -39,18 +50,14 @@ class Deplacement extends Action{
         ((Movable)acteur).move(train, dir);
     }
 
-    public Direction getDir(){return dir;}
-
     @Override
     public String toString() {return "Deplacement " + dir;}
 }
 
-class Tir extends Action{
-    private Direction dir ;
+class Tir extends ActionDir{
+
     public Tir(Movable b , Train T , Direction d){
-        train = T;
-        acteur = b;
-        dir = d;
+        super(b,T,d);
     }
 
     @Override
@@ -66,8 +73,7 @@ class Tir extends Action{
 class Frappe extends Action{
 
     public Frappe(Bandit b, Train T){
-        train = T;
-        acteur = b;
+        super(b,T);
     }
 
     @Override

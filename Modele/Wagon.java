@@ -14,6 +14,14 @@ public abstract class Wagon {
     protected List<Bandit> toit;
     protected List<Butin> loot_toit; //loot droppé sur le toit du wagon
 
+
+    Wagon(){
+        loot_int = new LinkedList<Butin>();
+        loot_toit = new LinkedList<Butin>();
+        toit = new ArrayList<Bandit>();
+        interieur = new ArrayList<Personne>();
+    }
+
     public String toString(){
         String inside = "";
         String top = " ";
@@ -84,14 +92,11 @@ public abstract class Wagon {
 class Cabine extends Wagon{
 
     public Cabine(int p){
+        super();
         assert size > 0;
-        Random r = new Random();
         position = size;
         size++;
-        loot_int = new LinkedList<Butin>();
-        loot_toit = new LinkedList<Butin>();
-        toit = new ArrayList<Bandit>();
-        interieur = new ArrayList<Personne>();
+        Random r = new Random();
         for (int i = 0; i < r.nextInt(Partie.NB_PASSAGER_PAR_WAGON_MAX-1)+1; i++) {
             interieur.add(new Passager(p));
         }

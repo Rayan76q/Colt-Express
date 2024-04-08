@@ -20,8 +20,8 @@ public class Bandit extends Personne implements Movable, Hitable{
 
 
     public Bandit(String name,int pos){
+        super(name);
         id = current_id_bandit++ ;
-        nom = name;
         position = pos;
         ammo = Partie.NB_MUNITIONS;
         toit = true;

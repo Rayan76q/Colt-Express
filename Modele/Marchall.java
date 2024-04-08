@@ -7,8 +7,8 @@ public class Marchall extends Personne implements Movable{
     double nevrosite;
 
     public Marchall(){
+        super("Marshall");
         id = -1;
-        nom = "Marshall";
         position = 0;
         nevrosite = Partie.NEVROSITE_MARSHALL;
         sprite = "../Vue/Images/marshall.png";

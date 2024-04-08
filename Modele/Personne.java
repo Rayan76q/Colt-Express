@@ -27,6 +27,10 @@ public abstract class Personne {
     public static final int spriteH = 98;
     public static final int spriteW = 40;
 
+    Personne(String n){
+        nom = n;
+    }
+
 
     public int get_id(){ return this.id;}
 

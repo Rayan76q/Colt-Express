@@ -19,14 +19,11 @@ public class Locomotive extends Wagon{
     public boolean magot_dispo(){return dispo;}
 
     public Locomotive(){
+        super();
         assert size==0;
         position = 0;
         size++;
-        interieur = new ArrayList<Personne>();
         interieur.add(new Marchall());
-        loot_int = new LinkedList<Butin>();
-        loot_toit = new LinkedList<Butin>();
-        toit = new ArrayList<Bandit>();
     }
 
     public void magot_vole(Bandit b)

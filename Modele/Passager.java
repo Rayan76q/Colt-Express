@@ -19,10 +19,11 @@ public class Passager extends Personne implements Hitable{
     }
 
     public Passager(int p){
+        super("passager"+getCurrent_id_passager--);
         Random r = new Random();
-        id = getCurrent_id_passager--;
+        id = getCurrent_id_passager+1;
         position = p;
-        nom = "passager"+id;
+
         poche =  Butin.values()[r.nextInt(2)];
         sprite = sprites[r.nextInt(sprites.length)];
     }
