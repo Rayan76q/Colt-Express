@@ -15,7 +15,7 @@ public class Partie extends Observable {
     public static final double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
-    public static List<Class<? extends Action>> Actions = new ArrayList<Class<? extends Action>>();
+    public static List<Class<? extends Action>> Actions = new ArrayList<>();
 
     private Train train;
 

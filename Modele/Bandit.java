@@ -92,8 +92,10 @@ public class Bandit extends Personne implements Movable, Hitable{
                 wagon_actuelle.loot_int.remove(index_butin);
             } else if(!wagon_actuelle.getInterieur().isEmpty()){
                 //Braque un passager
-                index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
-                wagon_actuelle.liste_passagers().get(index_butin).cede(this);
+                if(!wagon_actuelle.liste_passagers().isEmpty()) {
+                    index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
+                    wagon_actuelle.liste_passagers().get(index_butin).cede(this);
+                }
             }
             else{
                 return ; //wagon vide

@@ -8,8 +8,10 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
 
+import static Modele.Partie.DEFAULT_HP;
 import static Modele.Personne.spriteH;
 import static Modele.Personne.spriteW;
+
 
 public class CVue {
     static Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -55,6 +57,7 @@ public class CVue {
 
 class VueCommandes extends JPanel implements Observer{
 
+    private final ImageIcon[] sprites;
     private final static Font font1 = new Font("Arial", Font.BOLD, 20);
     private final static Font font2 = new Font("Arial", Font.BOLD, 14);
 
@@ -71,6 +74,7 @@ class VueCommandes extends JPanel implements Observer{
     }
 
     public VueCommandes(Partie p) {
+        this.sprites  = new ImageIcon[]{new ImageIcon(getClass().getResource("Images/coeur.png")),new ImageIcon(getClass().getResource("Images/ammo.png"))};;
         this.partie = p;
         Dimension dim = new Dimension(CVue.screenWidth,
                 CVue.screenHeight*3/10 );
@@ -95,13 +99,25 @@ class VueCommandes extends JPanel implements Observer{
         JLabel t1 = new JLabel("Tour du Joueur N°"+(partie.getJoueurAct()+1));
         Bandit b = partie.getJoueurs()[0].getPions().get(0);
         JLabel t2 = new JLabel("Bandit : " + b );
-        JLabel t3 = new JLabel(b.compte_butins()+"$");
+        JPanel t3 = new JPanel(new GridLayout(1,5));
+        t3.setBorder(new EmptyBorder(0, dim.width/3, 0, dim.width/3));
+        JLabel l1 = new JLabel();
+        JLabel l2 = new JLabel(": " +DEFAULT_HP);
+        JLabel l3 = new JLabel(b.compte_butins()+"$");
+        JLabel l4 = new JLabel();
+        JLabel l5 = new JLabel(": " +b.get_ammo());
+        l1.setIcon(sprites[0]);
+        l4.setIcon(sprites[1]);
+        t3.add(l1);
+        t3.add(l2);
+        t3.add(l3);
+        t3.add(l4);
+        t3.add(l5);
         t1.setFont(font1);
         t2.setFont(font2);
         t3.setFont(font2);
         t1.setHorizontalAlignment(JLabel.CENTER);
         t2.setHorizontalAlignment(JLabel.CENTER);
-        t3.setHorizontalAlignment(JLabel.CENTER);
         text.add(t1);
         text.add(t2);
         text.add(t3);
@@ -201,7 +217,17 @@ class VueCommandes extends JPanel implements Observer{
         ((JLabel)panel1.getComponent(0)).setText("Tour du Joueur N°"+(partie.getJoueurAct()+1));
         Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
         ((JLabel)panel1.getComponent(1)).setText("Bandit : "+b);
-        ((JLabel)panel1.getComponent(2)).setText(b.compte_butins() +"$");
+
+        JPanel stats = (JPanel) panel1.getComponent(2);
+        JLabel statcoeur = ((JLabel)stats.getComponent(0));
+        statcoeur.setHorizontalAlignment(SwingConstants.RIGHT);
+        JLabel statammo = ((JLabel)stats.getComponent(3));
+        statammo.setHorizontalAlignment(4);
+        ((JLabel)stats.getComponent(1)).setText(": " +b.get_hitPoints());
+        JLabel cash  = ((JLabel)stats.getComponent(2));
+        cash.setText(b.compte_butins()+"$");
+        cash.setHorizontalAlignment(0);
+        ((JLabel)stats.getComponent(4)).setText(": " +b.get_ammo());
 
         JPanel panel2 = (JPanel) this.getComponent(2);
         ((JLabel)panel2.getComponent(0)).setText("Action N°"+(partie.getTempo()+1));
@@ -253,6 +279,7 @@ class VuePlateau extends JPanel implements Observer {
     public void update() { repaint(); }
 
 
+    @Override
     public void paintComponent(Graphics g) {
         super.repaint();
         super.paintComponent(g);
