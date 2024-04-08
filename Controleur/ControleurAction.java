@@ -30,7 +30,7 @@ public class ControleurAction implements ActionListener {
         left.setEnabled(false);
         right.setEnabled(false);
 
-        for (Direction d : partie.mouvementsPossiblesPostplan()){
+        for (Direction d : partie.mouvementsPossiblesPostPlan()){
             switch (d){
                 case BAS: down.setEnabled(true); break;
                 case HAUT: up.setEnabled(true);break;

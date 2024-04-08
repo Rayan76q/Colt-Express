@@ -253,6 +253,7 @@ public class Partie extends Observable {
             for (int i = 0; i < matrice_action.length; i++) {
                     if(matrice_action[i][j] != null) {
                         matrice_action[i][j].executer();
+                        matrice_action[i][j] = null;
                     }
             }
 
@@ -295,12 +296,14 @@ public class Partie extends Observable {
     public void annuleAction() {
         if(tempo>0){ //revient au tempo précédent
             tempo--;
+
         }
         else{
             if(joueurs[joueurAct].getPrevPion()){  //revient au pions précédent
                 tempo = matrice_action[joueurs[joueurAct].getPionAct().get_id()].length-1;
             }
         }
+        matrice_action[joueurs[joueurAct].getPionAct().get_id()][tempo] = null;
         actionChoisie=-1;
         directionChoisie = null;
         notifyObservers();
@@ -312,7 +315,7 @@ public class Partie extends Observable {
 
     public int getTempo() {return tempo;}
 
-    public List<Direction> mouvementsPossiblesPostplan(){
+    public List<Direction> mouvementsPossiblesPostPlan(){
         Bandit b = joueurs[joueurAct].getPionAct();
         int positionDep = b.getPosition() +  (b.getToit()? 0 :1)*NB_WAGON;
         System.out.println(positionDep+"\n");

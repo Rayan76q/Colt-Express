@@ -2,6 +2,7 @@ package Vue;
 
 import Modele.*;
 import Controleur.*;
+import Modele.Action;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -147,9 +148,16 @@ class VueCommandes extends JPanel implements Observer{
 
 
         //Action en cours
-        JLabel promptText = new JLabel("Action N°"+(partie.getTempo()+1));
+        prompt.setLayout(new GridLayout(1,DEFAULT_HP));
+        JLabel promptText = new JLabel();
         promptText.setFont(font2);
-        prompt.add(promptText);
+        for (int i = 1; i <= DEFAULT_HP; i++) {
+            promptText= new JLabel("Action N°"+i);
+            promptText.setHorizontalAlignment(JLabel.CENTER);
+            prompt.add(promptText);
+        }
+
+
 
         fleches.setLayout(new GridLayout(4,4,10,0));
         fleches.setPreferredSize(new Dimension(dim.width/4 , dim.height));
@@ -160,12 +168,6 @@ class VueCommandes extends JPanel implements Observer{
         JButton haut = new JButton("↑");
         JButton bas = new JButton("↓");
         JButton retourActions = new JButton("Retour");
-
-        //Désactive tous les boutons a priori
-        gauche.setEnabled(false);
-        droite.setEnabled(false);
-        haut.setEnabled(false);
-        bas.setEnabled(false);
 
 
         fleches.add(new JLabel());
@@ -230,7 +232,22 @@ class VueCommandes extends JPanel implements Observer{
         ((JLabel)stats.getComponent(4)).setText(": " +b.get_ammo());
 
         JPanel panel2 = (JPanel) this.getComponent(2);
-        ((JLabel)panel2.getComponent(0)).setText("Action N°"+(partie.getTempo()+1));
+        for (int i = 0; i < DEFAULT_HP; i++) {
+            if(i >= b.get_hitPoints() ){
+                panel2.getComponent(i).setBackground(Color.RED);
+            }
+            else {
+                Action a = partie.getMatrice_action()[b.get_id()][i];
+                if (a != null) {
+                    ((JLabel) panel2.getComponent(i)).setText(a.toString());
+                }
+                else{
+                    ((JLabel) panel2.getComponent(i)).setText("Action N°" + (i+1));
+                }
+            }
+
+        }
+
     }
 
 
