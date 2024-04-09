@@ -75,7 +75,8 @@ class VueCommandes extends JPanel implements Observer{
     }
 
     public VueCommandes(Partie p) {
-        this.sprites  = new ImageIcon[]{new ImageIcon(getClass().getResource("Images/coeur.png")),new ImageIcon(getClass().getResource("Images/ammo.png"))};;
+        this.sprites  = new ImageIcon[]{new ImageIcon(getClass().getResource("Images/coeur.png")),new ImageIcon(getClass().getResource("Images/ammo.png")),
+        new ImageIcon(getClass().getResource("Images/wound.png"))};
         this.partie = p;
         Dimension dim = new Dimension(CVue.screenWidth,
                 CVue.screenHeight*3/10 );
@@ -251,7 +252,8 @@ class VueCommandes extends JPanel implements Observer{
         JPanel panel2 = (JPanel) panel.getComponent(0);
         for (int i = 0; i < DEFAULT_HP; i++) {
             if(i >= b.get_hitPoints() ){
-                panel2.getComponent(i).setBackground(Color.RED);
+                ((JLabel) panel2.getComponent(i)).setText("");
+                ((JLabel) panel2.getComponent(i)).setIcon(sprites[2]);
             }
             else {
                 Action a = partie.getMatrice_action()[b.get_id()][i];

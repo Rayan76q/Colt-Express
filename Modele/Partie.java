@@ -270,7 +270,6 @@ public class Partie extends Observable {
                         notifyObservers(message);
                         matrice_action[i][j] = null;
                         sleep();
-
                         notifyObservers(evenementsPassifs(false));
                         sleep();
                     }
