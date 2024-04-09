@@ -347,12 +347,12 @@ class VuePlateau extends JPanel implements Observer {
         //Toit
         for (int i = 0; i < w.getLootToit().size(); i++) {
             Butin b = w.getLootToit().get(i);
-            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT,b.getSpriteW(),b.getSpriteH(), this);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*2-b.getSpriteH(),b.getSpriteW(),b.getSpriteH(), this);
         }
         //Interieur
         for (int i = 0; i < w.getLootInt().size(); i++) {
             Butin b = w.getLootInt().get(i);
-            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*2,b.getSpriteW(),b.getSpriteH(), this);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*3 -b.getSpriteH() ,b.getSpriteW(),b.getSpriteH(), this);
         }
     }
 }

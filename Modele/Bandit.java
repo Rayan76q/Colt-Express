@@ -191,6 +191,7 @@ public class Bandit extends Personne implements Movable, Hitable{
     }
 
     public void fuit_marshall(Wagon w) {
+
         if(this.hitPoints>2) {
             this.hitPoints--;
         }

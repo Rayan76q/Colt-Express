@@ -4,6 +4,7 @@ package Modele;
 import java.util.*;
 
 public class Partie extends Observable {
+    private static final int DELAY = 1000;
 
     public static int NB_WAGON = 4;
     public static final int NB_MUNITIONS = 6;
@@ -145,7 +146,7 @@ public class Partie extends Observable {
             }
 
             System.out.println(joueur_en_tete()+" in the lead.\n");
-            evenementsPassifs();
+            evenementsPassifs(true);
         }
 
     }
@@ -247,43 +248,69 @@ public class Partie extends Observable {
 
     }
 
-    public void executerMatrice(){
-
-        for (int j = 0; j < matrice_action[0].length; j++) {
-            for (int i = 0; i < matrice_action.length; i++) {
-                    if(matrice_action[i][j] != null) {
-                        matrice_action[i][j].executer();
-                        matrice_action[i][j] = null;
-                    }
-            }
-
+    public void sleep(){
+        try {
+            Thread.sleep(DELAY);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-
-        String r = "";
-        for(Joueur j:joueur_en_tete()){
-            r += j.toString()+" ";
-        }
-        System.out.println(r+" en tête pour ce tour.\n");
-        numeroManche++;
-        notifyObservers();
-        evenementsPassifs();
-        notifyObservers();
     }
 
-    private void evenementsPassifs() {
-        //Gère tous ce qui se passe entre les manches comme les deplacements du marshall
-        for(Wagon w : train.get_Wagon()){
-            w.perte_loot_toit();
+    public void executerMatrice(){
+
+        Thread actionThread = new Thread(() -> {
+            for (int j = 0; j < matrice_action[0].length; j++) {
+                for (int i = 0; i < matrice_action.length; i++) {
+                    if (matrice_action[i][j] != null) {
+                        matrice_action[i][j].executer();
+                        matrice_action[i][j] = null;
+                        notifyObservers();
+                        sleep();
+                        evenementsPassifs(false);
+                        notifyObservers();
+                        sleep();
+                    }
+                }
+            }
+            String r = "";
+            for(Joueur j:joueur_en_tete()){
+                r += j.toString()+" ";
+            }
+            System.out.println(r+" en tête pour ce tour.\n");
+            numeroManche++;
+            evenementsPassifs(true);
+            notifyObservers();
+        });
+
+        actionThread.start();
+
+
+    }
+
+    private void evenementsPassifs(boolean endTurn) {
+
+
+        if(endTurn) {
+            //Gère tous ce qui se passe entre les manches comme les deplacements du marshall
+            for (Wagon w : train.get_Wagon()) {
+                w.perte_loot_toit();
+            }
+            //Mouvement du marchall
+            Random r = new Random();
+            Marchall m = train.getMarchall();
+            List<Direction> dirs = m.mouvementsPossibles(train);
+            m.move(train, dirs.get(r.nextInt(dirs.size())));
+            //Fuite
+            Wagon wagonMarshallAct = train.get_Wagon()[m.position];
+            for (Bandit b : wagonMarshallAct.liste_bandits_int()) {
+                b.fuit_marshall(wagonMarshallAct);
+            }
         }
-        //Mouvement du marchall
-        Random r = new Random();
-        Marchall m = train.getMarchall();
-        List<Direction> dirs = m.mouvementsPossibles(train);
-        m.move(train , dirs.get(r.nextInt(dirs.size())));
-        //Fuite
-        Wagon wagonMarshallAct = train.get_Wagon()[m.position];
-        for(Bandit b : wagonMarshallAct.liste_bandits_int()){
-            b.fuit_marshall(wagonMarshallAct);
+        else{
+            Wagon wagonMarshall = train.get_Wagon()[train.getMarchall().getPosition()];
+            for(Bandit b : wagonMarshall.liste_bandits_int()){
+                b.fuit_marshall(wagonMarshall);
+            }
         }
 
     }

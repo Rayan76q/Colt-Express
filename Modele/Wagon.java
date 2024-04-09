@@ -82,6 +82,13 @@ public abstract class Wagon {
     }
 
 
+    public boolean contientMarshall(){
+        for (Personne p : interieur){
+            if(p instanceof Marchall)return true;
+        }
+        return false;
+    }
+
     public List<Bandit> getToit() {return toit;}
     public List<Personne> getInterieur() {return interieur;}
     public List<Butin> getLootInt() {return loot_int;}
