@@ -166,7 +166,7 @@ class VueCommandes extends JPanel implements Observer{
         }
 
         //Pour L'execution
-        promptExecution.add(new JLabel("Au tour de "+partie.getJoueurs()[0].getPions().get(0)+" ( J0 )"));
+        promptExecution.add(new JLabel("Au tour de "+partie.getJoueurs()[0].getPions().get(0)+" ( J1 )"));
 
 
         fleches.setLayout(new GridLayout(4,4,10,0));

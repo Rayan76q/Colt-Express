@@ -257,22 +257,21 @@ public class Partie extends Observable {
     }
 
     public void executerMatrice(){
-
+        notifyObservers("Au tour de "+getJoueurs()[0].getPions().get(0)+" ( J1 )");
         Thread actionThread = new Thread(() -> {
             for (int j = 0; j < matrice_action[0].length; j++) {
                 for (int i = 0; i < matrice_action.length; i++) {
-                    joueurAct = i/NB_BANDITS_JOUEUR; //switch les joueurs pour VueCommandes
-                    Bandit b= joueurs[joueurAct].getPionAct();
-                    notifyObservers("Au tour de "+b+" ( J"+joueurAct+" )");
+                    joueurAct = i/NB_BANDITS_JOUEUR;//switch les joueurs pour VueCommandes
+                    Bandit b = joueurs[joueurAct].getPionAct();
+                    notifyObservers("Au tour de "+b+" ( J"+(joueurAct+1)+" )");
                     sleep();
                     if (matrice_action[i][j] != null) {
                         String message = matrice_action[i][j].executer();
                         notifyObservers(message);
                         matrice_action[i][j] = null;
-                        notifyObservers(message);
                         sleep();
-                        evenementsPassifs(false);
-                        notifyObservers(message);
+
+                        notifyObservers(evenementsPassifs(false));
                         sleep();
                     }
                 }
@@ -283,7 +282,7 @@ public class Partie extends Observable {
             }
             System.out.println(r+" en tête pour ce tour.\n");
             numeroManche++;
-            evenementsPassifs(true);
+            notifyObservers(evenementsPassifs(true));
             notifyObservers();
             joueurAct =0;
         });
@@ -293,7 +292,7 @@ public class Partie extends Observable {
 
     }
 
-    private void evenementsPassifs(boolean endTurn) {
+    private String evenementsPassifs(boolean endTurn) {
 
 
         if(endTurn) {
@@ -305,19 +304,22 @@ public class Partie extends Observable {
             Random r = new Random();
             Marchall m = train.getMarchall();
             List<Direction> dirs = m.mouvementsPossibles(train);
-            m.move(train, dirs.get(r.nextInt(dirs.size())));
+            String message = m.move(train, dirs.get(r.nextInt(dirs.size())));
             //Fuite
             Wagon wagonMarshallAct = train.get_Wagon()[m.position];
             for (Bandit b : wagonMarshallAct.liste_bandits_int()) {
                 b.fuit_marshall(wagonMarshallAct);
             }
+            return message;
         }
         else{
             Wagon wagonMarshall = train.get_Wagon()[train.getMarchall().getPosition()];
             for(Bandit b : wagonMarshall.liste_bandits_int()){
-                b.fuit_marshall(wagonMarshall);
+                return b.fuit_marshall(wagonMarshall);
             }
+            return " ";
         }
+
 
     }
 

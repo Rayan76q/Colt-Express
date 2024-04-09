@@ -1,6 +1,7 @@
 package Modele;
 
 import java.util.List;
+import java.util.Random;
 
 public class Marchall extends Personne implements Movable{
     double nevrosite;
@@ -20,19 +21,23 @@ public class Marchall extends Personne implements Movable{
 
     @Override
     public String move(Train T , Direction d){
+        Random r = new Random();
         if(!this.mouvementsPossibles(T).contains(d)){
-            System.out.println("Mouvement Invalide");
-            return null;
+            return "Le Marshall a perdu le sens de l'orientation";
         }
-        T.get_Wagon()[position].interieur.remove(this);
-        position += d.dir();
-        T.get_Wagon()[position].interieur.add(this);
-        List<Bandit> attrape =  T.get_Wagon()[position].liste_bandits_int();
-        for (Bandit b : attrape){
-            b.fuit_marshall(T.get_Wagon()[position]);
+        if(r.nextDouble() <  nevrosite) {
+            T.get_Wagon()[position].interieur.remove(this);
+            position += d.dir();
+            T.get_Wagon()[position].interieur.add(this);
+            List<Bandit> attrape = T.get_Wagon()[position].liste_bandits_int();
+            for (Bandit b : attrape) {
+                b.fuit_marshall(T.get_Wagon()[position]);
+            }
+            return "Le Marshall se déplace, prenez gardes.";
         }
+        return "Le Marshall planifie sa riposte.";
 
-        return null;
+
     }
 
     //@Override

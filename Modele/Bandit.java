@@ -215,7 +215,7 @@ public class Bandit extends Personne implements Movable, Hitable{
         w.getInterieur().remove(this);
         w.getToit().add(this);
 
-        return toString() + " a pris la fuite en se prenant une balle du Marshall.";
+        return "*PAN*, "+toString() + " a pris la fuite en se prenant une balle du Marshall.";
     }
 
 
