@@ -1,6 +1,5 @@
 package Modele;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Marchall extends Personne implements Movable{
@@ -20,10 +19,10 @@ public class Marchall extends Personne implements Movable{
     }
 
     @Override
-    public void move(Train T , Direction d){
+    public String move(Train T , Direction d){
         if(!this.mouvementsPossibles(T).contains(d)){
             System.out.println("Mouvement Invalide");
-            return ;
+            return null;
         }
         T.get_Wagon()[position].interieur.remove(this);
         position += d.dir();
@@ -33,6 +32,7 @@ public class Marchall extends Personne implements Movable{
             b.fuit_marshall(T.get_Wagon()[position]);
         }
 
+        return null;
     }
 
     //@Override

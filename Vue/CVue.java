@@ -88,12 +88,20 @@ class VueCommandes extends JPanel implements Observer{
         JPanel actions = new JPanel();
         JPanel fleches = new JPanel();
         JPanel prompt = new JPanel();
+        JPanel promptPlanification = new JPanel();
+        JPanel promptExecution = new JPanel();
 
         //Switch le panel de boutons
         CardLayout switcher = new CardLayout();
         boutons.setLayout(switcher);
         boutons.add(actions,"card 1");
         boutons.add(fleches,"card 2");
+
+        //Prompts
+        CardLayout switcher2 = new CardLayout();
+        prompt.setLayout(switcher2);
+        prompt.add(promptPlanification, "p1");
+        prompt.add(promptExecution, "p2");
 
         //Panel de titre
         text.setLayout(new GridLayout(3,1));
@@ -148,15 +156,17 @@ class VueCommandes extends JPanel implements Observer{
 
 
         //Action en cours
-        prompt.setLayout(new GridLayout(1,DEFAULT_HP));
+        promptPlanification.setLayout(new GridLayout(1,DEFAULT_HP));
         JLabel promptText = new JLabel();
         promptText.setFont(font2);
         for (int i = 1; i <= DEFAULT_HP; i++) {
             promptText= new JLabel("Action N°"+i);
             promptText.setHorizontalAlignment(JLabel.CENTER);
-            prompt.add(promptText);
+            promptPlanification.add(promptText);
         }
 
+        //Pour L'execution
+        promptExecution.add(new JLabel("Au tour de "+partie.getJoueurs()[0].getPions().get(0)+" ( J0 )"));
 
 
         fleches.setLayout(new GridLayout(4,4,10,0));
@@ -213,8 +223,8 @@ class VueCommandes extends JPanel implements Observer{
         partie.addObserver(this);
     }
 
-    @Override
-    public void paintComponent(Graphics g){
+
+    public void paintStats(){
         JPanel panel1 = (JPanel) this.getComponent(0);
         ((JLabel)panel1.getComponent(0)).setText("Tour du Joueur N°"+(partie.getJoueurAct()+1));
         Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
@@ -230,8 +240,15 @@ class VueCommandes extends JPanel implements Observer{
         cash.setText(b.compte_butins()+"$");
         cash.setHorizontalAlignment(0);
         ((JLabel)stats.getComponent(4)).setText(": " +b.get_ammo());
+    }
 
-        JPanel panel2 = (JPanel) this.getComponent(2);
+    @Override
+    public void paintComponent(Graphics g){
+        paintStats();
+        JPanel panel = (JPanel) this.getComponent(2);
+        ((CardLayout)panel.getLayout()).show(panel,"p1");
+        Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
+        JPanel panel2 = (JPanel) panel.getComponent(0);
         for (int i = 0; i < DEFAULT_HP; i++) {
             if(i >= b.get_hitPoints() ){
                 panel2.getComponent(i).setBackground(Color.RED);
@@ -253,6 +270,17 @@ class VueCommandes extends JPanel implements Observer{
 
     public void update() {
         repaint();
+    }
+
+    @Override
+    public void update(String str) {
+        paintStats();
+        JPanel panel = (JPanel) this.getComponent(2);
+        ((CardLayout)panel.getLayout()).show(panel,"p2");
+        JPanel panel2 = (JPanel) panel.getComponent(1);
+
+        JLabel textPrompt = (JLabel) panel2.getComponent(0);
+        textPrompt.setText(str);
     }
 }
 
@@ -294,6 +322,11 @@ class VuePlateau extends JPanel implements Observer {
     }
 
     public void update() { repaint(); }
+
+    @Override
+    public void update(String str) {
+        update();
+    }
 
 
     @Override

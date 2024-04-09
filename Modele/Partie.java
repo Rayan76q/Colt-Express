@@ -261,13 +261,18 @@ public class Partie extends Observable {
         Thread actionThread = new Thread(() -> {
             for (int j = 0; j < matrice_action[0].length; j++) {
                 for (int i = 0; i < matrice_action.length; i++) {
+                    joueurAct = i/NB_BANDITS_JOUEUR; //switch les joueurs pour VueCommandes
+                    Bandit b= joueurs[joueurAct].getPionAct();
+                    notifyObservers("Au tour de "+b+" ( J"+joueurAct+" )");
+                    sleep();
                     if (matrice_action[i][j] != null) {
-                        matrice_action[i][j].executer();
+                        String message = matrice_action[i][j].executer();
+                        notifyObservers(message);
                         matrice_action[i][j] = null;
-                        notifyObservers();
+                        notifyObservers(message);
                         sleep();
                         evenementsPassifs(false);
-                        notifyObservers();
+                        notifyObservers(message);
                         sleep();
                     }
                 }
@@ -280,6 +285,7 @@ public class Partie extends Observable {
             numeroManche++;
             evenementsPassifs(true);
             notifyObservers();
+            joueurAct =0;
         });
 
         actionThread.start();
@@ -353,6 +359,7 @@ public class Partie extends Observable {
         }
         return train.mouvementPossibles(true,positionDep%NB_WAGON,positionDep < NB_WAGON);
     }
+
 }
 
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 interface Movable {
     List<Direction> mouvementsPossibles(Train t);
-    void move(Train T, Direction d);
+    String move(Train T, Direction d);
 }
 
 interface Hitable{

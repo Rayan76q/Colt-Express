@@ -19,5 +19,10 @@ public abstract class Observable {
             o.update();
         }
     }
+    public void notifyObservers(String str) {
+        for(Observer o : observers) {
+            o.update(str);
+        }
+    }
 }
 

@@ -9,7 +9,7 @@ public abstract class Action<T> {
         train = t;
     }
 
-    public abstract void executer();
+    public abstract String executer();
 }
 
 
@@ -20,14 +20,17 @@ class Braquage extends Action{
     }
 
     @Override
-    public void executer() {
-        ((Bandit) acteur).braque(train);
+    public String executer() {
+        return ((Bandit) acteur).braque(train);
     }
+
 
     @Override
     public String toString(){
         return "Braque";
     }
+
+
 }
 
 
@@ -46,8 +49,8 @@ class Deplacement extends ActionDir{
     }
 
     @Override
-    public void executer() {
-        ((Movable)acteur).move(train, dir);
+    public String executer() {
+        return ((Movable)acteur).move(train, dir);
     }
 
     @Override
@@ -61,8 +64,8 @@ class Tir extends ActionDir{
     }
 
     @Override
-    public void executer() {
-        ((Bandit) acteur).tir(train, dir);
+    public String executer() {
+        return ((Bandit) acteur).tir(train, dir);
     }
 
     @Override
@@ -77,8 +80,8 @@ class Frappe extends Action{
     }
 
     @Override
-    public void executer() {
-        ((Bandit) acteur).frappe(train);
+    public String executer() {
+        return ((Bandit) acteur).frappe(train);
     }
 
     @Override
