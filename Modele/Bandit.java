@@ -12,7 +12,7 @@ public class Bandit extends Personne implements Movable, Hitable{
     private final double precision;
 
     private int hitPoints;
-    private List<Butin> poches = new LinkedList<Butin>();
+    private final List<Butin> poches = new LinkedList<Butin>();
 
 
     //Sprites
@@ -77,30 +77,30 @@ public class Bandit extends Personne implements Movable, Hitable{
                 index_butin = r.nextInt(wagon_actuelle.loot_toit.size());
                 poches.add(wagon_actuelle.loot_toit.get(index_butin));
                 wagon_actuelle.loot_toit.remove(index_butin);
-                return toString() + " récupère un butin au sol.";
+                return this + " récupère un butin au sol.";
             }
             else{
-                return toString() + " n'a personne a braqué perché sur le toit, dommage."; //toit vide
+                return this + " n'a personne a braqué perché sur le toit, dommage."; //toit vide
             }
         }
         else {
             if (position == 0 && ((Locomotive) T.get_Wagon()[0]).magot_dispo()) {
                 //vole le magot
                 ((Locomotive) T.get_Wagon()[0]).magot_vole(this);
-                return toString() + " a choppé le magot.";
+                return this + " a choppé le magot.";
             } else if ((position==0 ||  r.nextBoolean()) && !wagon_actuelle.loot_int.isEmpty()) {  //prend un loot au sol
                 index_butin = r.nextInt(wagon_actuelle.loot_int.size());
                 poches.add(wagon_actuelle.loot_int.get(index_butin));
                 wagon_actuelle.loot_int.remove(index_butin);
-                return toString() + " récupère un butin au sol.";
+                return this + " récupère un butin au sol.";
             } else if(!wagon_actuelle.liste_passagers().isEmpty()){
                 //Braque un passager
                 index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
                 wagon_actuelle.liste_passagers().get(index_butin).cede(this);
-                return toString() + " braque un passager.";
+                return this + " braque un passager.";
             }
             else{
-                return toString() + " n'a personne a braquer.";
+                return this + " n'a personne a braquer.";
             }
         }
 
@@ -118,7 +118,7 @@ public class Bandit extends Personne implements Movable, Hitable{
     public String move(Train T , Direction d){
         if(!this.mouvementsPossibles(T).contains(d)){
             System.out.println("Mouvement Invalide");
-            return toString() + " a essayé de sauter du train , mauvaise idée.";
+            return this + " a essayé de sauter du train , mauvaise idée.";
         }
         Wagon[] wagons = T.get_Wagon();
         wagons[position].enleve_personne(this);
@@ -128,7 +128,7 @@ public class Bandit extends Personne implements Movable, Hitable{
             position += d.dir();
         }
         wagons[position].ajoute_personne(this,toit);
-        return toString() + " se déplace.";
+        return this + " se déplace.";
     }
 
     public String tir(Train train, Direction dir) {
@@ -143,21 +143,21 @@ public class Bandit extends Personne implements Movable, Hitable{
                     int randomIndex = random.nextInt(list.size());
                     list.get(randomIndex).est_vise(current_wagg);
                 }
-                return toString() + " tire vers le toit du wagon.";
+                return this + " tire vers le toit du wagon.";
             }
             else if(d == Partie.NB_WAGON || !toit){ //tir vers un wagon : tir venant du toit ou tir venant d'un coté
                 int numWagon = this.position + (d<0? d :  d%Partie.NB_WAGON);
                 Wagon current_wagg = train.get_Wagon()[numWagon];
                 List<Passager> passagers_cibles = current_wagg.liste_passagers();
                 List<Bandit> bandits_cibles = current_wagg.liste_bandits_int();
-                if (random.nextDouble() > 0.9) {
+                if (random.nextDouble() > precision && !passagers_cibles.isEmpty()) { //Le bandit rate son tire et touche un passager
                     int randomIndex = random.nextInt(passagers_cibles.size());
                     passagers_cibles.get(randomIndex).est_vise(current_wagg);
-                } else {
+                } else if(!bandits_cibles.isEmpty()){ //Le bandit touche bien un autre bandit
                     int randomIndex = random.nextInt(bandits_cibles.size());
                     bandits_cibles.get(randomIndex).est_vise(current_wagg);
                 }
-                return toString() + " tire sur le wagon N°" + numWagon;
+                return this + " tire sur le wagon N°" + numWagon;
 
             }
             else { //tir d'un toit vers un autre
@@ -174,16 +174,16 @@ public class Bandit extends Personne implements Movable, Hitable{
                     Bandit bandit = list.get(randomIndex);
                     bandit.est_vise(current_wagg);
                 }
-                return toString() + " tire vers l'" + dir;
+                return this + " tire vers l'" + dir;
             }
         }
-        return "*Click*";
+        return "*Click* ,*Click*";
     }
 
     public String frappe(Train train) {
         Random rand = new Random();
         Wagon w = train.get_Wagon()[position];
-        Bandit visé = null;
+        Bandit vise = null;
         if(toit){
             w.toit.remove(this);
             int rand_index = rand.nextInt(w.toit.size());
@@ -194,14 +194,14 @@ public class Bandit extends Personne implements Movable, Hitable{
             List<Bandit> bandits_cibles = w.liste_bandits_int();
             bandits_cibles.remove(this);
             int rand_index = rand.nextInt(bandits_cibles.size());
-             visé= bandits_cibles.get(rand_index);
-            visé.est_vise(w);
+             vise= bandits_cibles.get(rand_index);
+            vise.est_vise(w);
         }
-        if(visé == null) {
-            return toString() + " frappe " + visé;
+        if(vise == null) {
+            return this + " frappe " + vise;
         }
         else{
-            return toString() + " brasse de l'air";
+            return this + " brasse de l'air";
         }
     }
 
@@ -215,7 +215,7 @@ public class Bandit extends Personne implements Movable, Hitable{
         w.getInterieur().remove(this);
         w.getToit().add(this);
 
-        return "*PAN*, "+toString() + " a pris la fuite en se prenant une balle du Marshall.";
+        return "*PAN*, "+ this + " a pris la fuite en se prenant une balle du Marshall.";
     }
 
 

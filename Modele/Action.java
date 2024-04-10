@@ -13,7 +13,7 @@ public abstract class Action<T> {
 }
 
 
-class Braquage extends Action{
+class Braquage extends Action<Bandit>{
 
     public Braquage(Bandit b , Train T){
         super(b,T);
@@ -21,7 +21,7 @@ class Braquage extends Action{
 
     @Override
     public String executer() {
-        return ((Bandit) acteur).braque(train);
+        return acteur.braque(train);
     }
 
 
@@ -59,7 +59,7 @@ class Deplacement extends ActionDir{
 
 class Tir extends ActionDir{
 
-    public Tir(Movable b , Train T , Direction d){
+    public Tir(Bandit b , Train T , Direction d){
         super(b,T,d);
     }
 
@@ -73,7 +73,7 @@ class Tir extends ActionDir{
 }
 
 
-class Frappe extends Action{
+class Frappe extends Action<Bandit>{
 
     public Frappe(Bandit b, Train T){
         super(b,T);
@@ -81,7 +81,7 @@ class Frappe extends Action{
 
     @Override
     public String executer() {
-        return ((Bandit) acteur).frappe(train);
+        return acteur.frappe(train);
     }
 
     @Override

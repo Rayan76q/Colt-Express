@@ -187,6 +187,8 @@ public class Partie extends Observable {
 
     public void setActionChoisie(int actionChoisie) {
         assert  actionChoisie>=0 && actionChoisie<4 ;
+
+
         this.actionChoisie = actionChoisie;
     }
 
@@ -352,7 +354,6 @@ public class Partie extends Observable {
     public List<Direction> mouvementsPossiblesPostPlan(){
         Bandit b = joueurs[joueurAct].getPionAct();
         int positionDep = b.getPosition() +  (b.getToit()? 0 :1)*NB_WAGON;
-        System.out.println(positionDep+"\n");
         for (int i = 0; i <tempo; i++) {
             if(matrice_action[b.get_id()][i] instanceof Deplacement){
                 positionDep += ((Deplacement)matrice_action[b.get_id()][i]).getDir().dir();

@@ -5,6 +5,7 @@ import Controleur.*;
 import Modele.Action;
 
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
@@ -251,17 +252,21 @@ class VueCommandes extends JPanel implements Observer{
         Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
         JPanel panel2 = (JPanel) panel.getComponent(0);
         for (int i = 0; i < DEFAULT_HP; i++) {
+            JLabel p = ((JLabel) panel2.getComponent(i));
+            p.setIcon(null);
+            p.setText("");
+            p.revalidate();
+
             if(i >= b.get_hitPoints() ){
-                ((JLabel) panel2.getComponent(i)).setText("");
-                ((JLabel) panel2.getComponent(i)).setIcon(sprites[2]);
+                p.setIcon(sprites[2]);
             }
             else {
                 Action a = partie.getMatrice_action()[b.get_id()][i];
                 if (a != null) {
-                    ((JLabel) panel2.getComponent(i)).setText(a.toString());
+                    p.setText(a.toString());
                 }
                 else{
-                    ((JLabel) panel2.getComponent(i)).setText("Action N°" + (i+1));
+                    p.setText("Action N°" + (i+1));
                 }
             }
 
@@ -331,20 +336,32 @@ class VuePlateau extends JPanel implements Observer {
     }
 
 
+
+    public BufferedImage colorImage(BufferedImage loadImg, int red, int green, int blue) {
+        BufferedImage img = new BufferedImage(loadImg.getWidth(), loadImg.getHeight(),
+                BufferedImage.TRANSLUCENT);
+        Graphics2D graphics = img.createGraphics();
+        Color newColor = new Color(red, green, blue, 0);
+        graphics.setXORMode(newColor);
+        graphics.drawImage(loadImg, null, 0, 0);
+        graphics.dispose();
+        return img;
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.repaint();
         super.paintComponent(g);
         for(int i=0; i<Partie.NB_WAGON; i++) {
             paintWagon(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
-            if(i==0) paintCoffre(g, train.get_Wagon()[0], Partie.NB_WAGON*dec/2);
+            if(i==0) paintCoffre(g, (Locomotive) train.get_Wagon()[0], Partie.NB_WAGON*dec/2);
             paintPersonne(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
             paintButin(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
         }
     }
 
-    private void paintCoffre(Graphics g, Wagon wagon, int x) {
-        if(((Locomotive) wagon).magot_dispo()){
+    private void paintCoffre(Graphics g, Locomotive l, int x) {
+        if(l.magot_dispo()){
             g.drawImage(coffreSprite[0].getImage(), x+20,HEIGHT*2 ,100,100, this);
         }
         else{
@@ -375,7 +392,6 @@ class VuePlateau extends JPanel implements Observer {
         for (int i = 0; i < w.getInterieur().size(); i++) {
             g.drawImage(spriteMapPersonnes.get(w.getInterieur().get(i).get_id()).getImage(), x+i*(spriteW+5), HEIGHT*2,spriteW,spriteH, this);
         }
-
     }
 
     private void paintButin(Graphics g, Wagon w, int x) {

@@ -10,13 +10,13 @@ public enum Direction{
     private final String nom;
     private final int dir;
 
-    private Direction(String name,int d){
+    Direction(String name,int d){
         nom = name;
         dir =d;
     }
 
 
-    public int dir(){return dir;};
+    public int dir(){return dir;}
     @Override
     public String toString(){return nom;}
 
