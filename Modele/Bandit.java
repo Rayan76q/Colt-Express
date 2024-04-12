@@ -139,9 +139,11 @@ public class Bandit extends Personne implements Movable, Hitable{
             if (d == -Partie.NB_WAGON) {  // tir vers le toit d'un wagon du bas
                 Wagon current_wagg = train.get_Wagon()[this.position];
                 List<Bandit> list = current_wagg.toit;
-                if(random.nextDouble()<=0.9) {
+                if(random.nextDouble()<= 10 && !list.isEmpty()) {
                     int randomIndex = random.nextInt(list.size());
-                    list.get(randomIndex).est_vise(current_wagg);
+                    Bandit b_cible = list.get(randomIndex);
+                    b_cible.est_vise(current_wagg);
+                    b_cible.setTargeted(true);
                 }
                 return this + " tire vers le toit du wagon.";
             }
@@ -152,10 +154,14 @@ public class Bandit extends Personne implements Movable, Hitable{
                 List<Bandit> bandits_cibles = current_wagg.liste_bandits_int();
                 if (random.nextDouble() > precision && !passagers_cibles.isEmpty()) { //Le bandit rate son tire et touche un passager
                     int randomIndex = random.nextInt(passagers_cibles.size());
-                    passagers_cibles.get(randomIndex).est_vise(current_wagg);
+                    Passager p = passagers_cibles.get(randomIndex);
+                    p.est_vise(current_wagg);
+                    p.setTargeted(true);
                 } else if(!bandits_cibles.isEmpty()){ //Le bandit touche bien un autre bandit
                     int randomIndex = random.nextInt(bandits_cibles.size());
-                    bandits_cibles.get(randomIndex).est_vise(current_wagg);
+                    Bandit b_cible = bandits_cibles.get(randomIndex);
+                    b_cible.est_vise(current_wagg);
+                    b_cible.setTargeted(true);
                 }
                 return this + " tire sur le wagon N°" + numWagon;
 
@@ -173,11 +179,12 @@ public class Bandit extends Personne implements Movable, Hitable{
                     int randomIndex = random.nextInt(size_bound);
                     Bandit bandit = list.get(randomIndex);
                     bandit.est_vise(current_wagg);
+                    bandit.setTargeted(true);
                 }
                 return this + " tire vers l'" + dir;
             }
         }
-        return "*Click* ,*Click*";
+        return "*Click* ,*Click*";   //out of ammo
     }
 
     public String frappe(Train train) {

@@ -40,6 +40,10 @@ public class Marchall extends Personne implements Movable{
 
     }
 
-    //@Override
-    //public void est_vise(Wagon wagon){};
+    //Le marshall ne peut être la cible d'un tir
+    @Override
+    public boolean isTargeted(){return false;}
+
+    @Override
+    public void setTargeted(boolean b){}
 }

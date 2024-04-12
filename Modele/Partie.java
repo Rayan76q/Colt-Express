@@ -290,7 +290,6 @@ public class Partie extends Observable {
 
         actionThread.start();
 
-
     }
 
     private String evenementsPassifs(boolean endTurn) {

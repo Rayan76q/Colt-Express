@@ -48,6 +48,7 @@ public class Passager extends Personne implements Hitable{
     @Override
     public void est_vise(Wagon wagon){
         drop_butin(wagon);
+        targeted = false;
         wagon.interieur.remove(this); //passager est cliniquement mort
     }
 }

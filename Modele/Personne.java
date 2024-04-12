@@ -14,6 +14,7 @@ interface Movable {
 interface Hitable{
     void drop_butin(Wagon w);
     void est_vise(Wagon wagon);
+
 }
 
 public abstract class Personne {
@@ -21,6 +22,7 @@ public abstract class Personne {
     protected int position;
     protected String nom;
     protected String sprite;
+    protected boolean targeted;
 
     static protected int current_id_bandit = 0 ;
     static protected int getCurrent_id_passager = -2;
@@ -29,6 +31,7 @@ public abstract class Personne {
 
     Personne(String n){
         nom = n;
+        targeted = false;
     }
 
 
@@ -46,4 +49,7 @@ public abstract class Personne {
     }
 
     public int getPosition(){return position;}
+
+    public boolean isTargeted(){return targeted;}
+    public void setTargeted(boolean b){targeted = b;}
 }

@@ -5,6 +5,8 @@ import Controleur.*;
 import Modele.Action;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -297,34 +299,36 @@ class VuePlateau extends JPanel implements Observer {
 
     //Hauteur et largeur d'un étage d'un wagon
     private static int dec = 30;
-    private final static int WIDTH= (int) (CVue.screenWidth/Partie.NB_WAGON - dec);
-    private final static int HEIGHT= CVue.screenHeight/8;
+    private final static int WIDTH = (int) (CVue.screenWidth / Partie.NB_WAGON - dec);
+    private final static int HEIGHT = CVue.screenHeight / 8;
 
 
-    private HashMap<Integer , ImageIcon> spriteMapPersonnes = new HashMap<>();
-    private HashMap<Butin , ImageIcon> spriteMapButins = new HashMap<>();
-    private ImageIcon[] coffreSprite = {new ImageIcon(getClass().getResource("Images/safe.png")) , new ImageIcon(getClass().getResource("Images/openSafe.png"))};
+    private HashMap<Integer, ImageIcon> spriteMapPersonnes = new HashMap<>();
+    private HashMap<Butin, ImageIcon> spriteMapButins = new HashMap<>();
+    private ImageIcon[] coffreSprite = {new ImageIcon(getClass().getResource("Images/safe.png")), new ImageIcon(getClass().getResource("Images/openSafe.png"))};
 
-    public VuePlateau(Train t){
+    public VuePlateau(Train t) {
         Dimension dim = new Dimension(CVue.screenWidth,
-                CVue.screenHeight*6/10 );
+                CVue.screenHeight * 6 / 10);
         this.setPreferredSize(dim);
 
         this.train = t;
-        for(Wagon w : t.get_Wagon()){
-            for (Bandit b : w.getToit()){
-                spriteMapPersonnes.put(b.get_id() , new ImageIcon(getClass().getResource(b.getSprite())));
+        for (Wagon w : t.get_Wagon()) {
+            for (Bandit b : w.getToit()) {
+                spriteMapPersonnes.put(b.get_id(), new ImageIcon(getClass().getResource(b.getSprite())));
             }
-            for(Personne p : w.getInterieur()){
-                spriteMapPersonnes.put(p.get_id() , new ImageIcon(getClass().getResource(p.getSprite())));
-                if(p instanceof Passager){
+            for (Personne p : w.getInterieur()) {
+                spriteMapPersonnes.put(p.get_id(), new ImageIcon(getClass().getResource(p.getSprite())));
+                if (p instanceof Passager) {
                     Butin b = ((Passager) p).getPoche();
-                    spriteMapButins.put(b , new ImageIcon(getClass().getResource(b.getSprite())));
+                    spriteMapButins.put(b, new ImageIcon(getClass().getResource(b.getSprite())));
                 }
             }
         }
-        Butin magot = ((Locomotive)t.get_Wagon()[0]).getMag();
-        spriteMapButins.put( magot , new ImageIcon(getClass().getResource(magot.getSprite())));
+        Butin magot = ((Locomotive) t.get_Wagon()[0]).getMag();
+        spriteMapButins.put(magot, new ImageIcon(getClass().getResource(magot.getSprite())));
+
+
         train.addObserver(this);
     }
 
@@ -336,16 +340,31 @@ class VuePlateau extends JPanel implements Observer {
     }
 
 
+    public static BufferedImage toBufferedImage(Image img) {
+        // Create a buffered image with the same dimensions and transparency as the original image
+        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
-    public BufferedImage colorImage(BufferedImage loadImg, int red, int green, int blue) {
-        BufferedImage img = new BufferedImage(loadImg.getWidth(), loadImg.getHeight(),
-                BufferedImage.TRANSLUCENT);
-        Graphics2D graphics = img.createGraphics();
-        Color newColor = new Color(red, green, blue, 0);
-        graphics.setXORMode(newColor);
-        graphics.drawImage(loadImg, null, 0, 0);
-        graphics.dispose();
-        return img;
+        // Draw the image onto the buffered image
+        Graphics2D g2d = bimage.createGraphics();
+        g2d.drawImage(img, 0, 0, null);
+        g2d.dispose();
+
+        return bimage;
+    }
+
+    public static BufferedImage colorImage(BufferedImage loadImg, int red, int green, int blue) {
+        int width = loadImg.getWidth();
+        int height = loadImg.getHeight();
+        BufferedImage tintedImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = tintedImg.createGraphics();
+        g2d.drawImage(loadImg, 0, 0, null);
+        Color tint = new Color(red, green, blue);
+        g2d.setColor(tint);
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
+        g2d.fillRect(0, 0, width, height);
+        g2d.dispose();
+
+        return tintedImg;
     }
 
     @Override
@@ -386,10 +405,29 @@ class VuePlateau extends JPanel implements Observer {
     private void paintPersonne(Graphics g, Wagon w, int x) {
         //Toit
         for (int i = 0; i < w.getToit().size(); i++) {
-            g.drawImage(spriteMapPersonnes.get(w.getToit().get(i).get_id()).getImage(), x+i*(spriteW+5), HEIGHT,spriteW, spriteH, this);
+            Bandit b = w.getToit().get(i);
+
+            if(b.isTargeted()) {
+                int finalI = i;
+                BufferedImage originalSprite = toBufferedImage(spriteMapPersonnes.get(b.get_id()).getImage());
+                BufferedImage redSprite = colorImage(originalSprite, 255, 0, 0);
+                g.drawImage(redSprite, x + finalI * (spriteW + 5), HEIGHT, spriteW, spriteH, this);
+                Thread hitThread = new Thread(() -> {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x + finalI * (spriteW + 5), HEIGHT, spriteW, spriteH, this);
+                    b.setTargeted(false);
+                });
+                hitThread.start();
+            }
+            else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x+i*(spriteW+5), HEIGHT,spriteW, spriteH, this);
         }
         //Interieur
         for (int i = 0; i < w.getInterieur().size(); i++) {
+            Personne p = w.getInterieur().get(i);
             g.drawImage(spriteMapPersonnes.get(w.getInterieur().get(i).get_id()).getImage(), x+i*(spriteW+5), HEIGHT*2,spriteW,spriteH, this);
         }
     }
