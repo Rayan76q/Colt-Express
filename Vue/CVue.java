@@ -71,7 +71,10 @@ public class CVue {
         ((CardLayout)app.getLayout()).next(app);
     }
 
-
+    public List<Bandit> get_bandits_from_joueur(int nb_joueur){
+        assert nb_joueur < NB_JOUEURS : "ayoooooooooooo";
+        return p.getJoueurs()[nb_joueur].getPions();
+    }
 }
 
 class VueInput extends JPanel {
@@ -184,6 +187,7 @@ class VueInput extends JPanel {
                 try {
                     String input = nom_bandit.getText();
                     nomsBandits[joueurNb][banditNb] = input;
+                    vue.get_bandits_from_joueur(joueurNb).get(banditNb).set_nom(input);
                 } catch (NumberFormatException ex) {
                     nom_bandit.setText("Marston");
                 }
@@ -250,7 +254,7 @@ class VueCommandes extends JPanel implements Observer{
 
         //Panel de titre
         text.setLayout(new GridLayout(3,1));
-        JLabel t1 = new JLabel("Tour du Joueur NÂ°"+(partie.getJoueurAct()+1));
+        JLabel t1 = new JLabel("Tour du Joueur N°"+(partie.getJoueurAct()+1));
         Bandit b = partie.getJoueurs()[0].getPions().get(0);
         JLabel t2 = new JLabel("Bandit : " + b );
         JPanel t3 = new JPanel(new GridLayout(1,5));
@@ -287,7 +291,7 @@ class VueCommandes extends JPanel implements Observer{
         JButton boutonTir = new JButton("Tirer");
         JButton boutonFrappe = new JButton("Frapper");
         JButton boutonBraque = new JButton("Braquer");
-        JButton boutonRetour1 = new JButton("Retour");
+        //JButton boutonRetour1 = new JButton("Retour");
         JButton boutonRetour = new JButton("Retour");
 
         actions.add(boutonSeDeplacer);
@@ -305,7 +309,7 @@ class VueCommandes extends JPanel implements Observer{
         JLabel promptText = new JLabel();
         promptText.setFont(CVue.font2);
         for (int i = 1; i <= DEFAULT_HP; i++) {
-            promptText= new JLabel("Action NÂ°"+i);
+            promptText= new JLabel("Action N°"+i);
             promptText.setHorizontalAlignment(JLabel.CENTER);
             promptPlanification.add(promptText);
         }
@@ -318,10 +322,10 @@ class VueCommandes extends JPanel implements Observer{
         fleches.setPreferredSize(new Dimension(dim.width/4 , dim.height));
 
         //Choix de directions
-        JButton gauche = new JButton("â†");
-        JButton droite = new JButton("â†’");
-        JButton haut = new JButton("â†‘");
-        JButton bas = new JButton("â†“");
+        JButton gauche = new JButton("←");
+        JButton droite = new JButton("→");
+        JButton haut = new JButton("↑");
+        JButton bas = new JButton("↓");
         JButton retourActions = new JButton("Retour");
 
 
@@ -371,7 +375,7 @@ class VueCommandes extends JPanel implements Observer{
 
     public void paintStats(){
         JPanel panel1 = (JPanel) this.getComponent(0);
-        ((JLabel)panel1.getComponent(0)).setText("Tour du Joueur NÂ°"+(partie.getJoueurAct()+1));
+        ((JLabel)panel1.getComponent(0)).setText("Tour du Joueur N°"+(partie.getJoueurAct()+1));
         Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
         ((JLabel)panel1.getComponent(1)).setText("Bandit : "+b);
 
@@ -409,7 +413,7 @@ class VueCommandes extends JPanel implements Observer{
                     p.setText(a.toString());
                 }
                 else{
-                    p.setText("Action NÂ°" + (i+1));
+                    p.setText("Action N°" + (i+1));
                 }
             }
 
@@ -564,6 +568,7 @@ class VuePlateau extends JPanel implements Observer {
                 hitThread.start();
             }
             else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x+i*(spriteW+5), HEIGHT,spriteW, spriteH, this);
+            g.drawString(b.toString() , x+i*(spriteW+5)+spriteW/5,HEIGHT-10);
         }
         //Interieur
         for (int i = 0; i < w.getInterieur().size(); i++) {
