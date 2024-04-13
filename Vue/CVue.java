@@ -5,19 +5,21 @@ import Controleur.*;
 import Modele.Action;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
-import static Modele.Partie.DEFAULT_HP;
+import static Modele.Partie.*;
 import static Modele.Personne.spriteH;
 import static Modele.Personne.spriteW;
 
 
 public class CVue {
+    final static Font font1 = new Font("Arial", Font.BOLD, 20);
+    final static Font font2 = new Font("Arial", Font.BOLD, 14);
     static Toolkit toolkit = Toolkit.getDefaultToolkit();
     static final Dimension screenSize = toolkit.getScreenSize();
     static final int screenWidth = screenSize.width;
@@ -28,42 +30,181 @@ public class CVue {
     public static void main(String[] args) {
 
         EventQueue.invokeLater(() -> {
-            Partie p = new Partie();
-            CVue vue = new CVue(p);
+            CVue vue = new CVue();
         });
     }
 
     private JFrame frame;
-
+    private JPanel app;
+    private JPanel container;
     private VuePlateau plateau;
     private VueCommandes tableau_de_bord;
+    private VueInput menu;
+    private Partie p;
 
-
-    public CVue(Partie p) {
+    public CVue() {
 
         frame = new JFrame();
         frame.setTitle("Colt Express");
 
-        frame.setLayout(new BorderLayout());
+        app = new JPanel(new CardLayout());
+        container = new JPanel(new BorderLayout());
+
+        menu = new VueInput(this);
+        app.add(menu);
 
 
-        plateau = new VuePlateau(p.getTrain());
-        frame.add(plateau, BorderLayout.NORTH);
-
-        tableau_de_bord = new VueCommandes(p);
-        frame.add(tableau_de_bord, BorderLayout.SOUTH);
-
+        app.add(container);
+        frame.add(app);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize( new Dimension(CVue.screenWidth,CVue.screenHeight));
         frame.setVisible(true);
     }
+
+    public void switchToGame(String[][] names){
+        p = new Partie(true , names );
+        plateau = new VuePlateau(p.getTrain());
+        container.add(plateau, BorderLayout.NORTH);
+        tableau_de_bord = new VueCommandes(p);
+        container.add(tableau_de_bord, BorderLayout.SOUTH);
+        ((CardLayout)app.getLayout()).next(app);
+    }
+
+
+}
+
+class VueInput extends JPanel {
+    private CVue vue;
+
+    private boolean flag1 = false, flag2 =false;
+    private String[][] nomsBandits;
+
+
+    private JPanel createLabelTextFieldPanel(String labelText) {
+        JPanel labelTextFieldPanel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel(labelText);
+        JTextField textField = new JTextField();
+        labelTextFieldPanel.add(label, BorderLayout.WEST);
+        labelTextFieldPanel.add(textField, BorderLayout.CENTER);
+        return labelTextFieldPanel;
+    }
+
+    public VueInput(CVue c){
+        vue = c;
+        this.setLayout(new BorderLayout());
+
+        Dimension dim1 = new Dimension(CVue.screenWidth,
+                CVue.screenHeight * 2/ 10);
+
+        Dimension dim2 = new Dimension(CVue.screenWidth,
+                CVue.screenHeight * 4/ 10);
+
+
+        JPanel title = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout());
+
+        //Title
+        JLabel t = new JLabel("Colt Express");
+        t.setFont(CVue.font1);
+        t.setHorizontalAlignment(0);
+        title.add(t , BorderLayout.SOUTH);
+        title.setPreferredSize(dim1);
+        title.setBorder(BorderFactory.createLineBorder(Color.black));
+        this.add(title,BorderLayout.NORTH);
+
+        JPanel constants = new JPanel(new GridLayout(2,1));
+        constants.setBorder(new EmptyBorder(0,300,0,300));
+        constants.add(createLabelTextFieldPanel("Nombre de Joueurs:"));
+        constants.add(createLabelTextFieldPanel("Nombre de Manches:"));
+
+
+        JPanel names = new JPanel();
+
+        JTextField nb_joueurs = (JTextField) ((JPanel)constants.getComponent(0)).getComponent(1);
+        nb_joueurs.addActionListener(e ->{
+            try {
+                String input = nb_joueurs.getText();
+                int number = Integer.parseInt(input);
+                if(number < 0)throw new RuntimeException();
+                Partie.NB_JOUEURS = number;
+                flag1 = true;
+                if(flag2) {names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            } catch (Exception ex) {
+                nb_joueurs.setText("Entrez un nombre > 0");
+            }
+        });
+
+        JTextField nb_manches = (JTextField) ((JPanel)constants.getComponent(1)).getComponent(1);
+        nb_manches.addActionListener(e ->{
+            try {
+                String input = nb_manches.getText();
+                int number = Integer.parseInt(input);
+                if(number < 3)throw new RuntimeException();
+                Partie.NB_MANCHES = number;
+                flag2 = true;
+                if(flag1){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            } catch (Exception ex) {
+                nb_manches.setText("Entrez un nombre >= 3");
+            }
+        });
+
+
+        JPanel play = new JPanel();
+        play.setPreferredSize(dim2);
+        JButton playButton = new JButton("Play");
+        playButton.addActionListener(e -> vue.switchToGame(nomsBandits)); //Commence la partie avec les parametres
+
+        play.add(playButton);
+        panel.add(constants, BorderLayout.NORTH);
+        panel.add(names, BorderLayout.CENTER);
+        panel.add(play , BorderLayout.SOUTH);
+        panel.setPreferredSize(new Dimension(CVue.screenWidth,
+                CVue.screenHeight * 7/ 10));
+        panel.setBorder(new EmptyBorder(30,0,30,0));
+        this.add(panel, BorderLayout.SOUTH);
+    }
+
+    private void createGrid(JPanel names) {
+        names.removeAll();
+        names.revalidate();
+        names.repaint();
+        nomsBandits = new String[NB_JOUEURS][NB_BANDITS_JOUEUR];
+        for (int i = 0; i <Partie.NB_JOUEURS; i++) {
+            names.add(new JLabel());
+            JPanel cell = new JPanel(new BorderLayout());
+            int joueurNb = i /Partie.NB_BANDITS_JOUEUR;
+            JLabel joueur = new JLabel("J"+(joueurNb+1));
+            joueur.setHorizontalAlignment(0);
+            int banditNb = i % Partie.NB_BANDITS_JOUEUR;
+            JLabel bandit = new JLabel("Bandit "+(banditNb+1));
+            bandit.setHorizontalAlignment(0);
+            JTextField nom_bandit = new JTextField("Nom");
+            nom_bandit.addActionListener(e ->{
+                try {
+                    String input = nom_bandit.getText();
+                    nomsBandits[joueurNb][banditNb] = input;
+                } catch (NumberFormatException ex) {
+                    nom_bandit.setText("Marston");
+                }
+            });
+            cell.add(joueur , BorderLayout.NORTH);
+            cell.add(bandit, BorderLayout.CENTER);
+            cell.add(nom_bandit , BorderLayout.SOUTH);
+            names.add(cell);
+            names.add(new JLabel());
+
+        }
+
+
+    }
+
+
 }
 
 class VueCommandes extends JPanel implements Observer{
 
     private final ImageIcon[] sprites;
-    private final static Font font1 = new Font("Arial", Font.BOLD, 20);
-    private final static Font font2 = new Font("Arial", Font.BOLD, 14);
 
     private Partie partie;
 
@@ -79,7 +220,7 @@ class VueCommandes extends JPanel implements Observer{
 
     public VueCommandes(Partie p) {
         this.sprites  = new ImageIcon[]{new ImageIcon(getClass().getResource("Images/coeur.png")),new ImageIcon(getClass().getResource("Images/ammo.png")),
-        new ImageIcon(getClass().getResource("Images/wound.png"))};
+                new ImageIcon(getClass().getResource("Images/wound.png"))};
         this.partie = p;
         Dimension dim = new Dimension(CVue.screenWidth,
                 CVue.screenHeight*3/10 );
@@ -109,7 +250,7 @@ class VueCommandes extends JPanel implements Observer{
 
         //Panel de titre
         text.setLayout(new GridLayout(3,1));
-        JLabel t1 = new JLabel("Tour du Joueur N°"+(partie.getJoueurAct()+1));
+        JLabel t1 = new JLabel("Tour du Joueur NÂ°"+(partie.getJoueurAct()+1));
         Bandit b = partie.getJoueurs()[0].getPions().get(0);
         JLabel t2 = new JLabel("Bandit : " + b );
         JPanel t3 = new JPanel(new GridLayout(1,5));
@@ -126,9 +267,9 @@ class VueCommandes extends JPanel implements Observer{
         t3.add(l3);
         t3.add(l4);
         t3.add(l5);
-        t1.setFont(font1);
-        t2.setFont(font2);
-        t3.setFont(font2);
+        t1.setFont(CVue.font1);
+        t2.setFont(CVue.font2);
+        t3.setFont(CVue.font2);
         t1.setHorizontalAlignment(JLabel.CENTER);
         t2.setHorizontalAlignment(JLabel.CENTER);
         text.add(t1);
@@ -162,9 +303,9 @@ class VueCommandes extends JPanel implements Observer{
         //Action en cours
         promptPlanification.setLayout(new GridLayout(1,DEFAULT_HP));
         JLabel promptText = new JLabel();
-        promptText.setFont(font2);
+        promptText.setFont(CVue.font2);
         for (int i = 1; i <= DEFAULT_HP; i++) {
-            promptText= new JLabel("Action N°"+i);
+            promptText= new JLabel("Action NÂ°"+i);
             promptText.setHorizontalAlignment(JLabel.CENTER);
             promptPlanification.add(promptText);
         }
@@ -177,10 +318,10 @@ class VueCommandes extends JPanel implements Observer{
         fleches.setPreferredSize(new Dimension(dim.width/4 , dim.height));
 
         //Choix de directions
-        JButton gauche = new JButton("←");
-        JButton droite = new JButton("→");
-        JButton haut = new JButton("↑");
-        JButton bas = new JButton("↓");
+        JButton gauche = new JButton("â†");
+        JButton droite = new JButton("â†’");
+        JButton haut = new JButton("â†‘");
+        JButton bas = new JButton("â†“");
         JButton retourActions = new JButton("Retour");
 
 
@@ -230,7 +371,7 @@ class VueCommandes extends JPanel implements Observer{
 
     public void paintStats(){
         JPanel panel1 = (JPanel) this.getComponent(0);
-        ((JLabel)panel1.getComponent(0)).setText("Tour du Joueur N°"+(partie.getJoueurAct()+1));
+        ((JLabel)panel1.getComponent(0)).setText("Tour du Joueur NÂ°"+(partie.getJoueurAct()+1));
         Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
         ((JLabel)panel1.getComponent(1)).setText("Bandit : "+b);
 
@@ -268,7 +409,7 @@ class VueCommandes extends JPanel implements Observer{
                     p.setText(a.toString());
                 }
                 else{
-                    p.setText("Action N°" + (i+1));
+                    p.setText("Action NÂ°" + (i+1));
                 }
             }
 
@@ -297,7 +438,7 @@ class VuePlateau extends JPanel implements Observer {
 
     private Train train;
 
-    //Hauteur et largeur d'un étage d'un wagon
+    //Hauteur et largeur d'un Ã©tage d'un wagon
     private static int dec = 30;
     private final static int WIDTH = (int) (CVue.screenWidth / Partie.NB_WAGON - dec);
     private final static int HEIGHT = CVue.screenHeight / 8;
@@ -327,9 +468,8 @@ class VuePlateau extends JPanel implements Observer {
         }
         Butin magot = ((Locomotive) t.get_Wagon()[0]).getMag();
         spriteMapButins.put(magot, new ImageIcon(getClass().getResource(magot.getSprite())));
-
-
         train.addObserver(this);
+
     }
 
     public void update() { repaint(); }
