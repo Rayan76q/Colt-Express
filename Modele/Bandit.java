@@ -197,11 +197,13 @@ public class Bandit extends Personne implements Movable, Hitable{
         Random rand = new Random();
         Wagon w = train.get_Wagon()[position];
         Bandit vise = null;
-        if(toit && w.toit.size()>1){ //Sur le toit
-            w.toit.remove(this);
-            int rand_index = rand.nextInt(w.toit.size());
-            vise = w.toit.get(rand_index);
-            w.toit.add(this);
+        if(toit){ //Sur le toit
+            if(w.toit.size()>1){
+                w.toit.remove(this);
+                int rand_index = rand.nextInt(w.toit.size());
+                vise = w.toit.get(rand_index);
+                w.toit.add(this);
+            }
         }
         else { //Dans une cabine
             List<Bandit> bandits_cibles = w.liste_bandits_int();
