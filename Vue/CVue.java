@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 
-
 public class CVue {
     final static Font font1 = new Font("Arial", Font.BOLD, 20);
     final static Font font2 = new Font("Arial", Font.BOLD, 14);
@@ -75,7 +74,7 @@ public class CVue {
 class VueInput extends JPanel {
     private CVue vue;
 
-    private boolean[] flags = new boolean[]{false,false,false,false,false,false};
+    private Boolean[] flags = new Boolean[]{false,false,false,false,false,false};
     private String[][] nomsBandits;
 
 
@@ -88,7 +87,7 @@ class VueInput extends JPanel {
         return labelTextFieldPanel;
     }
 
-    private void getNB_JOUEUR(JPanel names,  JTextField nb_joueurs){
+    private void getNB_JOUEUR(JPanel names,  JTextField nb_joueurs, JButton play ){
         try {
             String input = nb_joueurs.getText();
             int number = Integer.parseInt(input);
@@ -96,14 +95,17 @@ class VueInput extends JPanel {
             nb_joueurs.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NB_JOUEURS = number;
             flags[0]= true;
-            if(!Arrays.asList(flags).contains(false)) {names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));
+            createGrid(names);
+            if(!Arrays.asList(flags).contains(false)) {play.setEnabled(true);}
         } catch (Exception ex) {
             flags[0] = false;
             nb_joueurs.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            play.setEnabled(false);
         }
     }
 
-    private void getNb_Manches(JPanel names,  JTextField nb_manches){
+    private void getNb_Manches(JTextField nb_manches , JButton play){
         try {
             String input = nb_manches.getText();
             int number = Integer.parseInt(input);
@@ -111,14 +113,15 @@ class VueInput extends JPanel {
             nb_manches.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NB_MANCHES = number;
             flags[1] = true;
-            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            if(!Arrays.asList(flags).contains(false)) {play.setEnabled(true);}
         } catch (Exception ignored) {
             flags[1] = false;
             nb_manches.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            play.setEnabled(false);
         }
     }
 
-    private void getHP(JPanel names,  JTextField field){
+    private void getHP(JTextField field , JButton play){
         try {
             String input = field.getText();
             int number = Integer.parseInt(input);
@@ -126,13 +129,14 @@ class VueInput extends JPanel {
             field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.DEFAULT_HP = number;
             flags[2] = true;
-            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            if(!Arrays.asList(flags).contains(false)) {play.setEnabled(true);}
         } catch (Exception ignored) {
             flags[2] = false;
             field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            play.setEnabled(false);
         }
     }
-    private void getAmmo(JPanel names,  JTextField field){
+    private void getAmmo(JTextField field, JButton play){
         try {
             String input = field.getText();
             int number = Integer.parseInt(input);
@@ -140,14 +144,15 @@ class VueInput extends JPanel {
             field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NB_MUNITIONS = number;
             flags[3] = true;
-            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            if(!Arrays.asList(flags).contains(false)) {play.setEnabled(true);}
         } catch (Exception ignored) {
             flags[3] = false;
             field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            play.setEnabled(false);
         }
     }
 
-    private void getPrecision(JPanel names,  JTextField field){
+    private void getPrecision(JTextField field , JButton play){
         try {
             String input = field.getText();
             double number = Double.parseDouble(input);
@@ -155,14 +160,15 @@ class VueInput extends JPanel {
             field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.DEFAULT_PRECISION = number;
             flags[4] = true;
-            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            if(!Arrays.asList(flags).contains(false)) {play.setEnabled(true);}
         } catch (Exception ignored) {
             flags[4] = false;
             field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            play.setEnabled(false);
         }
     }
 
-    private void getNevrosite(JPanel names,  JTextField field){
+    private void getNevrosite(JTextField field , JButton play){
         try {
             String input = field.getText();
             double number = Double.parseDouble(input);
@@ -170,10 +176,11 @@ class VueInput extends JPanel {
             field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NEVROSITE_MARSHALL = number;
             flags[5] = true;
-            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            if(!Arrays.asList(flags).contains(false)) {play.setEnabled(true);}
         } catch (Exception ignored) {
             flags[5] = false;
             field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            play.setEnabled(false);
         }
     }
 
@@ -211,6 +218,12 @@ class VueInput extends JPanel {
         constants.add(createLabelTextFieldPanel("Nevrosite Marshall : "));
 
 
+        //Bouton play
+        JButton playButton = new JButton("Play");
+        playButton.setEnabled(false);
+        playButton.addActionListener(e -> vue.switchToGame(nomsBandits)); //Commence la partie avec les parametres
+
+
         JPanel names = new JPanel();
         JTextField nb_joueurs = (JTextField) ((JPanel)constants.getComponent(0)).getComponent(1);
         nb_joueurs.getDocument().addDocumentListener(new DocumentListener() {
@@ -230,7 +243,7 @@ class VueInput extends JPanel {
 
             private void updateTextFieldContent() {
                 String text = nb_joueurs.getText();
-                if (text != null && !text.isEmpty()) getNB_JOUEUR(names , nb_joueurs);
+                if (text != null && !text.isEmpty()) getNB_JOUEUR(names, nb_joueurs,playButton);
             }
         });
 
@@ -271,7 +284,7 @@ class VueInput extends JPanel {
 
             private void updateTextFieldContent() {
                 String text = nb_manches.getText();
-                if (text != null && !text.isEmpty() &&  !text.equals(">= 3")) getNb_Manches(names , nb_manches);
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 3")) getNb_Manches(nb_manches,playButton);
 
             }
         });
@@ -313,7 +326,7 @@ class VueInput extends JPanel {
 
             private void updateTextFieldContent() {
                 String text = hp.getText();
-                if (text != null && !text.isEmpty() &&  !text.equals(">= 2 et <= 8")) getHP(names ,hp);
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 2 et <= 8")) getHP(hp,playButton);
 
             }
         });
@@ -355,7 +368,7 @@ class VueInput extends JPanel {
 
             private void updateTextFieldContent() {
                 String text = ammo.getText();
-                if (text != null && !text.isEmpty() &&  !text.equals(">= 0 et <= 12")) getAmmo(names ,ammo);
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 0 et <= 12")) getAmmo(ammo,playButton);
 
             }
         });
@@ -397,7 +410,7 @@ class VueInput extends JPanel {
 
             private void updateTextFieldContent() {
                 String text = precision.getText();
-                if (text != null && !text.isEmpty() &&  !text.equals(">= 0.0 et <= 1.0")) getPrecision(names ,precision);
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 0.0 et <= 1.0")) getPrecision(precision,playButton);
 
             }
         });
@@ -439,15 +452,14 @@ class VueInput extends JPanel {
 
             private void updateTextFieldContent() {
                 String text = nev.getText();
-                if (text != null && !text.isEmpty() &&  !text.equals(">= 0.0 et <= 1.0")) getNevrosite(names ,nev);
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 0.0 et <= 1.0")) getNevrosite(nev,playButton);
 
             }
         });
 
         JPanel play = new JPanel();
         play.setPreferredSize(dim2);
-        JButton playButton = new JButton("Play");
-        playButton.addActionListener(e -> vue.switchToGame(nomsBandits)); //Commence la partie avec les parametres
+
 
         play.add(playButton);
         panel.add(constants, BorderLayout.NORTH);
