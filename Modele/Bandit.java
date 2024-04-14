@@ -63,7 +63,7 @@ public class Bandit extends Personne implements Movable, Hitable{
     @Override
     public void est_vise(Wagon wagon){
         if(this.hitPoints>2)
-            this.hitPoints -= 1;
+            this.hitPoints--;
         drop_butin(wagon);
     }
 
@@ -200,8 +200,10 @@ public class Bandit extends Personne implements Movable, Hitable{
         else { //Dans une cabine
             List<Bandit> bandits_cibles = w.liste_bandits_int();
             bandits_cibles.remove(this);
-            int rand_index = rand.nextInt(bandits_cibles.size());
-            vise= bandits_cibles.get(rand_index);
+            if(!bandits_cibles.isEmpty()) {
+                int rand_index = rand.nextInt(bandits_cibles.size());
+                vise = bandits_cibles.get(rand_index);
+            }
         }
         if(vise != null) {
             vise.est_vise(w);

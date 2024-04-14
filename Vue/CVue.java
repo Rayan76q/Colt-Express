@@ -93,11 +93,13 @@ class VueInput extends JPanel {
             String input = nb_joueurs.getText();
             int number = Integer.parseInt(input);
             if(number < 0)throw new RuntimeException();
+            nb_joueurs.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NB_JOUEURS = number;
             flags[0]= true;
             if(!Arrays.asList(flags).contains(false)) {names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
         } catch (Exception ex) {
-            nb_joueurs.setText("Entrez un nombre > 0");
+            flags[0] = false;
+            nb_joueurs.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
         }
     }
 
@@ -106,10 +108,13 @@ class VueInput extends JPanel {
             String input = nb_manches.getText();
             int number = Integer.parseInt(input);
             if(number < 3)throw new RuntimeException();
+            nb_manches.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NB_MANCHES = number;
             flags[1] = true;
             if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
         } catch (Exception ignored) {
+            flags[1] = false;
+            nb_manches.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
         }
     }
 
@@ -118,10 +123,13 @@ class VueInput extends JPanel {
             String input = field.getText();
             int number = Integer.parseInt(input);
             if(number < 2 || number > 8)throw new RuntimeException();
+            field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.DEFAULT_HP = number;
             flags[2] = true;
             if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
         } catch (Exception ignored) {
+            flags[2] = false;
+            field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
         }
     }
     private void getAmmo(JPanel names,  JTextField field){
@@ -129,10 +137,13 @@ class VueInput extends JPanel {
             String input = field.getText();
             int number = Integer.parseInt(input);
             if(number < 0 || number > 12)throw new RuntimeException();
+            field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NB_MUNITIONS = number;
             flags[3] = true;
             if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
         } catch (Exception ignored) {
+            flags[3] = false;
+            field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
         }
     }
 
@@ -141,10 +152,13 @@ class VueInput extends JPanel {
             String input = field.getText();
             double number = Double.parseDouble(input);
             if(number < 0.0|| number > 1.0)throw new RuntimeException();
+            field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.DEFAULT_PRECISION = number;
             flags[4] = true;
             if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
         } catch (Exception ignored) {
+            flags[4] = false;
+            field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
         }
     }
 
@@ -153,10 +167,13 @@ class VueInput extends JPanel {
             String input = field.getText();
             double number = Double.parseDouble(input);
             if(number < 0.0|| number > 1.0)throw new RuntimeException();
+            field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NEVROSITE_MARSHALL = number;
             flags[5] = true;
             if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
         } catch (Exception ignored) {
+            flags[5] = false;
+            field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
         }
     }
 
@@ -183,10 +200,11 @@ class VueInput extends JPanel {
         title.setBorder(BorderFactory.createLineBorder(Color.black));
         this.add(title,BorderLayout.NORTH);
 
-        JPanel constants = new JPanel(new GridLayout(2,3));
+        JPanel constants = new JPanel(new GridLayout(2,3,20,10));
+        constants.setBorder(new EmptyBorder(0,30,0,30));
 
         constants.add(createLabelTextFieldPanel("Nombre de joueurs : "));
-        constants.add(createLabelTextFieldPanel("Nombre de mmanches : "));
+        constants.add(createLabelTextFieldPanel("Nombre de manches : "));
         constants.add(createLabelTextFieldPanel("HP : "));
         constants.add(createLabelTextFieldPanel("Munitions : "));
         constants.add(createLabelTextFieldPanel("Precision Bandit : "));
@@ -855,35 +873,39 @@ class VuePlateau extends JPanel implements Observer {
         g.drawRect(x, y, WIDTH, HEIGHT);
     }
 
+    private void drawBandit(Graphics g, Bandit b ,Wagon w, int x , int y){
+        if(b.isTargeted()) {
+            BufferedImage originalSprite = toBufferedImage(spriteMapPersonnes.get(b.get_id()).getImage());
+            BufferedImage redSprite = colorImage(originalSprite, 255, 0, 0);
+            g.drawImage(redSprite, x, y, Personne.spriteW, Personne.spriteH, this);
+            Thread hitThread = new Thread(() -> {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y, Personne.spriteW, Personne.spriteH, this);
+                b.setTargeted(false);
+            });
+            hitThread.start();
+        }
+        else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y,Personne.spriteW, Personne.spriteH, this);
+        g.drawString(b.toString() ,x,y-10);
+    }
+
     private void paintPersonne(Graphics g, Wagon w, int x) {
         //Toit
         for (int i = 0; i < w.getToit().size(); i++) {
             Bandit b = w.getToit().get(i);
-
-            if(b.isTargeted()) {
-                int finalI = i;
-                BufferedImage originalSprite = toBufferedImage(spriteMapPersonnes.get(b.get_id()).getImage());
-                BufferedImage redSprite = colorImage(originalSprite, 255, 0, 0);
-                g.drawImage(redSprite, x + finalI * (Personne.spriteW + 5), HEIGHT, Personne.spriteW, Personne.spriteH, this);
-                Thread hitThread = new Thread(() -> {
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x + finalI * (Personne.spriteW + 5), HEIGHT, Personne.spriteW, Personne.spriteH, this);
-                    b.setTargeted(false);
-                });
-                hitThread.start();
-            }
-            else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x+i*(Personne.spriteW+5), HEIGHT,Personne.spriteW, Personne.spriteH, this);
-            g.drawString(b.toString() , x+i*(Personne.spriteW+5)+Personne.spriteW/5,HEIGHT-10);
+            drawBandit(g,b,w,x+ i* (Personne.spriteW + 5),HEIGHT);
         }
         //Interieur
         for (int i = 0; i < w.getInterieur().size(); i++) {
             Personne p = w.getInterieur().get(i);
-            g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(Personne.spriteW+5), HEIGHT*2,Personne.spriteW,Personne.spriteH, this);
-            if(p instanceof Bandit) g.drawString(p.toString() , x+i*(Personne.spriteW+5)+Personne.spriteW/5,HEIGHT*2-10);
+            if(p instanceof Bandit){
+               drawBandit(g,(Bandit) p,w,  x+i* (Personne.spriteW + 5) , 2*HEIGHT+20);
+            }
+            else g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(Personne.spriteW+5), HEIGHT*2,Personne.spriteW,Personne.spriteH, this);
         }
     }
 
