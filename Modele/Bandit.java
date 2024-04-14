@@ -88,19 +88,22 @@ public class Bandit extends Personne implements Movable, Hitable{
                 //vole le magot
                 ((Locomotive) T.get_Wagon()[0]).magot_vole(this);
                 return this + " a choppé le magot.";
-            } else if ((position==0 ||  r.nextBoolean()) && !wagon_actuelle.loot_int.isEmpty()) {  //prend un loot au sol
+            }
+            else if ((position==0 || wagon_actuelle.liste_passagers().isEmpty() || r.nextBoolean()) && !wagon_actuelle.loot_int.isEmpty()) {
+                //prend un loot au sol
                 index_butin = r.nextInt(wagon_actuelle.loot_int.size());
                 poches.add(wagon_actuelle.loot_int.get(index_butin));
                 wagon_actuelle.loot_int.remove(index_butin);
                 return this + " récupère un butin au sol.";
-            } else if(!wagon_actuelle.liste_passagers().isEmpty()){
+            }
+            else if(!wagon_actuelle.liste_passagers().isEmpty()){
                 //Braque un passager
                 index_butin = r.nextInt(wagon_actuelle.liste_passagers().size());
                 wagon_actuelle.liste_passagers().get(index_butin).cede(this);
                 return this + " braque un passager.";
             }
             else{
-                return this + " n'a personne a braquer.";
+                return this + " n'a rien a braquer.";
             }
         }
 
@@ -135,11 +138,12 @@ public class Bandit extends Personne implements Movable, Hitable{
         Random random = new Random();
         if(this.ammo>0) {
             assert mouvementsPossibles(train).contains(dir);
+            this.ammo--;
             int d = dir.dir();
             if (d == -Partie.NB_WAGON) {  // tir vers le toit d'un wagon du bas
                 Wagon current_wagg = train.get_Wagon()[this.position];
                 List<Bandit> list = current_wagg.toit;
-                if(random.nextDouble()<= 10 && !list.isEmpty()) {
+                if(!list.isEmpty()) {
                     int randomIndex = random.nextInt(list.size());
                     Bandit b_cible = list.get(randomIndex);
                     b_cible.est_vise(current_wagg);
@@ -152,12 +156,15 @@ public class Bandit extends Personne implements Movable, Hitable{
                 Wagon current_wagg = train.get_Wagon()[numWagon];
                 List<Passager> passagers_cibles = current_wagg.liste_passagers();
                 List<Bandit> bandits_cibles = current_wagg.liste_bandits_int();
-                if (random.nextDouble() > precision && !passagers_cibles.isEmpty()) { //Le bandit rate son tire et touche un passager
+                if ((random.nextDouble() > precision || bandits_cibles.isEmpty())&& !passagers_cibles.isEmpty()) { //Le bandit rate son tire et touche un passager
                     int randomIndex = random.nextInt(passagers_cibles.size());
                     Passager p = passagers_cibles.get(randomIndex);
                     p.est_vise(current_wagg);
                     p.setTargeted(true);
-                } else if(!bandits_cibles.isEmpty()){ //Le bandit touche bien un autre bandit
+                }
+                else if(current_wagg.interieur.isEmpty()){
+                    return this + "a tire sur personne puisque le wagon est vide, dommage!";
+                }else { //Le bandit touche bien un autre bandit
                     int randomIndex = random.nextInt(bandits_cibles.size());
                     Bandit b_cible = bandits_cibles.get(randomIndex);
                     b_cible.est_vise(current_wagg);
@@ -168,7 +175,6 @@ public class Bandit extends Personne implements Movable, Hitable{
             }
             else { //tir d'un toit vers un autre
                 Wagon current_wagg = train.get_Wagon()[this.position + d];
-                this.ammo--;
                 List<Bandit> list = current_wagg.toit;
                 while (list.isEmpty() && !(current_wagg.position == 0 || current_wagg.position == Partie.NB_WAGON - 1)) {
                     current_wagg = train.get_Wagon()[current_wagg.position + d];
