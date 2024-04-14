@@ -226,6 +226,18 @@ class VueInput extends JPanel {
 
         JPanel names = new JPanel();
         JTextField nb_joueurs = (JTextField) ((JPanel)constants.getComponent(0)).getComponent(1);
+        nb_joueurs.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!flags[0] && nb_joueurs.getText().isEmpty()) {
+                    nb_joueurs.setText("");
+                }
+                else if(flags[0] && nb_joueurs.getText().isEmpty()) nb_joueurs.setText(String.valueOf(Partie.NB_JOUEURS));
+
+            }
+        });
         nb_joueurs.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -261,10 +273,12 @@ class VueInput extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (nb_manches.getText().isEmpty()) {
+                if (!flags[1] && nb_manches.getText().isEmpty()) {
                     nb_manches.setText(">= 3");
                     nb_manches.setForeground(Color.GRAY);
                 }
+                else if(flags[1] && nb_manches.getText().isEmpty()) nb_manches.setText(String.valueOf(Partie.NB_MANCHES));
+
             }
         });
         nb_manches.getDocument().addDocumentListener(new DocumentListener() {
@@ -303,10 +317,11 @@ class VueInput extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (hp.getText().isEmpty()) {
+                if (!flags[2] && hp.getText().isEmpty()) {
                     hp.setText(">= 2 et <= 8");
                     hp.setForeground(Color.GRAY);
                 }
+                else if(flags[2] && hp.getText().isEmpty()) hp.setText(String.valueOf(Partie.DEFAULT_HP));
             }
         });
         hp.getDocument().addDocumentListener(new DocumentListener() {
@@ -345,10 +360,12 @@ class VueInput extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (ammo.getText().isEmpty()) {
+                if (!flags[3] && ammo.getText().isEmpty()) {
                     ammo.setText(">= 0 et <= 12");
                     ammo.setForeground(Color.GRAY);
                 }
+                else if(flags[3] && ammo.getText().isEmpty()) ammo.setText(String.valueOf(Partie.NB_MUNITIONS));
+
             }
         });
         ammo.getDocument().addDocumentListener(new DocumentListener() {
@@ -387,10 +404,12 @@ class VueInput extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (precision.getText().isEmpty()) {
+                if (!flags[4] && precision.getText().isEmpty()) {
                     precision.setText(">= 0.0 et <= 1.0");
                     precision.setForeground(Color.GRAY);
                 }
+                else if (flags[4] && precision.getText().isEmpty()) precision.setText(String.valueOf(Partie.DEFAULT_PRECISION));
+
             }
         });
         precision.getDocument().addDocumentListener(new DocumentListener() {
@@ -429,10 +448,11 @@ class VueInput extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (nev.getText().isEmpty()) {
+                if (!flags[5] && nev.getText().isEmpty()) {
                     nev.setText(">= 0.0 et <= 1.0");
                     nev.setForeground(Color.GRAY);
                 }
+                else if(flags[5] && nev.getText().isEmpty()) nev.setText(String.valueOf(Partie.NEVROSITE_MARSHALL));
             }
         });
         nev.getDocument().addDocumentListener(new DocumentListener() {
