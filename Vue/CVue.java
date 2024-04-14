@@ -5,12 +5,14 @@ import Controleur.*;
 import Modele.Action;
 
 import javax.swing.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import static Modele.Partie.*;
 import static Modele.Personne.spriteH;
@@ -88,6 +90,31 @@ class VueInput extends JPanel {
         return labelTextFieldPanel;
     }
 
+    private void getNB_JOUEUR(JPanel names,  JTextField nb_joueurs){
+        try {
+            String input = nb_joueurs.getText();
+            int number = Integer.parseInt(input);
+            if(number < 0)throw new RuntimeException();
+            Partie.NB_JOUEURS = number;
+            flag1 = true;
+            if(flag2) {names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+        } catch (Exception ex) {
+            nb_joueurs.setText("Entrez un nombre > 0");
+        }
+    }
+
+    private void getNb_Manches(JPanel names,  JTextField nb_manches){
+        try {
+            String input = nb_manches.getText();
+            int number = Integer.parseInt(input);
+            if(number < 3)throw new RuntimeException();
+            Partie.NB_MANCHES = number;
+            flag2 = true;
+            if(flag1){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+        } catch (Exception ignored) {
+        }
+    }
+
     public VueInput(CVue c){
         vue = c;
         this.setLayout(new BorderLayout());
@@ -118,35 +145,69 @@ class VueInput extends JPanel {
 
 
         JPanel names = new JPanel();
-
         JTextField nb_joueurs = (JTextField) ((JPanel)constants.getComponent(0)).getComponent(1);
-        nb_joueurs.addActionListener(e ->{
-            try {
-                String input = nb_joueurs.getText();
-                int number = Integer.parseInt(input);
-                if(number < 0)throw new RuntimeException();
-                Partie.NB_JOUEURS = number;
-                flag1 = true;
-                if(flag2) {names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
-            } catch (Exception ex) {
-                nb_joueurs.setText("Entrez un nombre > 0");
+        nb_joueurs.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+            private void updateTextFieldContent() {
+                String text = nb_joueurs.getText();
+                if (text != null && !text.isEmpty()) getNB_JOUEUR(names , nb_joueurs);
             }
         });
 
         JTextField nb_manches = (JTextField) ((JPanel)constants.getComponent(1)).getComponent(1);
-        nb_manches.addActionListener(e ->{
-            try {
-                String input = nb_manches.getText();
-                int number = Integer.parseInt(input);
-                if(number < 3)throw new RuntimeException();
-                Partie.NB_MANCHES = number;
-                flag2 = true;
-                if(flag1){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
-            } catch (Exception ex) {
-                nb_manches.setText("Entrez un nombre >= 3");
+        nb_manches.setText(">= 3");
+        nb_manches.setForeground(Color.GRAY);
+        nb_manches.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (nb_manches.getText().equals(">= 3")) {
+                    nb_manches.setText("");
+                    nb_manches.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (nb_manches.getText().isEmpty()) {
+                    nb_manches.setText(">= 3");
+                    nb_manches.setForeground(Color.GRAY);
+                }
             }
         });
+        nb_manches.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
 
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+            private void updateTextFieldContent() {
+                String text = nb_manches.getText();
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 3")) getNb_Manches(names , nb_manches);
+
+            }
+        });
 
         JPanel play = new JPanel();
         play.setPreferredSize(dim2);
@@ -177,13 +238,49 @@ class VueInput extends JPanel {
             int banditNb = i % Partie.NB_BANDITS_JOUEUR;
             JLabel bandit = new JLabel("Bandit "+(banditNb+1));
             bandit.setHorizontalAlignment(0);
-            JTextField nom_bandit = new JTextField("Nom");
-            nom_bandit.addActionListener(e ->{
-                try {
-                    String input = nom_bandit.getText();
-                    nomsBandits[joueurNb][banditNb] = input;
-                } catch (NumberFormatException ex) {
-                    nom_bandit.setText("Marston");
+            String defaultName = "J"+(joueurNb+1)+"b"+(banditNb+1);
+            JTextField nom_bandit = new JTextField(defaultName);
+            nom_bandit.setForeground(Color.GRAY);
+            nomsBandits[joueurNb][banditNb] = defaultName;
+            nom_bandit.addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    if (nom_bandit.getText().equals(defaultName)) {
+                        nom_bandit.setText("");
+                        nom_bandit.setForeground(Color.BLACK);
+                    }
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (nom_bandit.getText().isEmpty()) {
+                        nom_bandit.setText(defaultName);
+                        nom_bandit.setForeground(Color.GRAY);
+                    }
+                }
+            });
+            nom_bandit.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    updateTextFieldContent();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    updateTextFieldContent();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                }
+
+                private void updateTextFieldContent() {
+                    String text = nom_bandit.getText();
+                    if (text != null && !text.isEmpty()) {
+                        String input = nom_bandit.getText();
+                        nomsBandits[joueurNb][banditNb] = input;
+                    }
+
                 }
             });
             cell.add(joueur , BorderLayout.NORTH);
@@ -191,6 +288,7 @@ class VueInput extends JPanel {
             cell.add(nom_bandit , BorderLayout.SOUTH);
             names.add(cell);
             names.add(new JLabel());
+
 
         }
 
