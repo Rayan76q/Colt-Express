@@ -246,4 +246,6 @@ public class Bandit extends Personne implements Movable, Hitable{
     }
 
     public boolean getToit(){return toit;}
+
+
 }

@@ -16,12 +16,6 @@ public class Train extends Observable {
         }
         marchall = (Marchall)WAGON[0].getInterieur().get(0); //set le marshall
     }
-    public Train(int player_number){
-        assert(player_number <=8 && player_number>=2):"On ne peut pas jouer avec ce nombre de joeurs.";
-        WAGON[0] = new Locomotive();
-        for (int i = 1; i < Partie.NB_WAGON ; i++)  WAGON[i] = new Cabine(i);
-    }
-
 
     public Wagon[] get_Wagon(){
         return WAGON;
