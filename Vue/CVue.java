@@ -567,7 +567,8 @@ class VuePlateau extends JPanel implements Observer {
         //Interieur
         for (int i = 0; i < w.getInterieur().size(); i++) {
             Personne p = w.getInterieur().get(i);
-            g.drawImage(spriteMapPersonnes.get(w.getInterieur().get(i).get_id()).getImage(), x+i*(spriteW+5), HEIGHT*2,spriteW,spriteH, this);
+            g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(spriteW+5), HEIGHT*2,spriteW,spriteH, this);
+            if(p instanceof Bandit) g.drawString(p.toString() , x+i*(spriteW+5)+spriteW/5,HEIGHT*2-10);
         }
     }
 
