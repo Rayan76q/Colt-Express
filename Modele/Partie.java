@@ -9,7 +9,7 @@ public class Partie extends Observable {
 
     public static final int NB_MUNITIONS = 6;
     public static final double DEFAULT_PRECISION = 0.9;
-    public static final int DEFAULT_HP = 3;
+    public static int DEFAULT_HP = 3;
     public static int NB_JOUEURS = 4;
     public static int NB_MANCHES = 5;   //Revoir le Caractere public de certaines
     public static final int NB_BANDITS_JOUEUR = 1;

@@ -14,9 +14,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.util.HashMap;
 
-import static Modele.Partie.*;
-import static Modele.Personne.spriteH;
-import static Modele.Personne.spriteW;
 
 
 public class CVue {
@@ -228,7 +225,7 @@ class VueInput extends JPanel {
         names.removeAll();
         names.revalidate();
         names.repaint();
-        nomsBandits = new String[NB_JOUEURS][NB_BANDITS_JOUEUR];
+        nomsBandits = new String[Partie.NB_JOUEURS][Partie.NB_BANDITS_JOUEUR];
         for (int i = 0; i <Partie.NB_JOUEURS; i++) {
             names.add(new JLabel());
             JPanel cell = new JPanel(new BorderLayout());
@@ -352,7 +349,7 @@ class VueCommandes extends JPanel implements Observer{
         JPanel t3 = new JPanel(new GridLayout(1,5));
         t3.setBorder(new EmptyBorder(0, dim.width/3, 0, dim.width/3));
         JLabel l1 = new JLabel();
-        JLabel l2 = new JLabel(": " +DEFAULT_HP);
+        JLabel l2 = new JLabel(": " +Partie.DEFAULT_HP);
         JLabel l3 = new JLabel(b.compte_butins()+"$");
         JLabel l4 = new JLabel();
         JLabel l5 = new JLabel(": " +b.get_ammo());
@@ -383,7 +380,6 @@ class VueCommandes extends JPanel implements Observer{
         JButton boutonTir = new JButton("Tirer");
         JButton boutonFrappe = new JButton("Frapper");
         JButton boutonBraque = new JButton("Braquer");
-        //JButton boutonRetour1 = new JButton("Retour");
         JButton boutonRetour = new JButton("Retour");
 
         actions.add(boutonSeDeplacer);
@@ -397,10 +393,10 @@ class VueCommandes extends JPanel implements Observer{
 
 
         //Action en cours
-        promptPlanification.setLayout(new GridLayout(1,DEFAULT_HP));
+        promptPlanification.setLayout(new GridLayout(1,Partie.DEFAULT_HP));
         JLabel promptText = new JLabel();
         promptText.setFont(CVue.font2);
-        for (int i = 1; i <= DEFAULT_HP; i++) {
+        for (int i = 1; i <=Partie.DEFAULT_HP; i++) {
             promptText= new JLabel("Action N°"+i);
             promptText.setHorizontalAlignment(JLabel.CENTER);
             promptPlanification.add(promptText);
@@ -490,7 +486,7 @@ class VueCommandes extends JPanel implements Observer{
         ((CardLayout)panel.getLayout()).show(panel,"p1");
         Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
         JPanel panel2 = (JPanel) panel.getComponent(0);
-        for (int i = 0; i < DEFAULT_HP; i++) {
+        for (int i = 0; i < Partie.DEFAULT_HP; i++) {
             JLabel p = ((JLabel) panel2.getComponent(i));
             p.setIcon(null);
             p.setText("");
@@ -647,26 +643,26 @@ class VuePlateau extends JPanel implements Observer {
                 int finalI = i;
                 BufferedImage originalSprite = toBufferedImage(spriteMapPersonnes.get(b.get_id()).getImage());
                 BufferedImage redSprite = colorImage(originalSprite, 255, 0, 0);
-                g.drawImage(redSprite, x + finalI * (spriteW + 5), HEIGHT, spriteW, spriteH, this);
+                g.drawImage(redSprite, x + finalI * (Personne.spriteW + 5), HEIGHT, Personne.spriteW, Personne.spriteH, this);
                 Thread hitThread = new Thread(() -> {
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x + finalI * (spriteW + 5), HEIGHT, spriteW, spriteH, this);
+                    g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x + finalI * (Personne.spriteW + 5), HEIGHT, Personne.spriteW, Personne.spriteH, this);
                     b.setTargeted(false);
                 });
                 hitThread.start();
             }
-            else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x+i*(spriteW+5), HEIGHT,spriteW, spriteH, this);
-            g.drawString(b.toString() , x+i*(spriteW+5)+spriteW/5,HEIGHT-10);
+            else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x+i*(Personne.spriteW+5), HEIGHT,Personne.spriteW, Personne.spriteH, this);
+            g.drawString(b.toString() , x+i*(Personne.spriteW+5)+Personne.spriteW/5,HEIGHT-10);
         }
         //Interieur
         for (int i = 0; i < w.getInterieur().size(); i++) {
             Personne p = w.getInterieur().get(i);
-            g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(spriteW+5), HEIGHT*2,spriteW,spriteH, this);
-            if(p instanceof Bandit) g.drawString(p.toString() , x+i*(spriteW+5)+spriteW/5,HEIGHT*2-10);
+            g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(Personne.spriteW+5), HEIGHT*2,Personne.spriteW,Personne.spriteH, this);
+            if(p instanceof Bandit) g.drawString(p.toString() , x+i*(Personne.spriteW+5)+Personne.spriteW/5,HEIGHT*2-10);
         }
     }
 
@@ -674,12 +670,12 @@ class VuePlateau extends JPanel implements Observer {
         //Toit
         for (int i = 0; i < w.getLootToit().size(); i++) {
             Butin b = w.getLootToit().get(i);
-            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*2-b.getSpriteH(),b.getSpriteW(),b.getSpriteH(), this);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(Personne.spriteW+5), HEIGHT*2-b.getSpriteH(),b.getSpriteW(),b.getSpriteH(), this);
         }
         //Interieur
         for (int i = 0; i < w.getLootInt().size(); i++) {
             Butin b = w.getLootInt().get(i);
-            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*3 -b.getSpriteH() ,b.getSpriteW(),b.getSpriteH(), this);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(Personne.spriteW+5), HEIGHT*3 -b.getSpriteH() ,b.getSpriteW(),b.getSpriteH(), this);
         }
     }
 }
