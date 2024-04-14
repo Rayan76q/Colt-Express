@@ -35,7 +35,7 @@ public class VueInput extends JPanel {
             nb_joueurs.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NB_JOUEURS = number;
             flags[0]= true;
-            names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));
+            names.setLayout(new GridLayout(Partie.NB_JOUEURS*Partie.NB_BANDITS_JOUEUR/8+1,8));
             createGrid(names);
             if(!Arrays.asList(flags).contains(false)) {play.setEnabled(true);}
         } catch (Exception ex) {
@@ -435,8 +435,9 @@ public class VueInput extends JPanel {
         names.removeAll();
         names.revalidate();
         names.repaint();
+        Partie.NB_BANDITS_JOUEUR = (Partie.NB_JOUEURS <= 2 ? 2 : 1);
         nomsBandits = new String[Partie.NB_JOUEURS][Partie.NB_BANDITS_JOUEUR];
-        for (int i = 0; i <Partie.NB_JOUEURS; i++) {
+        for (int i = 0; i <Partie.NB_JOUEURS*Partie.NB_BANDITS_JOUEUR; i++) {
             names.add(new JLabel());
             JPanel cell = new JPanel(new BorderLayout());
             int joueurNb = i /Partie.NB_BANDITS_JOUEUR;

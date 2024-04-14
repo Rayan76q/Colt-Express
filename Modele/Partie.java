@@ -12,7 +12,7 @@ public class Partie extends Observable {
     public static int DEFAULT_HP = 3;
     public static int NB_JOUEURS = 4;
     public static int NB_MANCHES = 5;   //Revoir le Caractere public de certaines
-    public static final int NB_BANDITS_JOUEUR = 1;
+    public static int NB_BANDITS_JOUEUR = 1;
     public static int NB_WAGON = NB_JOUEURS*NB_BANDITS_JOUEUR;
     public static double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
@@ -64,15 +64,28 @@ public class Partie extends Observable {
         this.joueurs = new Joueur[NB_JOUEURS];
         this.matrice_action = new Action[NB_JOUEURS*NB_BANDITS_JOUEUR][DEFAULT_HP];
         train = new Train();
-        for (int i = 0; i < NB_JOUEURS; i++) {
-            List<Bandit> pions = new ArrayList<>();
-            for (int j = 0; j < NB_BANDITS_JOUEUR; j++) {
-                Bandit bandit = new Bandit(names[i][j],Partie.NB_WAGON-1-i%2);
+        if(NB_JOUEURS>2) {
+            for (int i = 0; i < NB_JOUEURS; i++) {
+                List<Bandit> pions = new ArrayList<>();
+                Bandit bandit = new Bandit(names[i][0], Partie.NB_WAGON - 1 - i % 2);
                 pions.add(bandit);
                 train.get_Wagon()[bandit.position].toit.add(bandit);
+                joueurs[i] = new Joueur(train, pions);
             }
-            joueurs[i] = new Joueur(train,pions);
-
+        }
+        else if(NB_JOUEURS==2){  //2 joueurs
+            List<Bandit> p1 = new ArrayList<>();
+            List<Bandit> p2 = new ArrayList<>();
+            for (int j = 0; j < 2; j++) {
+                Bandit b1 = new Bandit(names[0][j], Partie.NB_WAGON - 1 );
+                p1.add(b1);
+                Bandit b2 = new Bandit(names[1][j], Partie.NB_WAGON - 2);
+                p2.add(b2);
+                train.get_Wagon()[b1.position].toit.add(b1);
+                train.get_Wagon()[b2.position].toit.add(b2);
+            }
+            joueurs[0] = new Joueur(train, p1);
+            joueurs[1] = new Joueur(train, p2);
         }
     }
 
@@ -144,11 +157,11 @@ public class Partie extends Observable {
 
     public List<Joueur> joueur_en_tete(){
         int max = joueurs[0].compte_argent();
-        List<Joueur> premiers = new LinkedList<Joueur>();
+        List<Joueur> premiers = new LinkedList<>();
         for (Joueur j : joueurs){
             int v = j.compte_argent();
             if(v > max){
-                premiers = new LinkedList<Joueur>();
+                premiers = new LinkedList<>();
                 premiers.add(j);
                 max = v;
             }
@@ -162,7 +175,6 @@ public class Partie extends Observable {
 
 
 
-
     public int getNumeroTour() {
         return this.numeroManche;
     }
@@ -172,9 +184,6 @@ public class Partie extends Observable {
         return joueurAct;
     }
 
-    public int getActionChoisie() {
-        return actionChoisie;
-    }
 
     public void setActionChoisie(int actionChoisie) {
         assert  actionChoisie>=0 && actionChoisie<4 ;
@@ -255,8 +264,9 @@ public class Partie extends Observable {
         Thread actionThread = new Thread(() -> {
             for (int j = 0; j < matrice_action[0].length; j++) {
                 for (int i = 0; i < matrice_action.length; i++) {
-                    joueurAct = i/NB_BANDITS_JOUEUR;//switch les joueurs pour VueCommandes
-                    Bandit b = joueurs[joueurAct].getPionAct();
+                    joueurAct = i%NB_BANDITS_JOUEUR;  //switch les joueurs et les pions pour VueCommandes
+                    Bandit b = joueurs[joueurAct].getPions().get((NB_BANDITS_JOUEUR == 2 ? i/NB_BANDITS_JOUEUR : 0));
+                    joueurs[joueurAct].setPionAct(b);
                     notifyObservers("Au tour de "+b+" ( J"+(joueurAct+1)+" )");
                     sleep();
                     if (matrice_action[i][j] != null) {
@@ -277,7 +287,14 @@ public class Partie extends Observable {
             numeroManche++;
             notifyObservers(evenementsPassifs(true));
             notifyObservers();
-            joueurAct =0;
+            joueurAct = 0;
+            //Reset les pions actuelles pour partie à deux pions
+            if(NB_BANDITS_JOUEUR == 2){
+                for (int i = 0; i < joueurs.length; i++) {
+                    joueurs[i].setPionAct(joueurs[i].getPions().get(0));
+                }
+            }
+
         });
 
         actionThread.start();

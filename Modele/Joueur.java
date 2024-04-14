@@ -107,7 +107,11 @@ public class Joueur {
             pionAct = getPions().get(0);
             return false;
         }
+    }
 
+    public void setPionAct(Bandit b){
+        assert pions.contains(b);
+        pionAct = b;
     }
 
 }
