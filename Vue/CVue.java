@@ -70,11 +70,6 @@ public class CVue {
         container.add(tableau_de_bord, BorderLayout.SOUTH);
         ((CardLayout)app.getLayout()).next(app);
     }
-
-    public List<Bandit> get_bandits_from_joueur(int nb_joueur){
-        assert nb_joueur < NB_JOUEURS : "ayoooooooooooo";
-        return p.getJoueurs()[nb_joueur].getPions();
-    }
 }
 
 class VueInput extends JPanel {
@@ -187,7 +182,6 @@ class VueInput extends JPanel {
                 try {
                     String input = nom_bandit.getText();
                     nomsBandits[joueurNb][banditNb] = input;
-                    vue.get_bandits_from_joueur(joueurNb).get(banditNb).set_nom(input);
                 } catch (NumberFormatException ex) {
                     nom_bandit.setText("Marston");
                 }

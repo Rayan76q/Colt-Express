@@ -37,8 +37,6 @@ public abstract class Personne {
 
     public int get_id(){ return this.id;}
 
-    public void set_nom(String nom){ this.nom = nom;}
-
     @Override
     public String toString() {
         return nom;
