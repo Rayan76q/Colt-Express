@@ -7,14 +7,14 @@ public class Partie extends Observable {
     private static final int DELAY = 1000;
 
 
-    public static final int NB_MUNITIONS = 6;
-    public static final double DEFAULT_PRECISION = 0.9;
+    public static int NB_MUNITIONS = 6;
+    public static double DEFAULT_PRECISION = 0.9;
     public static int DEFAULT_HP = 3;
     public static int NB_JOUEURS = 4;
     public static int NB_MANCHES = 5;   //Revoir le Caractere public de certaines
     public static final int NB_BANDITS_JOUEUR = 1;
     public static int NB_WAGON = NB_JOUEURS*NB_BANDITS_JOUEUR;
-    public static final double NEVROSITE_MARSHALL = 0.3;
+    public static double NEVROSITE_MARSHALL = 0.3;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
     public static List<Class<? extends Action>> Actions = new ArrayList<>();

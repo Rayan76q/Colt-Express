@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -74,7 +75,7 @@ public class CVue {
 class VueInput extends JPanel {
     private CVue vue;
 
-    private boolean flag1 = false, flag2 =false;
+    private boolean[] flags = new boolean[]{false,false,false,false,false,false};
     private String[][] nomsBandits;
 
 
@@ -93,8 +94,8 @@ class VueInput extends JPanel {
             int number = Integer.parseInt(input);
             if(number < 0)throw new RuntimeException();
             Partie.NB_JOUEURS = number;
-            flag1 = true;
-            if(flag2) {names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            flags[0]= true;
+            if(!Arrays.asList(flags).contains(false)) {names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
         } catch (Exception ex) {
             nb_joueurs.setText("Entrez un nombre > 0");
         }
@@ -106,8 +107,55 @@ class VueInput extends JPanel {
             int number = Integer.parseInt(input);
             if(number < 3)throw new RuntimeException();
             Partie.NB_MANCHES = number;
-            flag2 = true;
-            if(flag1){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+            flags[1] = true;
+            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void getHP(JPanel names,  JTextField field){
+        try {
+            String input = field.getText();
+            int number = Integer.parseInt(input);
+            if(number < 2 || number > 8)throw new RuntimeException();
+            Partie.DEFAULT_HP = number;
+            flags[2] = true;
+            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+        } catch (Exception ignored) {
+        }
+    }
+    private void getAmmo(JPanel names,  JTextField field){
+        try {
+            String input = field.getText();
+            int number = Integer.parseInt(input);
+            if(number < 0 || number > 12)throw new RuntimeException();
+            Partie.NB_MUNITIONS = number;
+            flags[3] = true;
+            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void getPrecision(JPanel names,  JTextField field){
+        try {
+            String input = field.getText();
+            double number = Double.parseDouble(input);
+            if(number < 0.0|| number > 1.0)throw new RuntimeException();
+            Partie.DEFAULT_PRECISION = number;
+            flags[4] = true;
+            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void getNevrosite(JPanel names,  JTextField field){
+        try {
+            String input = field.getText();
+            double number = Double.parseDouble(input);
+            if(number < 0.0|| number > 1.0)throw new RuntimeException();
+            Partie.NEVROSITE_MARSHALL = number;
+            flags[5] = true;
+            if(!Arrays.asList(flags).contains(false)){names.setLayout(new GridLayout(Partie.NB_JOUEURS/8+1,8));createGrid(names);}
         } catch (Exception ignored) {
         }
     }
@@ -135,10 +183,14 @@ class VueInput extends JPanel {
         title.setBorder(BorderFactory.createLineBorder(Color.black));
         this.add(title,BorderLayout.NORTH);
 
-        JPanel constants = new JPanel(new GridLayout(2,1));
-        constants.setBorder(new EmptyBorder(0,300,0,300));
-        constants.add(createLabelTextFieldPanel("Nombre de Joueurs:"));
-        constants.add(createLabelTextFieldPanel("Nombre de Manches:"));
+        JPanel constants = new JPanel(new GridLayout(2,3));
+
+        constants.add(createLabelTextFieldPanel("Nombre de joueurs : "));
+        constants.add(createLabelTextFieldPanel("Nombre de mmanches : "));
+        constants.add(createLabelTextFieldPanel("HP : "));
+        constants.add(createLabelTextFieldPanel("Munitions : "));
+        constants.add(createLabelTextFieldPanel("Precision Bandit : "));
+        constants.add(createLabelTextFieldPanel("Nevrosite Marshall : "));
 
 
         JPanel names = new JPanel();
@@ -202,6 +254,174 @@ class VueInput extends JPanel {
             private void updateTextFieldContent() {
                 String text = nb_manches.getText();
                 if (text != null && !text.isEmpty() &&  !text.equals(">= 3")) getNb_Manches(names , nb_manches);
+
+            }
+        });
+
+        JTextField hp = (JTextField) ((JPanel)constants.getComponent(2)).getComponent(1);
+        hp.setText(">= 2 et <= 8");
+        hp.setForeground(Color.GRAY);
+        hp.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (hp.getText().equals(">= 2 et <= 8")) {
+                    hp.setText("");
+                    hp.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (hp.getText().isEmpty()) {
+                    hp.setText(">= 2 et <= 8");
+                    hp.setForeground(Color.GRAY);
+                }
+            }
+        });
+        hp.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+            private void updateTextFieldContent() {
+                String text = hp.getText();
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 2 et <= 8")) getHP(names ,hp);
+
+            }
+        });
+
+        JTextField ammo = (JTextField) ((JPanel)constants.getComponent(3)).getComponent(1);
+        ammo.setText(">= 0 et <= 12");
+        ammo.setForeground(Color.GRAY);
+        ammo.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (ammo.getText().equals(">= 0 et <= 12")) {
+                    ammo.setText("");
+                    ammo.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (ammo.getText().isEmpty()) {
+                    ammo.setText(">= 0 et <= 12");
+                    ammo.setForeground(Color.GRAY);
+                }
+            }
+        });
+        ammo.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+            private void updateTextFieldContent() {
+                String text = ammo.getText();
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 0 et <= 12")) getAmmo(names ,ammo);
+
+            }
+        });
+
+        JTextField precision = (JTextField) ((JPanel)constants.getComponent(4)).getComponent(1);
+        precision.setText(">= 0.0 et <= 1.0");
+        precision.setForeground(Color.GRAY);
+        precision.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (precision.getText().equals(">= 0.0 et <= 1.0")) {
+                    precision.setText("");
+                    precision.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (precision.getText().isEmpty()) {
+                    precision.setText(">= 0.0 et <= 1.0");
+                    precision.setForeground(Color.GRAY);
+                }
+            }
+        });
+        precision.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+            private void updateTextFieldContent() {
+                String text = precision.getText();
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 0.0 et <= 1.0")) getPrecision(names ,precision);
+
+            }
+        });
+
+        JTextField nev = (JTextField) ((JPanel)constants.getComponent(5)).getComponent(1);
+        nev.setText(">= 0.0 et <= 1.0");
+        nev.setForeground(Color.GRAY);
+        nev.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (nev.getText().equals(">= 0.0 et <= 1.0")) {
+                    nev.setText("");
+                    nev.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (nev.getText().isEmpty()) {
+                    nev.setText(">= 0.0 et <= 1.0");
+                    nev.setForeground(Color.GRAY);
+                }
+            }
+        });
+        nev.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateTextFieldContent();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+            private void updateTextFieldContent() {
+                String text = nev.getText();
+                if (text != null && !text.isEmpty() &&  !text.equals(">= 0.0 et <= 1.0")) getNevrosite(names ,nev);
 
             }
         });
@@ -280,6 +500,7 @@ class VueInput extends JPanel {
 
                 }
             });
+
             cell.add(joueur , BorderLayout.NORTH);
             cell.add(bandit, BorderLayout.CENTER);
             cell.add(nom_bandit , BorderLayout.SOUTH);
