@@ -3,10 +3,13 @@ package Vue;
 import Modele.*;
 
 import javax.swing.*;
+import javax.swing.Action;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class VuePlateau extends JPanel implements Observer {
@@ -15,12 +18,12 @@ public class VuePlateau extends JPanel implements Observer {
 
     //Hauteur et largeur d'un etage de wagon
     private static int dec = 5;
-    private final static int WIDTH = CVue.screenWidth / Partie.NB_WAGON - dec;
+    private final static int WIDTH = CVue.screenWidth / 4 - dec;
     private final static int HEIGHTCABINE = CVue.screenHeight / 3;
     private final static int HEIGHTLOCO = CVue.screenHeight / 2;
 
     private static final int spriteH = 98;
-    private static final int spriteW = min(WIDTH/(Partie.NB_JOUEURS)+5, 48);
+    private static final int spriteW = 48;
 
     private final ImageIcon locoSprite = new ImageIcon(getClass().getResource("Images/locomotive.png"));
     private final ImageIcon cabineSprite = new ImageIcon(getClass().getResource("Images/cabine.png"));
@@ -28,6 +31,8 @@ public class VuePlateau extends JPanel implements Observer {
     private HashMap<Integer, ImageIcon> spriteMapPersonnes = new HashMap<>();
     private HashMap<Butin, ImageIcon> spriteMapButins = new HashMap<>();
     private ImageIcon[] coffreSprite = {new ImageIcon(getClass().getResource("Images/safe.png")), new ImageIcon(getClass().getResource("Images/openSafe.png"))};
+
+    private int start = max(Partie.NB_WAGON-4,0);
 
     public VuePlateau(Train t) {
         Dimension dim = new Dimension(CVue.screenWidth,
@@ -50,6 +55,33 @@ public class VuePlateau extends JPanel implements Observer {
         Butin magot = ((Locomotive) t.get_Wagon()[0]).getMag();
         spriteMapButins.put(magot, new ImageIcon(getClass().getResource(magot.getSprite())));
         train.addObserver(this);
+
+        AbstractAction action = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(start>0)
+                    start--;
+
+            }
+        };
+
+        KeyStroke keyStroke = KeyStroke.getKeyStroke("A");
+        InputMap inputMap = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = this.getActionMap();
+        inputMap.put(keyStroke, "performAction");
+        actionMap.put("performAction", action);
+
+        AbstractAction action2 = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(start+3<Partie.NB_WAGON-1)
+                    start++;
+            }
+        };
+
+        KeyStroke keyStroke2 = KeyStroke.getKeyStroke("D");
+        inputMap.put(keyStroke2, "performAction2");
+        actionMap.put("performAction2", action2);
 
     }
 
@@ -95,17 +127,17 @@ public class VuePlateau extends JPanel implements Observer {
 
         int ycabine = CVue.screenHeight/12 +HEIGHTLOCO - spriteH - 80 ; //hauteur de dessin dans le wagon
         int ytoit = CVue.screenHeight/12 +HEIGHTLOCO - HEIGHTCABINE-spriteH +5; //Hauteur de dessin sur le toit wagon
-        for(int i=0; i<Partie.NB_WAGON; i++) {
-            paintWagon(g,i, i*WIDTH+Partie.NB_WAGON*dec/2);
+        for(int i=0; i<=3; i++) {
+            paintWagon(g,i+start, i*WIDTH+Partie.NB_WAGON*dec/2);
             int x = i*WIDTH+Partie.NB_WAGON*dec/2 + spriteW/2;
             int y = 0;
-            if(i==0) {
+            if(start==0 && i==0) {
                 paintCoffre(g, (Locomotive) train.get_Wagon()[0], Partie.NB_WAGON*dec/2);
                 x+= - spriteW/2 + WIDTH/2;
                 y += 20;
             }
-            paintPersonne(g, train.get_Wagon()[i],x, y+ycabine,y+ytoit);
-            paintButin(g, train.get_Wagon()[i], x);
+            paintPersonne(g, train.get_Wagon()[i+start],x, y+ycabine,y+ytoit);
+            paintButin(g, train.get_Wagon()[i+start], x);
         }
     }
 
@@ -185,4 +217,6 @@ public class VuePlateau extends JPanel implements Observer {
             g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*3 -b.getSpriteH() ,b.getSpriteW(),b.getSpriteH(), this);
         }
     }
+
+
 }

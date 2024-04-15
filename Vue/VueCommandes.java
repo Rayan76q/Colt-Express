@@ -176,7 +176,7 @@ public class VueCommandes extends JPanel implements Observer{
         retourActions.addActionListener(e -> switcher.next(boutons));
 
         //Racourcis Clavier
-        createKeyShortcut(boutonSeDeplacer , KeyEvent.VK_D);
+        createKeyShortcut(boutonSeDeplacer , KeyEvent.VK_S);
         createKeyShortcut(boutonTir , KeyEvent.VK_T);
         createKeyShortcut(boutonBraque , KeyEvent.VK_B);
         createKeyShortcut(boutonFrappe, KeyEvent.VK_F);
