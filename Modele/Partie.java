@@ -264,7 +264,7 @@ public class Partie extends Observable {
         Thread actionThread = new Thread(() -> {
             for (int j = 0; j < matrice_action[0].length; j++) {
                 for (int i = 0; i < matrice_action.length; i++) {
-                    joueurAct = i%NB_BANDITS_JOUEUR;  //switch les joueurs et les pions pour VueCommandes
+                    joueurAct = (NB_BANDITS_JOUEUR == 2 ? i%2 : i);  //switch les joueurs et les pions pour VueCommandes
                     Bandit b = joueurs[joueurAct].getPions().get((NB_BANDITS_JOUEUR == 2 ? i/NB_BANDITS_JOUEUR : 0));
                     joueurs[joueurAct].setPionAct(b);
                     notifyObservers("Au tour de "+b+" ( J"+(joueurAct+1)+" )");

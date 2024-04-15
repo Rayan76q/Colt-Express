@@ -13,9 +13,12 @@ public class VuePlateau extends JPanel implements Observer {
 
     //Hauteur et largeur d'un etage de wagon
     private static int dec = 30;
-    private final static int WIDTH = (int) (CVue.screenWidth / Partie.NB_WAGON - dec);
-    private final static int HEIGHT = CVue.screenHeight / 8;
+    private final static int WIDTH = CVue.screenWidth / Partie.NB_WAGON - dec;
+    private final static int HEIGHTCABINE = CVue.screenHeight / 3;
+    private final static int HEIGHTLOCO = CVue.screenHeight / 2;
 
+    private final ImageIcon locoSprite = new ImageIcon(getClass().getResource("Images/locomotive.png"));
+    private final ImageIcon cabineSprite = new ImageIcon(getClass().getResource("Images/cabine.png"));
 
     private HashMap<Integer, ImageIcon> spriteMapPersonnes = new HashMap<>();
     private HashMap<Butin, ImageIcon> spriteMapButins = new HashMap<>();
@@ -84,35 +87,47 @@ public class VuePlateau extends JPanel implements Observer {
     public void paintComponent(Graphics g) {
         super.repaint();
         super.paintComponent(g);
+
+        int ycabine = CVue.screenHeight/12 +HEIGHTLOCO -Personne.spriteH - 80 ; //hauteur de dessin dans le wagon
+        int ytoit = CVue.screenHeight/12 +HEIGHTLOCO - HEIGHTCABINE-Personne.spriteH +5; //Hauteur de dessin sur le toit wagon
         for(int i=0; i<Partie.NB_WAGON; i++) {
-            paintWagon(g, i*WIDTH+Partie.NB_WAGON*dec/2);
-            if(i==0) paintCoffre(g, (Locomotive) train.get_Wagon()[0], Partie.NB_WAGON*dec/2);
-            paintPersonne(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
-            paintButin(g, train.get_Wagon()[i], i*WIDTH+Partie.NB_WAGON*dec/2);
+            paintWagon(g,i, i*WIDTH+Partie.NB_WAGON*dec/2);
+            int x = i*WIDTH+Partie.NB_WAGON*dec/2 +Personne.spriteW/2;
+            int y = 0;
+            if(i==0) {paintCoffre(g, (Locomotive) train.get_Wagon()[0], Partie.NB_WAGON*dec/2);
+                x += WIDTH/2;
+                y += 20;
+            }
+            paintPersonne(g, train.get_Wagon()[i],x, y+ycabine,y+ytoit);
+            paintButin(g, train.get_Wagon()[i], x);
         }
     }
 
     private void paintCoffre(Graphics g, Locomotive l, int x) {
         if(l.magot_dispo()){
-            g.drawImage(coffreSprite[0].getImage(), x+20,HEIGHT*2 ,100,100, this);
+            g.drawImage(coffreSprite[0].getImage(), x+WIDTH/2,CVue.screenHeight/12 + HEIGHTLOCO -160,80,100, this);
         }
         else{
-            g.drawImage(coffreSprite[1].getImage(), x+20, HEIGHT*2,100,100, this);
+            g.drawImage(coffreSprite[1].getImage(), x+WIDTH/2, CVue.screenHeight/12 + HEIGHTLOCO -160 ,80,100, this);
         }
     }
 
 
-    private void paintWagon(Graphics g, int x) {
-        //Dessin du toit
-        g.setColor(Color.BLACK);
-        int y = HEIGHT;
-        g.drawRect(x, y, WIDTH, HEIGHT);
-
-        //Dessin de l'interieur
-        g.setColor(new Color(139, 69, 19, 100));
-        y = HEIGHT*2;
-        g.fillRect(x, y, WIDTH, HEIGHT);
-        g.drawRect(x, y, WIDTH, HEIGHT);
+    private void paintWagon(Graphics g,int i, int x) {
+        int y = CVue.screenHeight/12;
+        int decH = HEIGHTLOCO - HEIGHTCABINE;
+        Image img ;
+        int h ;
+        if(i==0) {
+            img = locoSprite.getImage();
+            h = HEIGHTLOCO;
+        }
+        else {
+            img = cabineSprite.getImage();
+            h = HEIGHTCABINE;
+            y+=decH;
+        }
+        g.drawImage(img, x , y ,WIDTH,h,this);
     }
 
     private void drawBandit(Graphics g, Bandit b , int x , int y){
@@ -135,19 +150,20 @@ public class VuePlateau extends JPanel implements Observer {
         g.drawString(b.toString() ,x,y-10);
     }
 
-    private void paintPersonne(Graphics g, Wagon w, int x) {
+    private void paintPersonne(Graphics g, Wagon w, int x,int yInt , int yToit) {
+
         //Toit
         for (int i = 0; i < w.getToit().size(); i++) {
             Bandit b = w.getToit().get(i);
-            drawBandit(g,b,x+ i* (Personne.spriteW + 5),HEIGHT);
+            drawBandit(g,b,x+ i* (Personne.spriteW + 5),yToit);
         }
         //Interieur
         for (int i = 0; i < w.getInterieur().size(); i++) {
             Personne p = w.getInterieur().get(i);
             if(p instanceof Bandit){
-               drawBandit(g,(Bandit) p,x+i* (Personne.spriteW + 5) , 2*HEIGHT+20);
+               drawBandit(g,(Bandit) p,x+i* (Personne.spriteW + 5) , yInt);
             }
-            else g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(Personne.spriteW+5), HEIGHT*2,Personne.spriteW,Personne.spriteH, this);
+            else g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(Personne.spriteW+5), yInt,Personne.spriteW,Personne.spriteH, this);
         }
     }
 

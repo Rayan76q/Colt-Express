@@ -183,6 +183,7 @@ public class VueCommandes extends JPanel implements Observer{
         createKeyShortcut(boutonAction1, KeyEvent.VK_ENTER);
         createKeyShortcut(boutonAction2, KeyEvent.VK_ENTER);
         createKeyShortcut(boutonRetour, KeyEvent.VK_ESCAPE);
+        createKeyShortcut(retourActions, KeyEvent.VK_ESCAPE);
         createKeyShortcut(haut , KeyEvent.VK_UP);
         createKeyShortcut(bas , KeyEvent.VK_DOWN);
         createKeyShortcut(gauche , KeyEvent.VK_LEFT);
