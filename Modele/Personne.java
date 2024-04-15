@@ -22,16 +22,14 @@ public abstract class Personne {
     protected int position;
     protected String nom;
     protected String sprite;
-    protected boolean targeted;
+    protected boolean targeted = false;
 
     static protected int current_id_bandit = 0 ;
     static protected int getCurrent_id_passager = -2;
-    public static final int spriteH = 98;
-    public static final int spriteW = 40;
+
 
     Personne(String n){
         nom = n;
-        targeted = false;
     }
 
 

@@ -7,15 +7,20 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
+import static java.lang.Math.min;
+
 public class VuePlateau extends JPanel implements Observer {
 
     private Train train;
 
     //Hauteur et largeur d'un etage de wagon
-    private static int dec = 30;
+    private static int dec = 5;
     private final static int WIDTH = CVue.screenWidth / Partie.NB_WAGON - dec;
     private final static int HEIGHTCABINE = CVue.screenHeight / 3;
     private final static int HEIGHTLOCO = CVue.screenHeight / 2;
+
+    private static final int spriteH = 98;
+    private static final int spriteW = min(WIDTH/(Partie.NB_JOUEURS)+5, 48);
 
     private final ImageIcon locoSprite = new ImageIcon(getClass().getResource("Images/locomotive.png"));
     private final ImageIcon cabineSprite = new ImageIcon(getClass().getResource("Images/cabine.png"));
@@ -88,14 +93,15 @@ public class VuePlateau extends JPanel implements Observer {
         super.repaint();
         super.paintComponent(g);
 
-        int ycabine = CVue.screenHeight/12 +HEIGHTLOCO -Personne.spriteH - 80 ; //hauteur de dessin dans le wagon
-        int ytoit = CVue.screenHeight/12 +HEIGHTLOCO - HEIGHTCABINE-Personne.spriteH +5; //Hauteur de dessin sur le toit wagon
+        int ycabine = CVue.screenHeight/12 +HEIGHTLOCO - spriteH - 80 ; //hauteur de dessin dans le wagon
+        int ytoit = CVue.screenHeight/12 +HEIGHTLOCO - HEIGHTCABINE-spriteH +5; //Hauteur de dessin sur le toit wagon
         for(int i=0; i<Partie.NB_WAGON; i++) {
             paintWagon(g,i, i*WIDTH+Partie.NB_WAGON*dec/2);
-            int x = i*WIDTH+Partie.NB_WAGON*dec/2 +Personne.spriteW/2;
+            int x = i*WIDTH+Partie.NB_WAGON*dec/2 + spriteW/2;
             int y = 0;
-            if(i==0) {paintCoffre(g, (Locomotive) train.get_Wagon()[0], Partie.NB_WAGON*dec/2);
-                x += WIDTH/2;
+            if(i==0) {
+                paintCoffre(g, (Locomotive) train.get_Wagon()[0], Partie.NB_WAGON*dec/2);
+                x+= - spriteW/2 + WIDTH/2;
                 y += 20;
             }
             paintPersonne(g, train.get_Wagon()[i],x, y+ycabine,y+ytoit);
@@ -105,10 +111,10 @@ public class VuePlateau extends JPanel implements Observer {
 
     private void paintCoffre(Graphics g, Locomotive l, int x) {
         if(l.magot_dispo()){
-            g.drawImage(coffreSprite[0].getImage(), x+WIDTH/2,CVue.screenHeight/12 + HEIGHTLOCO -160,80,100, this);
+            g.drawImage(coffreSprite[0].getImage(), x+WIDTH/2,CVue.screenHeight/12 + HEIGHTLOCO -160,WIDTH/4,100, this);
         }
         else{
-            g.drawImage(coffreSprite[1].getImage(), x+WIDTH/2, CVue.screenHeight/12 + HEIGHTLOCO -160 ,80,100, this);
+            g.drawImage(coffreSprite[1].getImage(), x+WIDTH/2, CVue.screenHeight/12 + HEIGHTLOCO -160 ,WIDTH/4,100, this);
         }
     }
 
@@ -134,19 +140,19 @@ public class VuePlateau extends JPanel implements Observer {
         if(b.isTargeted()) {
             BufferedImage originalSprite = toBufferedImage(spriteMapPersonnes.get(b.get_id()).getImage());
             BufferedImage redSprite = colorImage(originalSprite, 255, 0, 0);
-            g.drawImage(redSprite, x, y, Personne.spriteW, Personne.spriteH, this);
+            g.drawImage(redSprite, x, y, spriteW, spriteH, this);
             Thread hitThread = new Thread(() -> {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y, Personne.spriteW, Personne.spriteH, this);
+                g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y, spriteW, spriteH, this);
                 b.setTargeted(false);
             });
             hitThread.start();
         }
-        else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y,Personne.spriteW, Personne.spriteH, this);
+        else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y,spriteW, spriteH, this);
         g.drawString(b.toString() ,x,y-10);
     }
 
@@ -155,15 +161,15 @@ public class VuePlateau extends JPanel implements Observer {
         //Toit
         for (int i = 0; i < w.getToit().size(); i++) {
             Bandit b = w.getToit().get(i);
-            drawBandit(g,b,x+ i* (Personne.spriteW + 5),yToit);
+            drawBandit(g,b,x+ i* (spriteW + 5),yToit);
         }
         //Interieur
         for (int i = 0; i < w.getInterieur().size(); i++) {
             Personne p = w.getInterieur().get(i);
             if(p instanceof Bandit){
-               drawBandit(g,(Bandit) p,x+i* (Personne.spriteW + 5) , yInt);
+               drawBandit(g,(Bandit) p,x+i* (spriteW + 5) , yInt);
             }
-            else g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(Personne.spriteW+5), yInt,Personne.spriteW,Personne.spriteH, this);
+            else g.drawImage(spriteMapPersonnes.get(p.get_id()).getImage(), x+i*(spriteW+5), yInt,spriteW,spriteH, this);
         }
     }
 
@@ -171,12 +177,12 @@ public class VuePlateau extends JPanel implements Observer {
         //Toit
         for (int i = 0; i < w.getLootToit().size(); i++) {
             Butin b = w.getLootToit().get(i);
-            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(Personne.spriteW+5), HEIGHT*2-b.getSpriteH(),b.getSpriteW(),b.getSpriteH(), this);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*2-b.getSpriteH(),b.getSpriteW(),b.getSpriteH(), this);
         }
         //Interieur
         for (int i = 0; i < w.getLootInt().size(); i++) {
             Butin b = w.getLootInt().get(i);
-            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(Personne.spriteW+5), HEIGHT*3 -b.getSpriteH() ,b.getSpriteW(),b.getSpriteH(), this);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*3 -b.getSpriteH() ,b.getSpriteW(),b.getSpriteH(), this);
         }
     }
 }
