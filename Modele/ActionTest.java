@@ -16,8 +16,8 @@ public class ActionTest {
     @Before
     public void setup() {
 
-            // Mock Partie settings for test cases
-            Partie.NB_WAGON = 5;  // Example setting to ensure there are enough wagons
+
+            Partie.NB_WAGON = 5;
 
             // Initialize Train instance
             stubTrain = new Train();
@@ -47,7 +47,7 @@ public class ActionTest {
                 return Arrays.asList(Direction.values());
             }
         };
-        direction = Direction.AVANT; // Example direction
+        direction = Direction.AVANT;
     }
 
     @Test
