@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 public class VueCommandes extends JPanel implements Observer{
 
     private final ImageIcon[] sprites;
+    
 
     private Partie partie;
 
@@ -26,6 +27,7 @@ public class VueCommandes extends JPanel implements Observer{
         gbc.gridy = gridy;
         gbc.gridwidth = gridwidth;
         gbc.gridheight = gridheight;
+        if(component instanceof JButton) component.setPreferredSize(new Dimension(70,40));
         container.add(component, gbc);
     }
 
@@ -89,9 +91,15 @@ public class VueCommandes extends JPanel implements Observer{
 
 
         //Panels des boutons d'actions
-        boutons.setBorder(new EmptyBorder(0, dim.width/5, 0, dim.width/5));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
 
-        actions.setLayout(new GridLayout(2,4,50,5));
+        boutons.setBorder(new EmptyBorder(0, dim.width/5, 0, dim.width/5)); //padding
+
+
+        actions.setLayout(new GridBagLayout());
         JButton boutonAction1 = new JButton("Action");
         JButton boutonAction2 = new JButton("Action");
         JButton boutonSeDeplacer = new JButton("Se Deplacer");
@@ -100,14 +108,15 @@ public class VueCommandes extends JPanel implements Observer{
         JButton boutonBraque = new JButton("Braquer");
         JButton boutonRetour = new JButton("Retour");
 
-        actions.add(boutonSeDeplacer);
-        actions.add(boutonBraque);
-        actions.add(boutonTir);
-        actions.add(boutonFrappe);
-        actions.add(new JLabel());
-        actions.add(boutonRetour);
-        actions.add(boutonAction1);
-        actions.add(new JLabel());
+
+
+        addComponent(actions , boutonSeDeplacer , gbc, 0,0,1,1);
+        addComponent(actions ,boutonBraque, gbc, 1,0,1,1);
+        addComponent(actions ,boutonTir, gbc, 2,0,1,1);
+        addComponent(actions ,boutonFrappe, gbc, 3,0,1,1);
+        addComponent(actions ,boutonRetour, gbc, 0,1,2,1);
+        addComponent(actions ,boutonAction1, gbc, 2,1,2,1);
+
 
 
         //Action en cours
@@ -149,10 +158,6 @@ public class VueCommandes extends JPanel implements Observer{
         fleches.add(boutonAction2);
 
         //Layout globale
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
 
         addComponent(this,text , gbc , 0,0 , 1,1);
         addComponent(this,boutons , gbc , 0,1,1,1);

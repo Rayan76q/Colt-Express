@@ -31,6 +31,7 @@ public class VuePlateau extends JPanel implements Observer {
     private HashMap<Integer, ImageIcon> spriteMapPersonnes = new HashMap<>();
     private HashMap<Butin, ImageIcon> spriteMapButins = new HashMap<>();
     private ImageIcon[] coffreSprite = {new ImageIcon(getClass().getResource("Images/safe.png")), new ImageIcon(getClass().getResource("Images/openSafe.png"))};
+    private ImageIcon backGround  = new ImageIcon(getClass().getResource("Images/background.jpg"));
 
     private int start = max(Partie.NB_WAGON-4,0);
 
@@ -124,6 +125,14 @@ public class VuePlateau extends JPanel implements Observer {
     public void paintComponent(Graphics g) {
         super.repaint();
         super.paintComponent(g);
+        // Draw only part of the image
+        int sourceX =  (int) ((start*WIDTH) * (float) backGround.getIconWidth() / (2.25* CVue.screenWidth));
+        int sourceWidth = (int) ( WIDTH * 4 * (float) backGround.getIconWidth() / (2.25*CVue.screenWidth));
+
+
+        // Draw the partial image
+        g.drawImage(backGround.getImage(), 0,0, this.getWidth(), this.getHeight() ,
+                sourceX, 0, sourceX + sourceWidth, backGround.getIconHeight(), this);
 
         int ycabine = CVue.screenHeight/12 +HEIGHTLOCO - spriteH - 80 ; //hauteur de dessin dans le wagon
         int ytoit = CVue.screenHeight/12 +HEIGHTLOCO - HEIGHTCABINE-spriteH +5; //Hauteur de dessin sur le toit wagon
