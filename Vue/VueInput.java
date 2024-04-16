@@ -16,7 +16,7 @@ public class VueInput extends JPanel{
 
     private Boolean[] flags = new Boolean[]{false,false,false,false,false,false};
     private String[][] nomsBandits;
-    private ImageIcon bg = new ImageIcon(getClass().getResource("Images/public.jpg")) ;
+
 
 
     private JPanel createLabelTextFieldPanel(String labelText) {
@@ -130,6 +130,7 @@ public class VueInput extends JPanel{
         this.setLayout(new BorderLayout());
 
 
+
         Dimension dim1 = new Dimension(CVue.screenWidth,
                 CVue.screenHeight * 2/ 10);
 
@@ -137,8 +138,7 @@ public class VueInput extends JPanel{
                 CVue.screenHeight * 4/ 10);
 
 
-        JbgPanel title = new JbgPanel(bg);
-        title.setLayout(new BorderLayout());
+        JPanel title = new JPanel(new BorderLayout());
         JPanel panel = new JPanel(new BorderLayout());
 
         //Title
@@ -421,6 +421,7 @@ public class VueInput extends JPanel{
         });
 
         JPanel play = new JPanel();
+
         play.setPreferredSize(dim2);
 
 
@@ -432,7 +433,7 @@ public class VueInput extends JPanel{
                 CVue.screenHeight * 7/ 10));
         panel.setBorder(new EmptyBorder(30,0,30,0));
         this.add(panel, BorderLayout.SOUTH);
-
+        setOpacityALL(this);
     }
 
 
@@ -502,12 +503,49 @@ public class VueInput extends JPanel{
             cell.add(nom_bandit , BorderLayout.SOUTH);
             names.add(cell);
             names.add(new JLabel());
-
+            setOpacityALL(names);
 
         }
 
 
     }
 
+
+    public void setOpacityALL(Container cnt){
+        for (Component c : cnt.getComponents()){
+            if(c instanceof JPanel){
+                ((JPanel) c).setOpaque(false);
+                setOpacityALL((Container) c);
+            }
+            if(c instanceof JLabel){
+                ((JLabel) c).setOpaque(false);
+                setOpacityALL((Container) c);
+            }
+            if(c instanceof JButton){
+                ((JButton) c).setOpaque(false);
+                setOpacityALL((Container) c);
+            }
+            if(c instanceof JTextField){
+                ((JTextField) c).setOpaque(false);
+                setOpacityALL((Container) c);
+            }
+        }
+
+        if(cnt instanceof JPanel){
+            ((JPanel) cnt).setOpaque(false);
+        }
+        if(cnt instanceof JLabel){
+            ((JLabel) cnt).setOpaque(false);
+        }
+        if(cnt instanceof JButton){
+            ((JButton) cnt).setOpaque(false);
+        }
+        if(cnt instanceof JTextField){
+            ((JTextField) cnt).setOpaque(false);
+        }
+
+
+
+    }
 
 }

@@ -14,7 +14,6 @@ public class CVue {
     static final int screenWidth = screenSize.width;
     static final int screenHeight = screenSize.height;
 
-
     //Main graphique
     public static void main(String[] args) {
 
@@ -30,35 +29,50 @@ public class CVue {
     private VueCommandes tableau_de_bord;
     private VueInput menu;
     private Partie p;
+    private ImageIcon bg = new ImageIcon((new ImageIcon(CVue.class.getResource("Images/public.jpg"))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH));
 
     public CVue() {
 
         frame = new JFrame();
         frame.setTitle("Colt Express");
 
+
         app = new JPanel(new CardLayout());
         container = new JPanel(new BorderLayout());
-
         menu = new VueInput(this);
+
+
         app.add(menu);
-
-
         app.add(container);
+        app.setOpaque(false);
         frame.add(app);
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize( new Dimension(CVue.screenWidth,CVue.screenHeight));
+        frame.setVisible(true);
+
+        JLabel label = new JLabel(bg);
+        frame.setContentPane(label);
+        frame.add(menu);
+
+    }
+
+    public void switchToGame(String[][] names){
+        frame.getContentPane().removeAll();
+        frame.revalidate();
+        frame.repaint();
+        frame.setLayout(new BorderLayout());
+        p = new Partie(true , names );
+        plateau = new VuePlateau(p.getTrain());
+        frame.add(plateau, BorderLayout.NORTH);
+        tableau_de_bord = new VueCommandes(p);
+        frame.add(tableau_de_bord,BorderLayout.SOUTH);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize( new Dimension(CVue.screenWidth,CVue.screenHeight));
         frame.setVisible(true);
     }
 
-    public void switchToGame(String[][] names){
-        p = new Partie(true , names );
-        plateau = new VuePlateau(p.getTrain());
-        container.add(plateau, BorderLayout.NORTH);
-        tableau_de_bord = new VueCommandes(p);
-        tableau_de_bord.setIcon(new ImageIcon(getClass().getResource("Images/background.jpg")));
-        container.add(tableau_de_bord, BorderLayout.SOUTH);
-        ((CardLayout)app.getLayout()).next(app);
-    }
+
 }
 

@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class VueCommandes extends JLabel implements Observer{
+public class VueCommandes extends JPanel implements Observer{
 
     private final ImageIcon[] sprites;
 
