@@ -13,13 +13,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class VueCommandes extends JPanel implements Observer{
+public class VueCommandes extends JLabel implements Observer{
 
     private final ImageIcon[] sprites;
-    
 
-    private Partie partie;
+    private final Partie partie;
 
+    private boolean disabledInterface = false;
 
     private static void addComponent(Container container, Component component, GridBagConstraints gbc,
                                      int gridx, int gridy, int gridwidth, int gridheight) {
@@ -32,6 +32,7 @@ public class VueCommandes extends JPanel implements Observer{
     }
 
     public VueCommandes(Partie p) {
+
         this.sprites  = new ImageIcon[]{new ImageIcon(getClass().getResource("Images/coeur.png")),new ImageIcon(getClass().getResource("Images/ammo.png")),
                 new ImageIcon(getClass().getResource("Images/wound.png"))};
         this.partie = p;
@@ -108,8 +109,6 @@ public class VueCommandes extends JPanel implements Observer{
         JButton boutonBraque = new JButton("Braquer");
         JButton boutonRetour = new JButton("Retour");
 
-
-
         addComponent(actions , boutonSeDeplacer , gbc, 0,0,1,1);
         addComponent(actions ,boutonBraque, gbc, 1,0,1,1);
         addComponent(actions ,boutonTir, gbc, 2,0,1,1);
@@ -163,8 +162,6 @@ public class VueCommandes extends JPanel implements Observer{
         addComponent(this,boutons , gbc , 0,1,1,1);
         addComponent(this,prompt , gbc , 0,2,1,1);
 
-
-        this.setBorder(BorderFactory.createLineBorder(Color.black));
 
         //EventListeners
         boutonAction1.addActionListener(e -> partie.confirmeAction());
@@ -235,6 +232,11 @@ public class VueCommandes extends JPanel implements Observer{
     @Override
     public void paintComponent(Graphics g){
         paintStats();
+        if(disabledInterface) {
+            JPanel boutonsActions = (JPanel) ((JPanel) this.getComponent(1)).getComponent(0);
+            for (Component c : boutonsActions.getComponents()) c.setEnabled(true);
+            disabledInterface = false;
+        }
         JPanel panel = (JPanel) this.getComponent(2);
         ((CardLayout)panel.getLayout()).show(panel,"p1");
         Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
@@ -270,6 +272,11 @@ public class VueCommandes extends JPanel implements Observer{
     @Override
     public void update(String str) {
         paintStats();
+        if(!disabledInterface) {
+            JPanel boutonsActions = (JPanel) ((JPanel) this.getComponent(1)).getComponent(0);
+            for (Component c : boutonsActions.getComponents()) c.setEnabled(false);
+            disabledInterface = true;
+        }
         JPanel panel = (JPanel) this.getComponent(2);
         ((CardLayout)panel.getLayout()).show(panel,"p2");
         JPanel panel2 = (JPanel) panel.getComponent(1);

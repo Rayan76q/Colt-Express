@@ -11,11 +11,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Arrays;
 
-public class VueInput extends JPanel {
+public class VueInput extends JPanel{
     private CVue vue;
 
     private Boolean[] flags = new Boolean[]{false,false,false,false,false,false};
     private String[][] nomsBandits;
+    private ImageIcon bg = new ImageIcon(getClass().getResource("Images/public.jpg")) ;
 
 
     private JPanel createLabelTextFieldPanel(String labelText) {
@@ -31,7 +32,7 @@ public class VueInput extends JPanel {
         try {
             String input = nb_joueurs.getText();
             int number = Integer.parseInt(input);
-            if(number < 0)throw new RuntimeException();
+            if(number < 0 || number > 8)throw new RuntimeException();
             nb_joueurs.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NB_JOUEURS = number;
             flags[0]= true;
@@ -128,6 +129,7 @@ public class VueInput extends JPanel {
         vue = c;
         this.setLayout(new BorderLayout());
 
+
         Dimension dim1 = new Dimension(CVue.screenWidth,
                 CVue.screenHeight * 2/ 10);
 
@@ -135,7 +137,8 @@ public class VueInput extends JPanel {
                 CVue.screenHeight * 4/ 10);
 
 
-        JPanel title = new JPanel(new BorderLayout());
+        JbgPanel title = new JbgPanel(bg);
+        title.setLayout(new BorderLayout());
         JPanel panel = new JPanel(new BorderLayout());
 
         //Title
@@ -429,7 +432,9 @@ public class VueInput extends JPanel {
                 CVue.screenHeight * 7/ 10));
         panel.setBorder(new EmptyBorder(30,0,30,0));
         this.add(panel, BorderLayout.SOUTH);
+
     }
+
 
     private void createGrid(JPanel names) {
         names.removeAll();

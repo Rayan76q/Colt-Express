@@ -56,6 +56,7 @@ public class CVue {
         plateau = new VuePlateau(p.getTrain());
         container.add(plateau, BorderLayout.NORTH);
         tableau_de_bord = new VueCommandes(p);
+        tableau_de_bord.setIcon(new ImageIcon(getClass().getResource("Images/background.jpg")));
         container.add(tableau_de_bord, BorderLayout.SOUTH);
         ((CardLayout)app.getLayout()).next(app);
     }
