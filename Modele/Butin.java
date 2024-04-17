@@ -6,7 +6,7 @@ public enum Butin {
     BOURSE("Bourse" , (new Random()).nextInt(500),"../Vue/Images/bourse.png",40,40 ) ,
     BIJOUX("Bijoux",500,
             (new String[] {"../Vue/Images/bijoux1.png","../Vue/Images/bijoux2.png", "../Vue/Images/bijoux3.png"})[(new Random()).nextInt(3)],30,30),
-    MAGOT("Magot",1000,"../Vue/Images/magotLoot.png",80,80);
+    MAGOT("Magot",1000,"../Vue/Images/magotLoot.png",60,60);
 
     private final String nom;
     private final int valeur;

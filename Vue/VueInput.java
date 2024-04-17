@@ -167,13 +167,14 @@ public class VueInput extends JPanel{
 
 
         //Bouton play
-        JButton playButton = new JButton("Play");
+        RoundedButton playButton = new RoundedButton("Play" , 30);
         playButton.setEnabled(false);
         playButton.addActionListener(e -> vue.switchToGame(nomsBandits)); //Commence la partie avec les parametres
 
 
         JPanel names = new JPanel();
         JTextField nb_joueurs = (JTextField) ((JPanel)constants.getComponent(1)).getComponent(1);
+        nb_joueurs.setForeground(Color.WHITE);
         nb_joueurs.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
@@ -209,13 +210,13 @@ public class VueInput extends JPanel{
 
         JTextField nb_manches = (JTextField) ((JPanel)constants.getComponent(2)).getComponent(1);
         nb_manches.setText(">= 3");
-        nb_manches.setForeground(Color.GRAY);
+        nb_manches.setForeground(Color.LIGHT_GRAY);
         nb_manches.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 if (nb_manches.getText().equals(">= 3")) {
                     nb_manches.setText("");
-                    nb_manches.setForeground(Color.BLACK);
+                    nb_manches.setForeground(Color.WHITE);
                 }
             }
 
@@ -223,7 +224,7 @@ public class VueInput extends JPanel{
             public void focusLost(FocusEvent e) {
                 if (!flags[1] && nb_manches.getText().isEmpty()) {
                     nb_manches.setText(">= 3");
-                    nb_manches.setForeground(Color.GRAY);
+                    nb_manches.setForeground(Color.LIGHT_GRAY);
                 }
                 else if(flags[1] && nb_manches.getText().isEmpty()) nb_manches.setText(String.valueOf(Partie.NB_MANCHES));
 
@@ -253,13 +254,13 @@ public class VueInput extends JPanel{
 
         JTextField hp = (JTextField) ((JPanel)constants.getComponent(5)).getComponent(1);
         hp.setText(">= 2 et <= 8");
-        hp.setForeground(Color.GRAY);
+        hp.setForeground(Color.LIGHT_GRAY);
         hp.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 if (hp.getText().equals(">= 2 et <= 8")) {
                     hp.setText("");
-                    hp.setForeground(Color.BLACK);
+                    hp.setForeground(Color.WHITE);
                 }
             }
 
@@ -267,7 +268,7 @@ public class VueInput extends JPanel{
             public void focusLost(FocusEvent e) {
                 if (!flags[2] && hp.getText().isEmpty()) {
                     hp.setText(">= 2 et <= 8");
-                    hp.setForeground(Color.GRAY);
+                    hp.setForeground(Color.LIGHT_GRAY);
                 }
                 else if(flags[2] && hp.getText().isEmpty()) hp.setText(String.valueOf(Partie.DEFAULT_HP));
             }
@@ -296,13 +297,13 @@ public class VueInput extends JPanel{
 
         JTextField ammo = (JTextField) ((JPanel)constants.getComponent(6)).getComponent(1);
         ammo.setText(">= 0 et <= 12");
-        ammo.setForeground(Color.GRAY);
+        ammo.setForeground(Color.LIGHT_GRAY);
         ammo.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 if (ammo.getText().equals(">= 0 et <= 12")) {
                     ammo.setText("");
-                    ammo.setForeground(Color.BLACK);
+                    ammo.setForeground(Color.WHITE);
                 }
             }
 
@@ -310,7 +311,7 @@ public class VueInput extends JPanel{
             public void focusLost(FocusEvent e) {
                 if (!flags[3] && ammo.getText().isEmpty()) {
                     ammo.setText(">= 0 et <= 12");
-                    ammo.setForeground(Color.GRAY);
+                    ammo.setForeground(Color.LIGHT_GRAY);
                 }
                 else if(flags[3] && ammo.getText().isEmpty()) ammo.setText(String.valueOf(Partie.NB_MUNITIONS));
 
@@ -346,7 +347,7 @@ public class VueInput extends JPanel{
             public void focusGained(FocusEvent e) {
                 if (precision.getText().equals(">= 0.0 et <= 1.0")) {
                     precision.setText("");
-                    precision.setForeground(Color.BLACK);
+                    precision.setForeground(Color.WHITE);
                 }
             }
 
@@ -384,13 +385,13 @@ public class VueInput extends JPanel{
 
         JTextField nev = (JTextField) ((JPanel)constants.getComponent(10)).getComponent(1);
         nev.setText(">= 0.0 et <= 1.0");
-        nev.setForeground(Color.GRAY);
+        nev.setForeground(Color.LIGHT_GRAY);
         nev.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 if (nev.getText().equals(">= 0.0 et <= 1.0")) {
                     nev.setText("");
-                    nev.setForeground(Color.BLACK);
+                    nev.setForeground(Color.WHITE);
                 }
             }
 
@@ -398,7 +399,7 @@ public class VueInput extends JPanel{
             public void focusLost(FocusEvent e) {
                 if (!flags[5] && nev.getText().isEmpty()) {
                     nev.setText(">= 0.0 et <= 1.0");
-                    nev.setForeground(Color.GRAY);
+                    nev.setForeground(Color.LIGHT_GRAY);
                 }
                 else if(flags[5] && nev.getText().isEmpty()) nev.setText(String.valueOf(Partie.NEVROSITE_MARSHALL));
             }
@@ -466,7 +467,7 @@ public class VueInput extends JPanel{
                 public void focusGained(FocusEvent e) {
                     if (nom_bandit.getText().equals(defaultName)) {
                         nom_bandit.setText("");
-                        nom_bandit.setForeground(Color.BLACK);
+                        nom_bandit.setForeground(Color.WHITE);
                     }
                 }
 
