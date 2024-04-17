@@ -2,16 +2,17 @@ package Vue;
 
 import Controleur.ControleurMouvement;
 import Controleur.ControleurTir;
+import Modele.*;
 import Modele.Action;
-import Modele.Bandit;
-import Modele.Direction;
-import Modele.Partie;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class VueCommandes extends JPanel implements Observer{
 
@@ -285,18 +286,25 @@ public class VueCommandes extends JPanel implements Observer{
 
     @Override
     public void update(String str) {
-        if(!disableButtons) {
-            JPanel boutons = (JPanel) this.getComponent(1);
-            for (Component c : ((JPanel) boutons.getComponent(0)).getComponents())
-                c.setEnabled(false);
-            disableButtons = true;
+        if(partie.getNumeroTour()>=Partie.NB_MANCHES){
+            Podium pod = new Podium(partie);
+            JOptionPane.showMessageDialog(null, pod);}
+
+
+        else {
+            if (!disableButtons) {
+                JPanel boutons = (JPanel) this.getComponent(1);
+                for (Component c : ((JPanel) boutons.getComponent(0)).getComponents())
+                    c.setEnabled(false);
+                disableButtons = true;
+            }
+            JPanel panel = (JPanel) this.getComponent(2);
+            ((CardLayout) panel.getLayout()).show(panel, "p2");
+            JPanel panel2 = (JPanel) panel.getComponent(1);
+            JLabel textPrompt = (JLabel) panel2.getComponent(0);
+            textPrompt.setForeground(Color.WHITE);
+            textPrompt.setText(str);
+            execution = true;
         }
-        JPanel panel = (JPanel) this.getComponent(2);
-        ((CardLayout)panel.getLayout()).show(panel,"p2");
-        JPanel panel2 = (JPanel) panel.getComponent(1);
-        JLabel textPrompt = (JLabel) panel2.getComponent(0);
-        textPrompt.setForeground(Color.WHITE);
-        textPrompt.setText(str);
-        execution = true;
     }
 }

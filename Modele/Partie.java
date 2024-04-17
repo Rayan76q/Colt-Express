@@ -1,11 +1,8 @@
 package Modele;
-
-
-import javax.swing.*;
 import java.util.*;
 
 public class Partie extends Observable {
-    private static final int DELAY = 1000;
+    private static final int DELAY = 10 ;
 
 
     public static int NB_MUNITIONS = 6;
@@ -285,8 +282,8 @@ public class Partie extends Observable {
                 r += j.toString()+" ";
             }
             System.out.println(r+" en tête pour ce tour.\n");
-            numeroManche++;
             notifyObservers(evenementsPassifs(true));
+            numeroManche++;
             if(numeroManche < NB_MANCHES) { //La partie continue
                 notifyObservers();
                 joueurAct = 0;
@@ -299,12 +296,15 @@ public class Partie extends Observable {
             }
             else{
                 Arrays.sort(joueurs, Comparator.reverseOrder());
-                String message = "\n  Joueur"+(joueurs[0].getId()+1)+ " A GANGÉ   \n\n";
+                List<Joueur> gagnants = joueur_en_tete();
+                String message = "\n    ";
+                for (Joueur j : gagnants) message+="j"+(j.getId()+1)+" ";
+                message += (gagnants.size()==1 ? "A GAGNÉ" : "ONT GAGNÉ") + "\n\n";
                 message +="Leader Board :  \n";
                 for (int i = 0; i < joueurs.length; i++) {
                     message += "    "+(i+1)+":  "+"Joueur"+(joueurs[i].getId()+1) + "  " + joueurs[i].compte_argent()+"$\n";
                 }
-                JOptionPane.showMessageDialog(null, message);
+                notifyObservers(message);
             }
 
         });

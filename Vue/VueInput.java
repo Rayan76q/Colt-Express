@@ -98,7 +98,7 @@ public class VueInput extends JPanel{
         try {
             String input = field.getText();
             double number = Double.parseDouble(input);
-            if(number < 0.0|| number > 1.0)throw new RuntimeException();
+            if(number <= 0.0|| number > 1.0)throw new RuntimeException();
             field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.DEFAULT_PRECISION = number;
             flags[4] = true;
@@ -114,7 +114,7 @@ public class VueInput extends JPanel{
         try {
             String input = field.getText();
             double number = Double.parseDouble(input);
-            if(number < 0.0|| number > 1.0)throw new RuntimeException();
+            if(number <= 0.0|| number > 1.0)throw new RuntimeException();
             field.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             Partie.NEVROSITE_MARSHALL = number;
             flags[5] = true;

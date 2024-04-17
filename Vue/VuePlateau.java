@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -22,8 +23,8 @@ public class VuePlateau extends JPanel implements Observer {
     private final static int HEIGHTCABINE = CVue.screenHeight / 3;
     private final static int HEIGHTLOCO = CVue.screenHeight / 2;
 
-    private static final int spriteH = 98;
-    private static final int spriteW = 48;
+    static final int spriteH = 98;
+    static final int spriteW = 48;
 
     private final ImageIcon locoSprite = new ImageIcon(getClass().getResource("Images/locomotive.png"));
     private final ImageIcon cabineSprite = new ImageIcon(getClass().getResource("Images/cabine.png"));
@@ -134,8 +135,8 @@ public class VuePlateau extends JPanel implements Observer {
         g.drawImage(backGround.getImage(), 0,0, this.getWidth(), this.getHeight() ,
                 sourceX, 0, sourceX + sourceWidth, backGround.getIconHeight(), this);
 
-        int ycabine = CVue.screenHeight/12 +HEIGHTLOCO - spriteH - 80 ; //hauteur de dessin dans le wagon
-        int ytoit = CVue.screenHeight/12 +HEIGHTLOCO - HEIGHTCABINE-spriteH +5; //Hauteur de dessin sur le toit wagon
+        int ycabine = CVue.screenHeight/12 +HEIGHTLOCO - 80 ; //hauteur de dessin dans le wagon
+        int ytoit = CVue.screenHeight/12 +HEIGHTLOCO - HEIGHTCABINE +5; //Hauteur de dessin sur le toit wagon
         for(int i=0; i<=3; i++) {
             paintWagon(g,i+start, i*WIDTH+Partie.NB_WAGON*dec/2);
             int x = i*WIDTH+Partie.NB_WAGON*dec/2 + spriteW/2;
@@ -145,8 +146,8 @@ public class VuePlateau extends JPanel implements Observer {
                 x+= - spriteW/2 + WIDTH/2;
                 y += 20;
             }
-            paintPersonne(g, train.get_Wagon()[i+start],x, y+ycabine,y+ytoit);
-            paintButin(g, train.get_Wagon()[i+start], x);
+            paintPersonne(g, train.get_Wagon()[i+start],x, y+ycabine-spriteH,y+ytoit-spriteH);
+            paintButin(g, train.get_Wagon()[i+start], x, y+ycabine,y+ytoit);
         }
     }
 
@@ -214,16 +215,16 @@ public class VuePlateau extends JPanel implements Observer {
         }
     }
 
-    private void paintButin(Graphics g, Wagon w, int x) {
+    private void paintButin(Graphics g, Wagon w, int x, int yInt, int yToit) {
         //Toit
         for (int i = 0; i < w.getLootToit().size(); i++) {
             Butin b = w.getLootToit().get(i);
-            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*2-b.getSpriteH(),b.getSpriteW(),b.getSpriteH(), this);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), yToit-b.getSpriteH(),b.getSpriteW(),b.getSpriteH(), this);
         }
         //Interieur
         for (int i = 0; i < w.getLootInt().size(); i++) {
             Butin b = w.getLootInt().get(i);
-            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), HEIGHT*3 -b.getSpriteH() ,b.getSpriteW(),b.getSpriteH(), this);
+            g.drawImage(spriteMapButins.get(b).getImage(), x+i*(spriteW+5), yInt-b.getSpriteH() ,b.getSpriteW(),b.getSpriteH(), this);
         }
     }
 
