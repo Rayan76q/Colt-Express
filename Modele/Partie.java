@@ -1,6 +1,7 @@
 package Modele;
 
 
+import javax.swing.*;
 import java.util.*;
 
 public class Partie extends Observable {
@@ -286,13 +287,24 @@ public class Partie extends Observable {
             System.out.println(r+" en tête pour ce tour.\n");
             numeroManche++;
             notifyObservers(evenementsPassifs(true));
-            notifyObservers();
-            joueurAct = 0;
-            //Reset les pions actuelles pour partie à deux pions
-            if(NB_BANDITS_JOUEUR == 2){
-                for (int i = 0; i < joueurs.length; i++) {
-                    joueurs[i].setPionAct(joueurs[i].getPions().get(0));
+            if(numeroManche < NB_MANCHES) { //La partie continue
+                notifyObservers();
+                joueurAct = 0;
+                //Reset les pions actuelles pour partie à deux pions
+                if (NB_BANDITS_JOUEUR == 2) {
+                    for (int i = 0; i < joueurs.length; i++) {
+                        joueurs[i].setPionAct(joueurs[i].getPions().get(0));
+                    }
                 }
+            }
+            else{
+                Arrays.sort(joueurs, Comparator.reverseOrder());
+                String message = "\n  Joueur"+(joueurs[0].getId()+1)+ " A GANGÉ   \n\n";
+                message +="Leader Board :  \n";
+                for (int i = 0; i < joueurs.length; i++) {
+                    message += "    "+(i+1)+":  "+"Joueur"+(joueurs[i].getId()+1) + "  " + joueurs[i].compte_argent()+"$\n";
+                }
+                JOptionPane.showMessageDialog(null, message);
             }
 
         });

@@ -1,9 +1,10 @@
 package Modele;
 
+
 import java.util.List;
 import java.util.Scanner;
 
-public class Joueur {
+public class Joueur implements Comparable<Joueur> {
     private static int current_id = 0;
 
     private Train train;
@@ -114,4 +115,8 @@ public class Joueur {
         pionAct = b;
     }
 
+    @Override
+    public int compareTo(Joueur other) {
+        return Integer.compare(this.compte_argent(), other.compte_argent());
+    }
 }
