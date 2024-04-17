@@ -15,7 +15,7 @@ public class Partie extends Observable {
     public static int NB_MANCHES = 5;   //Revoir le Caractere public de certaines
     public static int NB_BANDITS_JOUEUR = 1;
     public static int NB_WAGON ;
-    public static double NEVROSITE_MARSHALL = 0.3;
+    public static double NEVROSITE_MARSHALL = 0.9;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
     public static List<Class<? extends Action>> Actions = new ArrayList<>();

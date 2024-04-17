@@ -164,7 +164,10 @@ public class Bandit extends Personne implements Movable, Hitable{
                 }
                 else if(current_wagg.interieur.isEmpty()){
                     return this + "a tire sur personne puisque le wagon est vide, dommage!";
-                }else { //Le bandit touche bien un autre bandit
+                }else if(bandits_cibles.isEmpty()) {
+                    return this+ "tir sur le marchall! Fais gaffe";
+                }
+                else{ //Le bandit touche bien un autre bandit
                     int randomIndex = random.nextInt(bandits_cibles.size());
                     Bandit b_cible = bandits_cibles.get(randomIndex);
                     b_cible.est_vise(current_wagg);
