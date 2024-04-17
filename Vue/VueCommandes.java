@@ -102,15 +102,15 @@ public class VueCommandes extends JPanel implements Observer{
 
         boutons.setBorder(new EmptyBorder(0, dim.width/5, 0, dim.width/5)); //padding
 
-
+        int buttonRoundness = 30;
         actions.setLayout(new GridBagLayout());
-        JButton boutonAction1 = new JButton("Action");
-        JButton boutonAction2 = new JButton("Action");
-        JButton boutonSeDeplacer = new JButton("Se Deplacer");
-        JButton boutonTir = new JButton("Tirer");
-        JButton boutonFrappe = new JButton("Frapper");
-        JButton boutonBraque = new JButton("Braquer");
-        JButton boutonRetour = new JButton("Retour");
+        RoundedButton boutonAction1 = new RoundedButton("Action",buttonRoundness);
+        RoundedButton boutonAction2 = new RoundedButton("Action",buttonRoundness);
+        RoundedButton boutonSeDeplacer = new RoundedButton("Se Deplacer",buttonRoundness);
+        RoundedButton boutonTir = new RoundedButton("Tirer",buttonRoundness);
+        RoundedButton boutonFrappe = new RoundedButton("Frapper",buttonRoundness);
+        RoundedButton boutonBraque = new RoundedButton("Braquer",buttonRoundness);
+        RoundedButton boutonRetour = new RoundedButton("Retour",buttonRoundness);
 
         addComponent(actions , boutonSeDeplacer , gbc, 0,0,1,1);
         addComponent(actions ,boutonBraque, gbc, 1,0,1,1);
@@ -140,11 +140,11 @@ public class VueCommandes extends JPanel implements Observer{
         fleches.setPreferredSize(new Dimension(dim.width/4 , dim.height));
 
         //Choix de directions
-        JButton gauche = new JButton("←");
-        JButton droite = new JButton("→");
-        JButton haut = new JButton("↑");
-        JButton bas = new JButton("↓");
-        JButton retourActions = new JButton("Retour");
+        RoundedButton gauche = new RoundedButton("←",buttonRoundness);
+        RoundedButton droite = new RoundedButton("→",buttonRoundness);
+        RoundedButton haut = new RoundedButton("↑",buttonRoundness);
+        RoundedButton bas = new RoundedButton("↓",buttonRoundness);
+        RoundedButton retourActions = new RoundedButton("Retour",buttonRoundness);
 
 
         fleches.add(new JLabel());

@@ -149,14 +149,17 @@ public class VueInput extends JPanel{
         title.setPreferredSize(dim1);
         this.add(title,BorderLayout.NORTH);
 
-        JPanel constants = new JPanel(new GridLayout(3,2,20,10));
+        JPanel constants = new JPanel(new GridLayout(3,3,20,10));
         constants.setBorder(new EmptyBorder(0,30,0,30));
 
         constants.add(createLabelTextFieldPanel("Nombre de joueurs : "));
+        constants.add(new JLabel());
         constants.add(createLabelTextFieldPanel("Nombre de manches : "));
         constants.add(createLabelTextFieldPanel("HP : "));
+        constants.add(new JLabel());
         constants.add(createLabelTextFieldPanel("Munitions : "));
         constants.add(createLabelTextFieldPanel("Precision Bandit : "));
+        constants.add(new JLabel());
         constants.add(createLabelTextFieldPanel("Nevrosite Marshall : "));
 
 
@@ -201,7 +204,7 @@ public class VueInput extends JPanel{
             }
         });
 
-        JTextField nb_manches = (JTextField) ((JPanel)constants.getComponent(1)).getComponent(1);
+        JTextField nb_manches = (JTextField) ((JPanel)constants.getComponent(2)).getComponent(1);
         nb_manches.setText(">= 3");
         nb_manches.setForeground(Color.GRAY);
         nb_manches.addFocusListener(new FocusListener() {
@@ -245,7 +248,7 @@ public class VueInput extends JPanel{
             }
         });
 
-        JTextField hp = (JTextField) ((JPanel)constants.getComponent(2)).getComponent(1);
+        JTextField hp = (JTextField) ((JPanel)constants.getComponent(3)).getComponent(1);
         hp.setText(">= 2 et <= 8");
         hp.setForeground(Color.GRAY);
         hp.addFocusListener(new FocusListener() {
@@ -288,7 +291,7 @@ public class VueInput extends JPanel{
             }
         });
 
-        JTextField ammo = (JTextField) ((JPanel)constants.getComponent(3)).getComponent(1);
+        JTextField ammo = (JTextField) ((JPanel)constants.getComponent(5)).getComponent(1);
         ammo.setText(">= 0 et <= 12");
         ammo.setForeground(Color.GRAY);
         ammo.addFocusListener(new FocusListener() {
@@ -332,7 +335,7 @@ public class VueInput extends JPanel{
             }
         });
 
-        JTextField precision = (JTextField) ((JPanel)constants.getComponent(4)).getComponent(1);
+        JTextField precision = (JTextField) ((JPanel)constants.getComponent(6)).getComponent(1);
         precision.setText(">= 0.0 et <= 1.0");
         precision.setForeground(Color.GRAY);
         precision.addFocusListener(new FocusListener() {
@@ -376,7 +379,7 @@ public class VueInput extends JPanel{
             }
         });
 
-        JTextField nev = (JTextField) ((JPanel)constants.getComponent(5)).getComponent(1);
+        JTextField nev = (JTextField) ((JPanel)constants.getComponent(8)).getComponent(1);
         nev.setText(">= 0.0 et <= 1.0");
         nev.setForeground(Color.GRAY);
         nev.addFocusListener(new FocusListener() {
