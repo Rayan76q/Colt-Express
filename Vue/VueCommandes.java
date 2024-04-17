@@ -19,7 +19,7 @@ public class VueCommandes extends JPanel implements Observer{
 
     private final Partie partie;
 
-    private boolean disabledInterface = false;
+    private boolean execution = false, disableButtons = false;
 
     private static void addComponent(Container container, Component component, GridBagConstraints gbc,
                                      int gridx, int gridy, int gridwidth, int gridheight) {
@@ -56,11 +56,7 @@ public class VueCommandes extends JPanel implements Observer{
         boutons.add(actions,"card 1");
         boutons.add(fleches,"card 2");
 
-        //Prompts
-        CardLayout switcher2 = new CardLayout();
-        prompt.setLayout(switcher2);
-        prompt.add(promptPlanification, "p1");
-        prompt.add(promptExecution, "p2");
+
 
         //Panel de titre
         text.setLayout(new GridLayout(3,1));
@@ -76,6 +72,13 @@ public class VueCommandes extends JPanel implements Observer{
         JLabel l5 = new JLabel(": " +b.get_ammo());
         l1.setIcon(sprites[0]);
         l4.setIcon(sprites[1]);
+
+        t1.setForeground(Color.WHITE);
+        t2.setForeground(Color.WHITE);
+        l2.setForeground(Color.WHITE);
+        l3.setForeground(Color.WHITE);
+        l5.setForeground(Color.WHITE);
+
         t3.add(l1);
         t3.add(l2);
         t3.add(l3);
@@ -123,7 +126,8 @@ public class VueCommandes extends JPanel implements Observer{
         JLabel promptText = new JLabel();
         promptText.setFont(CVue.font2);
         for (int i = 1; i <=Partie.DEFAULT_HP; i++) {
-            promptText= new JLabel("Action N°"+i);
+            promptText = new JLabel("Action N°"+i);
+            promptText.setForeground(Color.WHITE);
             promptText.setHorizontalAlignment(JLabel.CENTER);
             promptPlanification.add(promptText);
         }
@@ -155,6 +159,13 @@ public class VueCommandes extends JPanel implements Observer{
         fleches.add(retourActions);
         fleches.add(new JLabel());
         fleches.add(boutonAction2);
+
+
+        //Prompts
+        CardLayout switcher2 = new CardLayout();
+        prompt.setLayout(switcher2);
+        prompt.add(promptPlanification, "p1");
+        prompt.add(promptExecution, "p2");
 
         //Layout globale
 
@@ -193,6 +204,8 @@ public class VueCommandes extends JPanel implements Observer{
 
 
         partie.addObserver(this);
+        CVue.setOpacityALL(this,false);
+
     }
 
     private void createKeyShortcut(JButton b , int key){
@@ -229,16 +242,15 @@ public class VueCommandes extends JPanel implements Observer{
         ((JLabel)stats.getComponent(4)).setText(": " +b.get_ammo());
     }
 
-    @Override
-    public void paintComponent(Graphics g){
-        paintStats();
-        if(disabledInterface) {
-            JPanel boutonsActions = (JPanel) ((JPanel) this.getComponent(1)).getComponent(0);
-            for (Component c : boutonsActions.getComponents()) c.setEnabled(true);
-            disabledInterface = false;
+    private void paintP1(){
+        if(disableButtons) {
+            JPanel boutons = (JPanel) this.getComponent(1);
+            for (Component c : ((JPanel) boutons.getComponent(0)).getComponents())
+                c.setEnabled(true);
+            disableButtons = false;
         }
         JPanel panel = (JPanel) this.getComponent(2);
-        ((CardLayout)panel.getLayout()).show(panel,"p1");
+        ((CardLayout) panel.getLayout()).show(panel, "p1");
         Bandit b = partie.getJoueurs()[partie.getJoueurAct()].getPionAct();
         JPanel panel2 = (JPanel) panel.getComponent(0);
         for (int i = 0; i < Partie.DEFAULT_HP; i++) {
@@ -246,42 +258,45 @@ public class VueCommandes extends JPanel implements Observer{
             p.setIcon(null);
             p.setText("");
             p.revalidate();
-
-            if(i >= b.get_hitPoints() ){
+            if (i >= b.get_hitPoints()) {
                 p.setIcon(sprites[2]);
-            }
-            else {
+            } else {
                 Action a = partie.getMatrice_action()[b.get_id()][i];
                 if (a != null) {
                     p.setText(a.toString());
-                }
-                else{
-                    p.setText("Action N°" + (i+1));
+                } else {
+                    p.setText("Action N°" + (i + 1));
                 }
             }
-
         }
+    }
 
+    @Override
+    public void paintComponent(Graphics g){
+        paintStats();
+        if(!execution) paintP1();
     }
 
 
     public void update() {
+        execution = false;
         repaint();
     }
 
     @Override
     public void update(String str) {
-        paintStats();
-        if(!disabledInterface) {
-            JPanel boutonsActions = (JPanel) ((JPanel) this.getComponent(1)).getComponent(0);
-            for (Component c : boutonsActions.getComponents()) c.setEnabled(false);
-            disabledInterface = true;
+        if(!disableButtons) {
+            JPanel boutons = (JPanel) this.getComponent(1);
+            for (Component c : ((JPanel) boutons.getComponent(0)).getComponents())
+                c.setEnabled(false);
+            disableButtons = true;
         }
         JPanel panel = (JPanel) this.getComponent(2);
         ((CardLayout)panel.getLayout()).show(panel,"p2");
         JPanel panel2 = (JPanel) panel.getComponent(1);
-
         JLabel textPrompt = (JLabel) panel2.getComponent(0);
+        textPrompt.setForeground(Color.WHITE);
         textPrompt.setText(str);
+        execution = true;
     }
 }

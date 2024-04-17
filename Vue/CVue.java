@@ -29,7 +29,8 @@ public class CVue {
     private VueCommandes tableau_de_bord;
     private VueInput menu;
     private Partie p;
-    private ImageIcon bg = new ImageIcon((new ImageIcon(CVue.class.getResource("Images/public.jpg"))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH));
+    private ImageIcon bg[] = new ImageIcon[] {new ImageIcon((new ImageIcon(CVue.class.getResource("Images/public.jpg"))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH)),
+            new ImageIcon((new ImageIcon(CVue.class.getResource("Images/backGroundCommandes.jpg"))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH))};
 
     public CVue() {
 
@@ -51,7 +52,7 @@ public class CVue {
         frame.setPreferredSize( new Dimension(CVue.screenWidth,CVue.screenHeight));
         frame.setVisible(true);
 
-        JLabel label = new JLabel(bg);
+        JLabel label = new JLabel(bg[0]);
         frame.setContentPane(label);
         frame.add(menu);
 
@@ -61,6 +62,8 @@ public class CVue {
         frame.getContentPane().removeAll();
         frame.revalidate();
         frame.repaint();
+        JLabel label = new JLabel(bg[1]);
+        frame.setContentPane(label);
         frame.setLayout(new BorderLayout());
         p = new Partie(true , names );
         plateau = new VuePlateau(p.getTrain());
@@ -71,8 +74,21 @@ public class CVue {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize( new Dimension(CVue.screenWidth,CVue.screenHeight));
         frame.setVisible(true);
+
     }
 
 
+    public static void setOpacityALL(Container container, boolean b){
+        for (Component component : container.getComponents()) {
+            if (component instanceof JComponent) {
+                ((JComponent) component).setOpaque(b);
+            }
+            if (component instanceof Container) {
+                setOpacityALL((Container) component,b);
+            }
+        }
+        ((JComponent) container).setOpaque(b);
+
+    }
 }
 

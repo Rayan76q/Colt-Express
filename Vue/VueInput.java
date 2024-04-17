@@ -22,6 +22,7 @@ public class VueInput extends JPanel{
     private JPanel createLabelTextFieldPanel(String labelText) {
         JPanel labelTextFieldPanel = new JPanel(new BorderLayout());
         JLabel label = new JLabel(labelText);
+        label.setForeground(Color.WHITE);
         JTextField textField = new JTextField();
         labelTextFieldPanel.add(label, BorderLayout.WEST);
         labelTextFieldPanel.add(textField, BorderLayout.CENTER);
@@ -132,7 +133,7 @@ public class VueInput extends JPanel{
 
 
         Dimension dim1 = new Dimension(CVue.screenWidth,
-                CVue.screenHeight * 2/ 10);
+                CVue.screenHeight * 3/ 10);
 
         Dimension dim2 = new Dimension(CVue.screenWidth,
                 CVue.screenHeight * 4/ 10);
@@ -142,15 +143,13 @@ public class VueInput extends JPanel{
         JPanel panel = new JPanel(new BorderLayout());
 
         //Title
-        JLabel t = new JLabel("Colt Express");
-        t.setFont(CVue.font1);
+        JLabel t = new JLabel(new ImageIcon((new ImageIcon(CVue.class.getResource("Images/titre.png"))).getImage().getScaledInstance(dim1.width/2,dim1.height*8/10, Image.SCALE_SMOOTH)));
         t.setHorizontalAlignment(0);
         title.add(t , BorderLayout.SOUTH);
         title.setPreferredSize(dim1);
-        title.setBorder(BorderFactory.createLineBorder(Color.black));
         this.add(title,BorderLayout.NORTH);
 
-        JPanel constants = new JPanel(new GridLayout(2,3,20,10));
+        JPanel constants = new JPanel(new GridLayout(3,2,20,10));
         constants.setBorder(new EmptyBorder(0,30,0,30));
 
         constants.add(createLabelTextFieldPanel("Nombre de joueurs : "));
@@ -433,7 +432,7 @@ public class VueInput extends JPanel{
                 CVue.screenHeight * 7/ 10));
         panel.setBorder(new EmptyBorder(30,0,30,0));
         this.add(panel, BorderLayout.SOUTH);
-        setOpacityALL(this);
+        CVue.setOpacityALL(this,false);
     }
 
 
@@ -503,7 +502,7 @@ public class VueInput extends JPanel{
             cell.add(nom_bandit , BorderLayout.SOUTH);
             names.add(cell);
             names.add(new JLabel());
-            setOpacityALL(names);
+            CVue.setOpacityALL(names,false);
 
         }
 
@@ -511,41 +510,6 @@ public class VueInput extends JPanel{
     }
 
 
-    public void setOpacityALL(Container cnt){
-        for (Component c : cnt.getComponents()){
-            if(c instanceof JPanel){
-                ((JPanel) c).setOpaque(false);
-                setOpacityALL((Container) c);
-            }
-            if(c instanceof JLabel){
-                ((JLabel) c).setOpaque(false);
-                setOpacityALL((Container) c);
-            }
-            if(c instanceof JButton){
-                ((JButton) c).setOpaque(false);
-                setOpacityALL((Container) c);
-            }
-            if(c instanceof JTextField){
-                ((JTextField) c).setOpaque(false);
-                setOpacityALL((Container) c);
-            }
-        }
 
-        if(cnt instanceof JPanel){
-            ((JPanel) cnt).setOpaque(false);
-        }
-        if(cnt instanceof JLabel){
-            ((JLabel) cnt).setOpaque(false);
-        }
-        if(cnt instanceof JButton){
-            ((JButton) cnt).setOpaque(false);
-        }
-        if(cnt instanceof JTextField){
-            ((JTextField) cnt).setOpaque(false);
-        }
-
-
-
-    }
 
 }
