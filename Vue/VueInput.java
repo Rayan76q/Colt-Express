@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class VueInput extends JPanel{
     private CVue vue;
 
-    private Boolean[] flags = new Boolean[]{false,false,false,false,false,false};
+    private Boolean[] flags = new Boolean[]{true,false,true,true,true,true};
     private String[][] nomsBandits;
 
 
