@@ -279,6 +279,7 @@ public class Partie extends Observable {
             }
             String r = "";
             for(Joueur j:joueur_en_tete()){
+
                 r += j.toString()+" ";
             }
             System.out.println(r+" en tête pour ce tour.\n");
@@ -289,8 +290,8 @@ public class Partie extends Observable {
                 joueurAct = 0;
                 //Reset les pions actuelles pour partie à deux pions
                 if (NB_BANDITS_JOUEUR == 2) {
-                    for (int i = 0; i < joueurs.length; i++) {
-                        joueurs[i].setPionAct(joueurs[i].getPions().get(0));
+                    for (Joueur joueur : joueurs) {
+                        joueur.setPionAct(joueur.getPions().get(0));
                     }
                 }
             }
@@ -298,7 +299,8 @@ public class Partie extends Observable {
                 Arrays.sort(joueurs, Comparator.reverseOrder());
                 List<Joueur> gagnants = joueur_en_tete();
                 String message = "\n    ";
-                for (Joueur j : gagnants) message+="j"+(j.getId()+1)+" ";
+                for (Joueur j : gagnants)
+                    message+="j"+(j.getId()+1)+" ";
                 message += (gagnants.size()==1 ? "A GAGNÉ" : "ONT GAGNÉ") + "\n\n";
                 message +="Leader Board :  \n";
                 for (int i = 0; i < joueurs.length; i++) {
@@ -368,8 +370,6 @@ public class Partie extends Observable {
     public void setDirectionChoisie(Direction directionChoisie) {
         this.directionChoisie = directionChoisie;
     }
-
-    public int getTempo() {return tempo;}
 
     public List<Direction> mouvementsPossiblesPostPlan(){
         Bandit b = joueurs[joueurAct].getPionAct();

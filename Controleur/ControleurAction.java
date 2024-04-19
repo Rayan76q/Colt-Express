@@ -11,9 +11,8 @@ import java.awt.event.ActionListener;
 public class ControleurAction implements ActionListener {
 
     protected Partie partie;
-    protected Direction dirChoisie;
-    private JPanel VueBoutons;
-    private CardLayout switcher;
+    private final JPanel VueBoutons;
+    private final CardLayout switcher;
     public ControleurAction(Partie p , CardLayout switcher , JPanel j) { this.partie = p; this.switcher=switcher ; this.VueBoutons = j;}
 
     //needs changing

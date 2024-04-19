@@ -3,22 +3,20 @@ package Vue;
 import Modele.*;
 
 import javax.swing.*;
-import javax.swing.Action;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 public class VuePlateau extends JPanel implements Observer {
 
-    private Train train;
+    private final Train train;
 
     //Hauteur et largeur d'un etage de wagon
-    private static int dec = 5;
+    private static final int dec = 5;
     private final static int WIDTH = CVue.screenWidth / 4 - dec;
     private final static int HEIGHTCABINE = CVue.screenHeight / 3;
     private final static int HEIGHTLOCO = CVue.screenHeight / 2;
@@ -26,13 +24,13 @@ public class VuePlateau extends JPanel implements Observer {
     static final int spriteH = 98;
     static final int spriteW = 48;
 
-    private final ImageIcon locoSprite = new ImageIcon(getClass().getResource("Images/locomotive.png"));
-    private final ImageIcon cabineSprite = new ImageIcon(getClass().getResource("Images/cabine.png"));
+    private final ImageIcon locoSprite = new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/locomotive.png")));
+    private final ImageIcon cabineSprite = new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/cabine.png")));
 
-    private HashMap<Integer, ImageIcon> spriteMapPersonnes = new HashMap<>();
-    private HashMap<Butin, ImageIcon> spriteMapButins = new HashMap<>();
-    private ImageIcon[] coffreSprite = {new ImageIcon(getClass().getResource("Images/safe.png")), new ImageIcon(getClass().getResource("Images/openSafe.png"))};
-    private ImageIcon backGround  = new ImageIcon(getClass().getResource("Images/background.jpg"));
+    private final HashMap<Integer, ImageIcon> spriteMapPersonnes = new HashMap<>();
+    private final HashMap<Butin, ImageIcon> spriteMapButins = new HashMap<>();
+    private final ImageIcon[] coffreSprite = {new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/safe.png"))), new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/openSafe.png")))};
+    private final ImageIcon backGround  = new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/background.jpg")));
 
     private int start = max(Partie.NB_WAGON-4,0);
 
@@ -44,18 +42,18 @@ public class VuePlateau extends JPanel implements Observer {
         this.train = t;
         for (Wagon w : t.get_Wagon()) {
             for (Bandit b : w.getToit()) {
-                spriteMapPersonnes.put(b.get_id(), new ImageIcon(getClass().getResource(b.getSprite())));
+                spriteMapPersonnes.put(b.get_id(), new ImageIcon(Objects.requireNonNull(getClass().getResource(b.getSprite()))));
             }
             for (Personne p : w.getInterieur()) {
-                spriteMapPersonnes.put(p.get_id(), new ImageIcon(getClass().getResource(p.getSprite())));
+                spriteMapPersonnes.put(p.get_id(), new ImageIcon(Objects.requireNonNull(getClass().getResource(p.getSprite()))));
                 if (p instanceof Passager) {
                     Butin b = ((Passager) p).getPoche();
-                    spriteMapButins.put(b, new ImageIcon(getClass().getResource(b.getSprite())));
+                    spriteMapButins.put(b, new ImageIcon(Objects.requireNonNull(getClass().getResource(b.getSprite()))));
                 }
             }
         }
         Butin magot = ((Locomotive) t.get_Wagon()[0]).getMag();
-        spriteMapButins.put(magot, new ImageIcon(getClass().getResource(magot.getSprite())));
+        spriteMapButins.put(magot, new ImageIcon(Objects.requireNonNull(getClass().getResource(magot.getSprite()))));
         train.addObserver(this);
 
         AbstractAction action = new AbstractAction() {
@@ -63,7 +61,6 @@ public class VuePlateau extends JPanel implements Observer {
             public void actionPerformed(ActionEvent e) {
                 if(start>0)
                     start--;
-
             }
         };
 

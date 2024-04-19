@@ -4,6 +4,7 @@ import Modele.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 
 public class CVue {
@@ -16,21 +17,12 @@ public class CVue {
 
     //Main graphique
     public static void main(String[] args) {
-
-        EventQueue.invokeLater(() -> {
-            CVue vue = new CVue();
-        });
+        EventQueue.invokeLater(CVue::new);
     }
 
-    private JFrame frame;
-    private JPanel app;
-    private JPanel container;
-    private VuePlateau plateau;
-    private VueCommandes tableau_de_bord;
-    private VueInput menu;
-    private Partie p;
-    private ImageIcon bg[] = new ImageIcon[] {new ImageIcon((new ImageIcon(CVue.class.getResource("Images/public.jpg"))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH)),
-            new ImageIcon((new ImageIcon(CVue.class.getResource("Images/backGroundCommandes.jpg"))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH))};
+    private final JFrame frame;
+    private final ImageIcon[] bg = new ImageIcon[] {new ImageIcon((new ImageIcon(Objects.requireNonNull(CVue.class.getResource("Images/public.jpg")))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH)),
+            new ImageIcon((new ImageIcon(Objects.requireNonNull(CVue.class.getResource("Images/backGroundCommandes.jpg")))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH))};
 
     public CVue() {
 
@@ -38,9 +30,9 @@ public class CVue {
         frame.setTitle("Colt Express");
 
 
-        app = new JPanel(new CardLayout());
-        container = new JPanel(new BorderLayout());
-        menu = new VueInput(this);
+        JPanel app = new JPanel(new CardLayout());
+        JPanel container = new JPanel(new BorderLayout());
+        VueInput menu = new VueInput(this);
 
 
         app.add(menu);
@@ -65,10 +57,10 @@ public class CVue {
         JLabel label = new JLabel(bg[1]);
         frame.setContentPane(label);
         frame.setLayout(new BorderLayout());
-        p = new Partie(true , names );
-        plateau = new VuePlateau(p.getTrain());
+        Partie p = new Partie(true, names);
+        VuePlateau plateau = new VuePlateau(p.getTrain());
         frame.add(plateau, BorderLayout.NORTH);
-        tableau_de_bord = new VueCommandes(p);
+        VueCommandes tableau_de_bord = new VueCommandes(p);
         frame.add(tableau_de_bord,BorderLayout.SOUTH);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

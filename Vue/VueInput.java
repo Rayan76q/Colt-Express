@@ -10,11 +10,11 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class VueInput extends JPanel{
-    private CVue vue;
-
-    private Boolean[] flags = new Boolean[]{true,false,true,true,true,true};
+    private final CVue vue;
+    private final Boolean[] flags = new Boolean[]{true,false,true,true,true,true};
     private String[][] nomsBandits;
 
 
@@ -143,7 +143,7 @@ public class VueInput extends JPanel{
         JPanel panel = new JPanel(new BorderLayout());
 
         //Title
-        JLabel t = new JLabel(new ImageIcon((new ImageIcon(CVue.class.getResource("Images/titre.png"))).getImage().getScaledInstance(dim1.width/2,dim1.height*8/10, Image.SCALE_SMOOTH)));
+        JLabel t = new JLabel(new ImageIcon((new ImageIcon(Objects.requireNonNull(CVue.class.getResource("Images/titre.png")))).getImage().getScaledInstance(dim1.width/2,dim1.height*8/10, Image.SCALE_SMOOTH)));
         t.setHorizontalAlignment(0);
         title.add(t , BorderLayout.SOUTH);
         title.setPreferredSize(dim1);

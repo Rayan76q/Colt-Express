@@ -10,9 +10,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Objects;
 
 public class VueCommandes extends JPanel implements Observer{
 
@@ -23,19 +21,19 @@ public class VueCommandes extends JPanel implements Observer{
     private boolean execution = false, disableButtons = false;
 
     private static void addComponent(Container container, Component component, GridBagConstraints gbc,
-                                     int gridx, int gridy, int gridwidth, int gridheight) {
+                                     int gridx, int gridy, int gridwidth) {
         gbc.gridx = gridx;
         gbc.gridy = gridy;
         gbc.gridwidth = gridwidth;
-        gbc.gridheight = gridheight;
+        gbc.gridheight = 1;
         if(component instanceof JButton) component.setPreferredSize(new Dimension(70,40));
         container.add(component, gbc);
     }
 
     public VueCommandes(Partie p) {
 
-        this.sprites  = new ImageIcon[]{new ImageIcon(getClass().getResource("Images/coeur.png")),new ImageIcon(getClass().getResource("Images/ammo.png")),
-                new ImageIcon(getClass().getResource("Images/wound.png"))};
+        this.sprites  = new ImageIcon[]{new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/coeur.png"))),new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/ammo.png"))),
+                new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/wound.png")))};
         this.partie = p;
         Dimension dim = new Dimension(CVue.screenWidth,
                 CVue.screenHeight*3/10 );
@@ -113,12 +111,12 @@ public class VueCommandes extends JPanel implements Observer{
         RoundedButton boutonBraque = new RoundedButton("Braquer",buttonRoundness);
         RoundedButton boutonRetour = new RoundedButton("Retour",buttonRoundness);
 
-        addComponent(actions , boutonSeDeplacer , gbc, 0,0,1,1);
-        addComponent(actions ,boutonBraque, gbc, 1,0,1,1);
-        addComponent(actions ,boutonTir, gbc, 2,0,1,1);
-        addComponent(actions ,boutonFrappe, gbc, 3,0,1,1);
-        addComponent(actions ,boutonRetour, gbc, 0,1,2,1);
-        addComponent(actions ,boutonAction1, gbc, 2,1,2,1);
+        addComponent(actions , boutonSeDeplacer , gbc, 0,0,1);
+        addComponent(actions ,boutonBraque, gbc, 1,0,1);
+        addComponent(actions ,boutonTir, gbc, 2,0,1);
+        addComponent(actions ,boutonFrappe, gbc, 3,0,1);
+        addComponent(actions ,boutonRetour, gbc, 0,1,2);
+        addComponent(actions ,boutonAction1, gbc, 2,1,2);
 
 
 
@@ -170,9 +168,9 @@ public class VueCommandes extends JPanel implements Observer{
 
         //Layout globale
 
-        addComponent(this,text , gbc , 0,0 , 1,1);
-        addComponent(this,boutons , gbc , 0,1,1,1);
-        addComponent(this,prompt , gbc , 0,2,1,1);
+        addComponent(this,text , gbc , 0,0 , 1);
+        addComponent(this,boutons , gbc , 0,1,1);
+        addComponent(this,prompt , gbc , 0,2,1);
 
 
         //EventListeners
@@ -288,7 +286,7 @@ public class VueCommandes extends JPanel implements Observer{
     public void update(String str) {
         if(partie.getNumeroTour()>=Partie.NB_MANCHES){
             Podium pod = new Podium(partie);
-            JOptionPane.showMessageDialog(null, pod);}
+            JOptionPane.showMessageDialog(null, pod,"Leader Board", JOptionPane.PLAIN_MESSAGE);}
 
 
         else {

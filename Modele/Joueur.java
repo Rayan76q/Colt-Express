@@ -42,7 +42,7 @@ public class Joueur implements Comparable<Joueur> {
                 Scanner scanner = new Scanner(System.in);
                 int choice = scanner.nextInt();
                 scanner.nextLine();
-                List<Direction> dirs = b.mouvementsPossibles(train);
+
 
                 if(choice == 0){ //Braquage
                     mat_manche[b.get_id()][i] = new Braquage(b,train);

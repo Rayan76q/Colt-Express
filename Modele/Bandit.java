@@ -12,7 +12,7 @@ public class Bandit extends Personne implements Movable, Hitable{
     private final double precision;
 
     private int hitPoints;
-    private final List<Butin> poches = new LinkedList<Butin>();
+    private final List<Butin> poches = new LinkedList<>();
 
 
     //Sprites

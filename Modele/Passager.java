@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Passager extends Personne implements Hitable{
 
-    private static String[] sprites = {"../Vue/Images/passagerBarbu.png" , "../Vue/Images/passagerFemme.png" , "../Vue/Images/passagerJournal.png",
+    private static final String[] sprites = {"../Vue/Images/passagerBarbu.png" , "../Vue/Images/passagerFemme.png" , "../Vue/Images/passagerJournal.png",
                             "../Vue/Images/passagerRiche.png" , "../Vue/Images/passagerVieux.png"};
 
 

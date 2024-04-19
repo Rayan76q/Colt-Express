@@ -2,8 +2,8 @@ package Vue;
 
 public interface Observer {
 
-    public void update();
-    public void update(String str);
+    void update();
+    void update(String str);
 
 
 }

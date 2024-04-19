@@ -16,10 +16,10 @@ public abstract class Wagon {
 
 
     Wagon(){
-        loot_int = new LinkedList<Butin>();
-        loot_toit = new LinkedList<Butin>();
-        toit = new ArrayList<Bandit>();
-        interieur = new ArrayList<Personne>();
+        loot_int = new LinkedList<>();
+        loot_toit = new LinkedList<>();
+        toit = new ArrayList<>();
+        interieur = new ArrayList<>();
     }
 
     public String toString(){
@@ -41,7 +41,7 @@ public abstract class Wagon {
     }
 
     public List<Passager> liste_passagers(){
-        List<Passager> res = new LinkedList<Passager>();
+        List<Passager> res = new LinkedList<>();
         for (Personne p : interieur){
             if(p instanceof Passager)
                 res.add((Passager) p);
@@ -50,7 +50,7 @@ public abstract class Wagon {
     }
 
     public List<Bandit> liste_bandits_int(){
-        List<Bandit> res = new LinkedList<Bandit>();
+        List<Bandit> res = new LinkedList<>();
         for (Personne p : interieur){
             if(p instanceof Bandit)
                 res.add((Bandit) p);
@@ -79,14 +79,6 @@ public abstract class Wagon {
             int rand_index = r.nextInt(loot_toit.size());
             loot_toit.remove(rand_index);
         }
-    }
-
-
-    public boolean contientMarshall(){
-        for (Personne p : interieur){
-            if(p instanceof Marchall)return true;
-        }
-        return false;
     }
 
     public List<Bandit> getToit() {return toit;}
