@@ -13,7 +13,7 @@ public class Bot extends Joueur{
     @Override
     public void joue_manche(Action[][] mat_manche){
         for (Bandit b : pions){ //si il joue plusieurs pions en meme temps (par équipe)
-            List<Action> actions = ((Bandit_Bot)b).analyse_game();
+            List<Action> actions = ((Bandit_Bot)b).actions_bot();
             int k = 0;
             for (Action j : actions) {
                 System.out.println("Action N°" + (k+1) + "\n");
@@ -37,7 +37,7 @@ abstract class Bandit_Bot extends Bandit{
         this.partie = partie;
     }
 
-    abstract List<Action> analyse_game();
+    abstract List<Action> actions_bot();
     public int dist(Bandit src, int tgt,int toit, Train train){
        //pour verifier si on peut arriver avant d'utiliser toutes nos actions
         int dist =((src.getToit()?1:0)-toit);
@@ -66,7 +66,7 @@ class Random_Bot extends Bandit_Bot{
         super("Randy", pos, partie);
     }
     @Override
-    List<Action> analyse_game() {
+    List<Action> actions_bot() {
         LinkedList<Action> acts = new LinkedList<>();
         Train train = partie.getTrain();
         for (int i = 0; i < this.get_hitPoints(); i++) {
@@ -98,7 +98,7 @@ class Blood_thirsty_Bot extends Bandit_Bot{
     }
 
     @Override
-    List<Action> analyse_game() {
+    List<Action> actions_bot() {
         return null;
     }
 }
@@ -109,7 +109,7 @@ class Goblin_Bot extends Bandit_Bot{
     }
 
     @Override
-    List<Action> analyse_game() {
+    List<Action> actions_bot() {
         return null;
     }
 }
