@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Joueur implements Comparable<Joueur> {
-    private static int current_id = 0;
+    protected static int current_id = 0;
 
-    private Train train;
-    private List<Bandit> pions;
-    private Bandit pionAct;
-    private int id = current_id;
+    protected Train train;
+    protected List<Bandit> pions;
+    protected Bandit pionAct;
+    protected int id = current_id;
 
 
     public Joueur(Train t , List<Bandit> b){
