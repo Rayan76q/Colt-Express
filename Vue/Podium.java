@@ -2,6 +2,7 @@ package Vue;
 
 import Modele.Joueur;
 import Modele.Partie;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -19,7 +20,8 @@ public class Podium extends JPanel{
     private final List<Integer> podiumHeight = new LinkedList<>();
     private final Image background = new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/backGroundCommandes.jpg"))).getImage();
     
-    Podium(Partie par){
+    Podium(Partie par, JPanel ref){
+        setLayout(new BorderLayout());
         p = par;
         gagnants = p.getJoueurs();
         Arrays.sort(gagnants, Comparator.reverseOrder());
@@ -30,6 +32,21 @@ public class Podium extends JPanel{
             if(gagnants[i].compte_argent() < gagnants[i-1].compte_argent() && height >0) height -=20; //gère les égalités entre joueurs et les mets sur la même hauteur
             podiumHeight.add(height);
         }
+
+        JDialog dialog = new JDialog(); //Creation de la fenêtre de dialog
+
+        RoundedButton ret = new RoundedButton("Menu Principale",30);
+        this.add(ret, BorderLayout.SOUTH);
+        ret.addActionListener(e -> {SwingUtilities.getWindowAncestor(ref).dispose();dialog.dispose(); //relance une partie
+            EventQueue.invokeLater(CVue::new);});
+
+        dialog.setTitle("Leader Board");
+        dialog.setModal(true);
+        dialog.getContentPane().add(this);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+
     }
     
     @Override 

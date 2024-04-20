@@ -306,8 +306,8 @@ public class VueCommandes extends JPanel implements Observer{
 
     public void update() {
         if(partie.getNumeroTour()>=Partie.NB_MANCHES){ //La partie est terminé, on affiche le podium
-            Podium pod = new Podium(partie);
-            JOptionPane.showMessageDialog(null, pod,"Leader Board", JOptionPane.PLAIN_MESSAGE);}
+            new Podium(partie,this);
+        }
         else {
             execution = false;
             repaint();
