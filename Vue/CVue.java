@@ -31,6 +31,7 @@ public class CVue {
     }
 
     public CVue() {
+        Personne.reinitialise();
         frame = new JFrame();
         frame.setTitle("Colt Express");
 
