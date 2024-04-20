@@ -10,6 +10,7 @@ public class Bot extends Joueur{
 
     @Override
     public void joue_manche(Action[][] mat_manche){
+        // ca c'est pour partie et non pour GUI
         for (Bandit b : pions){ //si il joue plusieurs pions en meme temps (par équipe)
             List<Action> actions = ((Bandit_Bot)b).actions_bot();
             int k = 0;
@@ -28,6 +29,7 @@ public class Bot extends Joueur{
 }
 
 abstract class Bandit_Bot extends Bandit{
+    //valeur absolue de la soustraction entre a et b
     public int abs_substraction(int a, int b) {return (a>b?a-b:b-a);}
 
     protected Partie partie;
@@ -37,6 +39,7 @@ abstract class Bandit_Bot extends Bandit{
     }
 
     abstract List<Action> actions_bot();
+    //distance entre deux bandit en prenant compte des toits
     public int dist(Bandit src, Bandit tgt){
        //pour verifier si on peut arriver avant d'utiliser toutes nos actions
         int dist =((src.getToit()?1:0)-(tgt.getToit()?1:0));
@@ -45,6 +48,8 @@ abstract class Bandit_Bot extends Bandit{
         dist += (pos>0? pos:-pos);
         return dist;
     }
+
+    //get le bandit le plus proche de this
     public Bandit banditProche() {
         Joueur[] joueurs = this.partie.getJoueurs();
         int min = Integer.MAX_VALUE;
@@ -63,6 +68,7 @@ abstract class Bandit_Bot extends Bandit{
         return banditProche;
     }
 
+    //get la position ou le nombre du wagon dans lequel le butin est le plus proche
     public int butinproche_position(){
         int min = Integer.MAX_VALUE;
         Wagon[] wagon = this.partie.getTrain().get_Wagon();
@@ -77,6 +83,7 @@ abstract class Bandit_Bot extends Bandit{
         return min;
     }
 
+    //donne la direction dans laquelle on doit y aller pour partir de src a tgt
     public Direction get_direction(int position, int position2, boolean toit, boolean toit2){
         Direction dir = Direction.ICI;
         if(toit2){
@@ -92,6 +99,7 @@ abstract class Bandit_Bot extends Bandit{
 }
 class Random_Bot extends Bandit_Bot{
 
+    //choisi un direction random pour bouger
     public Direction choisie_dir(Bandit b){
         Random random = new Random();
         int choice;
@@ -108,6 +116,7 @@ class Random_Bot extends Bandit_Bot{
     }
     @Override
     List<Action> actions_bot() {
+        // tout est random j'imagine que ca serait facile de lire
         LinkedList<Action> acts = new LinkedList<>();
         Train train = partie.getTrain();
         for (int i = 0; i < this.get_hitPoints(); i++) {
@@ -134,6 +143,7 @@ class Random_Bot extends Bandit_Bot{
 
 class Blood_thirsty_Bot extends Bandit_Bot{
 
+    //list des autres bandits, targets.
     LinkedList<Bandit> targets;
 
     public Blood_thirsty_Bot(int pos, Partie partie) {
@@ -142,6 +152,7 @@ class Blood_thirsty_Bot extends Bandit_Bot{
     }
 
     public void targets_initialisation(){
+        //name speaks for itself
         targets = new LinkedList<>();
         for (Joueur i : partie.getJoueurs()) {
             if(!i.getPions().contains(this)) targets.addAll(i.getPions());
@@ -154,6 +165,7 @@ class Blood_thirsty_Bot extends Bandit_Bot{
         Bandit banditProche = targets.get(0);
         targets.remove(0);
         targets.add(banditProche);
+        //fait des targets circulaire until la liste d'action devient full
         int dist = dist(this,banditProche);
         boolean frappe = true;
         while(acts.size()<this.get_hitPoints()){
@@ -172,7 +184,6 @@ class Blood_thirsty_Bot extends Bandit_Bot{
         }
     }
 
-    public void cherche_butin(Train train){}
     @Override
     List<Action> actions_bot() {
         LinkedList<Action> acts= new LinkedList<>();
@@ -187,6 +198,7 @@ class Blood_thirsty_Bot extends Bandit_Bot{
             }
             int dist = abs_substraction(this.position,pos);
             if(this.getToit()&&!toit2 || toit2 && !this.getToit()){
+                // car ici cette dist ne prends pas en compte les toits
                 acts.add(new Deplacement(this,train, get_direction(this.position,pos,
                         this.getToit(),toit2) ) );
             }
@@ -202,6 +214,8 @@ class Blood_thirsty_Bot extends Bandit_Bot{
                     braque = false;
                 }
                 else {
+                    // si il a finit de chopper un butin il recommence a target des bandits
+                    // la fonction remplirait acts ce qui terminerait la boucle while
                     target(train,acts);
                 }
             }
