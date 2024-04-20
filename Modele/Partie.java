@@ -70,33 +70,57 @@ public class Partie extends Observable {
      * @param names Liste de {@code String} pour les noms des bandits
      */
     public void initialisation_partie_gui(String[][] names){
-        NB_WAGON= NB_JOUEURS*NB_BANDITS_JOUEUR+1;
-        this.joueurs = new Joueur[NB_JOUEURS];
-        this.matrice_action = new Action[NB_JOUEURS*NB_BANDITS_JOUEUR][DEFAULT_HP];
-        train = new Train();
-        if(NB_JOUEURS>2) {
-            for (int i = 0; i < NB_JOUEURS; i++) {
-                List<Bandit> pions = new ArrayList<>();
-                Bandit bandit = new Bandit(names[i][0], Partie.NB_WAGON - 1 - i % 2);
-                pions.add(bandit);
-                train.get_Wagon()[bandit.position].toit.add(bandit);
-                joueurs[i] = new Joueur(train, pions);
+
+        if(NB_JOUEURS>= 2){
+            NB_WAGON= NB_JOUEURS*NB_BANDITS_JOUEUR+1;
+            this.joueurs = new Joueur[NB_JOUEURS];
+            this.matrice_action = new Action[NB_JOUEURS*NB_BANDITS_JOUEUR][DEFAULT_HP];
+            train = new Train();
+            if(NB_JOUEURS>2) {
+                for (int i = 0; i < NB_JOUEURS; i++) {
+                    List<Bandit> pions = new ArrayList<>();
+                    Bandit bandit = new Bandit(names[i][0], Partie.NB_WAGON - 1 - i % 2);
+                    pions.add(bandit);
+                    train.get_Wagon()[bandit.position].toit.add(bandit);
+                    joueurs[i] = new Joueur(train, pions);
+                }
+            }
+            else if(NB_JOUEURS==2){  //2 joueurs
+                List<Bandit> p1 = new ArrayList<>();
+                List<Bandit> p2 = new ArrayList<>();
+                for (int j = 0; j < 2; j++) {
+                    Bandit b1 = new Bandit(names[0][j], Partie.NB_WAGON - 1 );
+                    p1.add(b1);
+                    Bandit b2 = new Bandit(names[1][j], Partie.NB_WAGON - 2);
+                    p2.add(b2);
+                    train.get_Wagon()[b1.position].toit.add(b1);
+                    train.get_Wagon()[b2.position].toit.add(b2);
+                }
+                joueurs[0] = new Joueur(train, p1);
+                joueurs[1] = new Joueur(train, p2);
             }
         }
-        else if(NB_JOUEURS==2){  //2 joueurs
-            List<Bandit> p1 = new ArrayList<>();
-            List<Bandit> p2 = new ArrayList<>();
-            for (int j = 0; j < 2; j++) {
-                Bandit b1 = new Bandit(names[0][j], Partie.NB_WAGON - 1 );
-                p1.add(b1);
-                Bandit b2 = new Bandit(names[1][j], Partie.NB_WAGON - 2);
-                p2.add(b2);
-                train.get_Wagon()[b1.position].toit.add(b1);
-                train.get_Wagon()[b2.position].toit.add(b2);
-            }
-            joueurs[0] = new Joueur(train, p1);
-            joueurs[1] = new Joueur(train, p2);
+        else {
+            NB_JOUEURS = 2;
+            NB_WAGON= NB_JOUEURS*NB_BANDITS_JOUEUR+1;
+            this.joueurs = new Joueur[NB_JOUEURS];
+            this.matrice_action = new Action[NB_JOUEURS*NB_BANDITS_JOUEUR][DEFAULT_HP];
+            train = new Train();
+                this.joueurs = new Joueur[2];
+                List<Bandit> p1 = new ArrayList<>();
+                List<Bandit> p2 = new ArrayList<>();
+                for (int j = 0; j < 2; j++) {
+                    Bandit b1 = new Bandit(names[0][j], Partie.NB_WAGON - 1);
+                    p1.add(b1);
+                    Bandit b2 = Bandit_Bot.create_Bandit_Bot(this, Partie.NB_WAGON - 2);
+                    p2.add(b2);
+                    train.get_Wagon()[b1.position].toit.add(b1);
+                    train.get_Wagon()[b2.position].toit.add(b2);
+                }
+                joueurs[0] = new Joueur(train, p1);
+                joueurs[1] = new Bot(train, p2);
         }
+
     }
 
 
@@ -376,6 +400,16 @@ public class Partie extends Observable {
 
     public void getNextJoueur(){
         joueurAct  = (joueurAct+1)%NB_JOUEURS;
+        if(NB_JOUEURS==2 && joueurs[joueurAct] instanceof Bot){
+            List<Bandit> bots = joueurs[joueurAct].getPions();
+            for (Bandit b : bots) {
+                List<Action> actionsPlanifie = ((Bandit_Bot) b).actions_bot();
+                for (int i = 0; i < actionsPlanifie.size(); i++) {
+                    matrice_action[b.get_id()][i] = actionsPlanifie.get(i);
+                }
+            }
+            joueurAct = 0; //retour au joueur humain
+        }
     }
 
     public Joueur[] getJoueurs() {

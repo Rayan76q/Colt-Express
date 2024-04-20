@@ -119,4 +119,5 @@ public class Joueur implements Comparable<Joueur> {
     public int compareTo(Joueur other) {
         return Integer.compare(this.compte_argent(), other.compte_argent());
     }
+    public static void reintialise(){current_id =0;}
 }
