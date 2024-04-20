@@ -2,12 +2,17 @@ package Vue;
 
 import Modele.Joueur;
 import Modele.Partie;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+/**
+ * Classe Podium<br>
+ * Affiché à la fin de la partie dans un message contextuelle.<br>
+ * Affiche le bandit principale de chaque joueur par ordre croissant de butins obtenu<br>
+ * Les trois premiers sont sur un podium
+ */
 public class Podium extends JPanel{
     private final Partie p;
     private final Joueur[] gagnants;
@@ -22,7 +27,7 @@ public class Podium extends JPanel{
         int height = 60;
         podiumHeight.add(height);
         for (int i = 1; i < p.getJoueurs().length; i++) {
-            if(gagnants[i].compte_argent() < gagnants[i-1].compte_argent() && height >0) height -=20;
+            if(gagnants[i].compte_argent() < gagnants[i-1].compte_argent() && height >0) height -=20; //gère les égalités entre joueurs et les mets sur la même hauteur
             podiumHeight.add(height);
         }
     }
@@ -33,7 +38,7 @@ public class Podium extends JPanel{
         g.drawImage(background,0,0,getWidth(),getHeight(),this);
         for (int i = 0; i < p.getJoueurs().length; i++) {
             Color c = Color.black;
-            switch (podiumHeight.get(i)){
+            switch (podiumHeight.get(i)){ //couleur du podium
                 case 60: c = new Color(255,215,0);break;
                 case 40: c = new Color(113,112,110);break;
                 case 20: c = new Color(160,113,85);break;
@@ -41,7 +46,7 @@ public class Podium extends JPanel{
             }
 
             int x = startX + (i%4) * VuePlateau.spriteW*2;
-            int y = (i>=4 ? 1 :0)*(VuePlateau.spriteH + decH);
+            int y = (i>=4 ? 1 :0)*(VuePlateau.spriteH + decH); //pour des parties à plus de 4 , l'affichage est sur deux lignes
             g.setColor(Color.WHITE);
             g.drawString(("J"+(gagnants[i].getId()+1)),x+VuePlateau.spriteW/3 , startY-podiumHeight.get(i) - VuePlateau.spriteH + y-10 );
             g.drawImage((new ImageIcon(Objects.requireNonNull(getClass().getResource(p.getJoueurs()[i].getPionAct().getSprite())))).getImage(),

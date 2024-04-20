@@ -12,14 +12,37 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
 
+/**Classe VueCommandes<br>
+ * Contient tous les boutons qui permettent à l'utilisateur d'interagir avec le jeu<br>
+ * Gère l'affichage des actions planifié et executé de manière dynamique<br>
+ *<br>
+ * Composition:<br><br>
+ * HUD: Contient le nom du joueur qui joue actuellement , le nom du bandit et ses stats (hp,argent,munitions)<br>
+ * <br>
+ * Grille de boutons: permet à l'utilsateur de planifier ses actions, les confirmer ou les annuler.<br>
+ * <br>
+ * Prompt:
+ * <ul>
+ *      -Lors de la planification: Affiche les actions qui on été planifié au fur et à mesure<br>
+ *      -Lors de l'éxécution: Affiche une description des actions qui sont menées
+ * </ul>
+ */
 public class VueCommandes extends JPanel implements Observer{
 
-    private final ImageIcon[] sprites;
-
+    //Sprites de: Coeur , Balles , Blessure
+    private final ImageIcon[] sprites = new ImageIcon[]{new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/coeur.png"))),new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/ammo.png"))),
+            new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/wound.png")))};
     private final Partie partie;
+    private boolean execution = false, disableButtons = false; //Permet de des/activer les boutons juste quand cela est nécéssaire
 
-    private boolean execution = false, disableButtons = false;
-
+    /** Fonction Auxilière qui permet d'ajouter un component à un container avec un {@code GridBagLayout()}
+     * @param container l'element graphique qui va contenir component
+     * @param component l'element graphique à ajouter à container
+     * @param gbc une référence vers {@code GridBagConstraints} du container
+     * @param gridx numéro de la colonne ou insérer component
+     * @param gridy numéro de la ligne ou insérer component
+     * @param gridwidth nombre de colonne que peut prendre l'élément ()
+     */
     private static void addComponent(Container container, Component component, GridBagConstraints gbc,
                                      int gridx, int gridy, int gridwidth) {
         gbc.gridx = gridx;
@@ -31,9 +54,6 @@ public class VueCommandes extends JPanel implements Observer{
     }
 
     public VueCommandes(Partie p) {
-
-        this.sprites  = new ImageIcon[]{new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/coeur.png"))),new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/ammo.png"))),
-                new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/wound.png")))};
         this.partie = p;
         Dimension dim = new Dimension(CVue.screenWidth,
                 CVue.screenHeight*3/10 );
@@ -50,7 +70,7 @@ public class VueCommandes extends JPanel implements Observer{
         JPanel promptExecution = new JPanel();
 
         //Switch le panel de boutons
-        CardLayout switcher = new CardLayout();
+        CardLayout switcher = new CardLayout(); //permet de passer du panel de boutons d'action aux directions
         boutons.setLayout(switcher);
         boutons.add(actions,"card 1");
         boutons.add(fleches,"card 2");
@@ -120,7 +140,7 @@ public class VueCommandes extends JPanel implements Observer{
 
 
 
-        //Action en cours
+        //Prompt des actions planifiées
         promptPlanification.setLayout(new GridLayout(1,Partie.DEFAULT_HP));
         JLabel promptText = new JLabel();
         promptText.setFont(CVue.font2);
@@ -160,14 +180,13 @@ public class VueCommandes extends JPanel implements Observer{
         fleches.add(boutonAction2);
 
 
-        //Prompts
+        //Gestion du passage du prompt de planification à celui d'éxécution
         CardLayout switcher2 = new CardLayout();
         prompt.setLayout(switcher2);
         prompt.add(promptPlanification, "p1");
         prompt.add(promptExecution, "p2");
 
         //Layout globale
-
         addComponent(this,text , gbc , 0,0 , 1);
         addComponent(this,boutons , gbc , 0,1,1);
         addComponent(this,prompt , gbc , 0,2,1);
@@ -175,7 +194,7 @@ public class VueCommandes extends JPanel implements Observer{
 
         //EventListeners
         boutonAction1.addActionListener(e -> partie.confirmeAction());
-        boutonAction2.addActionListener(e -> {partie.confirmeAction();switcher.show(boutons,"card 1");});
+        boutonAction2.addActionListener(e -> {partie.confirmeAction();switcher.show(boutons,"card 1");}); //revient aux panel de choix d'actions
         boutonSeDeplacer.addActionListener(new ControleurMouvement(p,switcher,boutons));
         boutonTir.addActionListener(new ControleurTir(p,switcher,boutons));
         boutonBraque.addActionListener(e -> partie.setActionChoisie(2));
@@ -185,7 +204,7 @@ public class VueCommandes extends JPanel implements Observer{
         bas.addActionListener(e -> partie.setDirectionChoisie(Direction.BAS));
         gauche.addActionListener(e -> partie.setDirectionChoisie(Direction.AVANT));
         droite.addActionListener(e -> partie.setDirectionChoisie(Direction.ARRIERE));
-        retourActions.addActionListener(e -> switcher.next(boutons));
+        retourActions.addActionListener(e -> switcher.next(boutons)); //bouton de retour vers le panel de choix d'action les directions sont affichées
 
         //Racourcis Clavier
         createKeyShortcut(boutonSeDeplacer , KeyEvent.VK_S);
@@ -201,12 +220,15 @@ public class VueCommandes extends JPanel implements Observer{
         createKeyShortcut(gauche , KeyEvent.VK_LEFT);
         createKeyShortcut(droite , KeyEvent.VK_RIGHT);
 
-
         partie.addObserver(this);
         CVue.setOpacityALL(this,false);
-
     }
 
+
+    /**Fonction auxilière qui associe une touche à l'action de cliquer sur un bouton
+     * @param b le bouton à associer à la touche
+     * @param key la touche raccourci à associer au bouton b
+     */
     private void createKeyShortcut(JButton b , int key){
         AbstractAction action = new AbstractAction() {
             @Override
@@ -214,7 +236,6 @@ public class VueCommandes extends JPanel implements Observer{
                 b.doClick();
             }
         };
-
         KeyStroke keyStroke = KeyStroke.getKeyStroke(key, 0);
         InputMap inputMap = b.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = b.getActionMap();
@@ -223,6 +244,9 @@ public class VueCommandes extends JPanel implements Observer{
     }
 
 
+    /**
+     * Fonction Auxilière qui dessine la section HUD
+     */
     public void paintStats(){
         JPanel panel1 = (JPanel) this.getComponent(0);
         ((JLabel)panel1.getComponent(0)).setText("Tour du Joueur N°"+(partie.getJoueurAct()+1));
@@ -241,6 +265,9 @@ public class VueCommandes extends JPanel implements Observer{
         ((JLabel)stats.getComponent(4)).setText(": " +b.get_ammo());
     }
 
+    /**
+     * Fonction Auxilière qui gère le prompt durant la phase de planification
+     */
     private void paintP1(){
         if(disableButtons) {
             JPanel boutons = (JPanel) this.getComponent(1);
@@ -278,18 +305,20 @@ public class VueCommandes extends JPanel implements Observer{
 
 
     public void update() {
-        execution = false;
-        repaint();
-    }
-
-    @Override
-    public void update(String str) {
-        if(partie.getNumeroTour()>=Partie.NB_MANCHES){
+        if(partie.getNumeroTour()>=Partie.NB_MANCHES){ //La partie est terminé, on affiche le podium
             Podium pod = new Podium(partie);
             JOptionPane.showMessageDialog(null, pod,"Leader Board", JOptionPane.PLAIN_MESSAGE);}
-
-
         else {
+            execution = false;
+            repaint();
+        }
+    }
+
+    /**
+     * @see Observer
+     */
+    @Override
+    public void update(String str) {
             if (!disableButtons) {
                 JPanel boutons = (JPanel) this.getComponent(1);
                 for (Component c : ((JPanel) boutons.getComponent(0)).getComponents())
@@ -303,6 +332,5 @@ public class VueCommandes extends JPanel implements Observer{
             textPrompt.setForeground(Color.WHITE);
             textPrompt.setText(str);
             execution = true;
-        }
     }
 }
