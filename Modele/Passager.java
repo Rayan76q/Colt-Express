@@ -2,21 +2,16 @@ package Modele;
 
 import java.util.Random;
 
+
+
 public class Passager extends Personne implements Hitable{
 
+    //Sprites possible pour un passager
     private static final String[] sprites = {"../Vue/Images/passagerBarbu.png" , "../Vue/Images/passagerFemme.png" , "../Vue/Images/passagerJournal.png",
                             "../Vue/Images/passagerRiche.png" , "../Vue/Images/passagerVieux.png"};
 
 
     private Butin poche;
-
-    public void setButin(Butin butin){
-        poche = butin;
-    }
-
-    public Butin getPoche(){
-        return poche;
-    }
 
     public Passager(int p){
         super("passager"+getCurrent_id_passager--);
@@ -29,6 +24,18 @@ public class Passager extends Personne implements Hitable{
     }
 
 
+    public void setButin(Butin butin){
+        poche = butin;
+    }
+
+    public Butin getPoche(){
+        return poche;
+    }
+
+
+    /**Cede le butin du passager au bandit b <br>
+     * @param b un bandit qui est en train de braquer le passager
+     */
     public void cede(Bandit b){
         if(poche != null) {
             b.ajoute_butin(poche);
@@ -36,6 +43,9 @@ public class Passager extends Personne implements Hitable{
         }
     }
 
+    /**
+     * @see Hitable
+     */
     @Override
     public void drop_butin(Wagon w) {
         if(poche != null){
@@ -45,6 +55,8 @@ public class Passager extends Personne implements Hitable{
         }
     }
 
+    /**@see Hitable
+     */
     @Override
     public void est_vise(Wagon wagon){
         drop_butin(wagon);

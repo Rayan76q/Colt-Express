@@ -7,6 +7,10 @@ import java.awt.*;
 import java.util.Objects;
 
 
+/**Classe Vue
+ * Contient le main principale pour l'affichage graphique<br>
+ * Stockent des variables utilisé par les différentes sections de la Vue
+ */
 public class CVue {
     final static Font font1 = new Font("Arial", Font.BOLD, 20);
     final static Font font2 = new Font("Arial", Font.BOLD, 14);
@@ -14,26 +18,25 @@ public class CVue {
     static final Dimension screenSize = toolkit.getScreenSize();
     static final int screenWidth = screenSize.width;
     static final int screenHeight = screenSize.height;
+    private final JFrame frame;
+    /*bg[0] -> background du menu de démarrage
+    * bg[1] -> background pour VueCommandes
+    * */
+    private final ImageIcon[] bg = new ImageIcon[] {new ImageIcon((new ImageIcon(Objects.requireNonNull(CVue.class.getResource("Images/public.jpg")))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH)),
+            new ImageIcon((new ImageIcon(Objects.requireNonNull(CVue.class.getResource("Images/backGroundCommandes.jpg")))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH))};
 
     //Main graphique
     public static void main(String[] args) {
         EventQueue.invokeLater(CVue::new);
     }
 
-    private final JFrame frame;
-    private final ImageIcon[] bg = new ImageIcon[] {new ImageIcon((new ImageIcon(Objects.requireNonNull(CVue.class.getResource("Images/public.jpg")))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH)),
-            new ImageIcon((new ImageIcon(Objects.requireNonNull(CVue.class.getResource("Images/backGroundCommandes.jpg")))).getImage().getScaledInstance(screenWidth, screenHeight, Image.SCALE_SMOOTH))};
-
     public CVue() {
-
         frame = new JFrame();
         frame.setTitle("Colt Express");
-
 
         JPanel app = new JPanel(new CardLayout());
         JPanel container = new JPanel(new BorderLayout());
         VueInput menu = new VueInput(this);
-
 
         app.add(menu);
         app.add(container);
@@ -50,14 +53,22 @@ public class CVue {
 
     }
 
+    /**Passe de l'écran d'acueil à l'interface de jeu
+     *  Precondition au lancement: tous les parametres de jeu doivent être intialisé avec des valeurs valides
+     * @param names Matrice contenant les noms des bandits entrés dans le menu pour l'initialisation
+     */
     public void switchToGame(String[][] names){
         frame.getContentPane().removeAll();
         frame.revalidate();
         frame.repaint();
+
         JLabel label = new JLabel(bg[1]);
         frame.setContentPane(label);
         frame.setLayout(new BorderLayout());
-        Partie p = new Partie(true, names);
+
+        Partie p = new Partie(true, names); //initialisation de la partie
+
+        //Création et ajout des JPanels principaux
         VuePlateau plateau = new VuePlateau(p.getTrain());
         frame.add(plateau, BorderLayout.NORTH);
         VueCommandes tableau_de_bord = new VueCommandes(p);
@@ -70,6 +81,11 @@ public class CVue {
     }
 
 
+    /**Fonction qui parcours un {@code Swing.Container} en profondeur pour rendre ses composants transparent ou pas<br>
+     * Permet d'afficher les backgrounds
+     * @param container Le container dont souhaite changer l'opacité
+     * @param b Vrai pour rendre container opaque, Faux sinon
+     */
     public static void setOpacityALL(Container container, boolean b){
         for (Component component : container.getComponents()) {
             if (component instanceof JComponent) {
@@ -80,7 +96,6 @@ public class CVue {
             }
         }
         ((JComponent) container).setOpaque(b);
-
     }
 }
 

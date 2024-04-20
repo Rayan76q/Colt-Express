@@ -11,27 +11,31 @@ import java.util.Objects;
 
 import static java.lang.Math.max;
 
+/**Classe VuePlateau<br>
+ * Gère l'affichage concret du train et ses différents éléments<br>
+ * Le train s'affiche 4 wagon par 4 wagon au maximum,
+ * cela permet de ne pas essayer de packer 9 wagons sur une largeur d'écran
+ * Les touches A et D permettent de déplacer la Vue à droite et à gauche
+ */
 public class VuePlateau extends JPanel implements Observer {
 
     private final Train train;
-
-    //Hauteur et largeur d'un etage de wagon
     private static final int dec = 5;
+    //Dimensions des différents éléments
     private final static int WIDTH = CVue.screenWidth / 4 - dec;
     private final static int HEIGHTCABINE = CVue.screenHeight / 3;
     private final static int HEIGHTLOCO = CVue.screenHeight / 2;
-
     static final int spriteH = 98;
     static final int spriteW = 48;
 
+    //Initialisation des Sprites
     private final ImageIcon locoSprite = new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/locomotive.png")));
     private final ImageIcon cabineSprite = new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/cabine.png")));
-
-    private final HashMap<Integer, ImageIcon> spriteMapPersonnes = new HashMap<>();
-    private final HashMap<Butin, ImageIcon> spriteMapButins = new HashMap<>();
     private final ImageIcon[] coffreSprite = {new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/safe.png"))), new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/openSafe.png")))};
     private final ImageIcon backGround  = new ImageIcon(Objects.requireNonNull(getClass().getResource("Images/background.jpg")));
 
+    private final HashMap<Integer, ImageIcon> spriteMapPersonnes = new HashMap<>();
+    private final HashMap<Butin, ImageIcon> spriteMapButins = new HashMap<>();
     private int start = max(Partie.NB_WAGON-4,0);
 
     public VuePlateau(Train t) {
@@ -40,6 +44,7 @@ public class VuePlateau extends JPanel implements Observer {
         this.setPreferredSize(dim);
 
         this.train = t;
+        //Associe chaque personne et butin à son sprite dans une hashmap pour les retrouver plus tard
         for (Wagon w : t.get_Wagon()) {
             for (Bandit b : w.getToit()) {
                 spriteMapPersonnes.put(b.get_id(), new ImageIcon(Objects.requireNonNull(getClass().getResource(b.getSprite()))));
@@ -56,6 +61,7 @@ public class VuePlateau extends JPanel implements Observer {
         spriteMapButins.put(magot, new ImageIcon(Objects.requireNonNull(getClass().getResource(magot.getSprite()))));
         train.addObserver(this);
 
+        //Raccourcis clavier pour déplacer afficher le reste du train
         AbstractAction action = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -84,19 +90,27 @@ public class VuePlateau extends JPanel implements Observer {
 
     }
 
+
+    /**
+     * @see Observer
+     */
     public void update() { repaint(); }
 
+    /**
+     * @see Observer
+     */
     @Override
     public void update(String str) {
         update();
     }
 
 
+    /**Convertit une image en BufferedImage
+     * @param img une image
+     * @return buffered image identique à img
+     */
     public static BufferedImage toBufferedImage(Image img) {
-        // Create a buffered image with the same dimensions and transparency as the original image
         BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-        // Draw the image onto the buffered image
         Graphics2D g2d = bimage.createGraphics();
         g2d.drawImage(img, 0, 0, null);
         g2d.dispose();
@@ -104,7 +118,14 @@ public class VuePlateau extends JPanel implements Observer {
         return bimage;
     }
 
-    public static BufferedImage colorImage(BufferedImage loadImg, int red, int green, int blue) {
+    /** Colorie une bufferedImage en gardant sa forme
+     * @param loadImg image à colorier
+     * @param red composante rouge de la couleur
+     * @param green composante verte de la couleur
+     * @param blue composante bleue de la couleur
+     * @return loadImg colorié avec la couleur (red,green,blue)
+     */
+    public static BufferedImage colorImage(BufferedImage loadImg, int red, int green, int blue) {//emprunt
         int width = loadImg.getWidth();
         int height = loadImg.getHeight();
         BufferedImage tintedImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -123,12 +144,14 @@ public class VuePlateau extends JPanel implements Observer {
     public void paintComponent(Graphics g) {
         super.repaint();
         super.paintComponent(g);
-        // Draw only part of the image
+
+
+        //Calcul de la position de départ et la largeur à dessiner dans l'image du background
         int sourceX =  (int) ((start*WIDTH) * (float) backGround.getIconWidth() / (2.25* CVue.screenWidth));
         int sourceWidth = (int) ( WIDTH * 4 * (float) backGround.getIconWidth() / (2.25*CVue.screenWidth));
 
 
-        // Draw the partial image
+        // Dessin du background sur l'écran
         g.drawImage(backGround.getImage(), 0,0, this.getWidth(), this.getHeight() ,
                 sourceX, 0, sourceX + sourceWidth, backGround.getIconHeight(), this);
 
@@ -144,7 +167,7 @@ public class VuePlateau extends JPanel implements Observer {
                 y += 20;
             }
             paintPersonne(g, train.get_Wagon()[i+start],x, y+ycabine-spriteH,y+ytoit-spriteH);
-            paintButin(g, train.get_Wagon()[i+start], x, y+ycabine,y+ytoit);
+            paintButin(g, train.get_Wagon()[i+start], x, y+ycabine,y+ytoit); //paint les butins dropés
         }
     }
 
@@ -152,7 +175,7 @@ public class VuePlateau extends JPanel implements Observer {
         if(l.magot_dispo()){
             g.drawImage(coffreSprite[0].getImage(), x+WIDTH/2,CVue.screenHeight/12 + HEIGHTLOCO -160,WIDTH/4,100, this);
         }
-        else{
+        else{//Coffre ouvert quand le magot a été volé
             g.drawImage(coffreSprite[1].getImage(), x+WIDTH/2, CVue.screenHeight/12 + HEIGHTLOCO -160 ,WIDTH/4,100, this);
         }
     }
@@ -176,17 +199,17 @@ public class VuePlateau extends JPanel implements Observer {
     }
 
     private void drawBandit(Graphics g, Bandit b , int x , int y){
-        if(b.isTargeted()) {
+        if(b.isTargeted()) { //Gestion du hit effect
             BufferedImage originalSprite = toBufferedImage(spriteMapPersonnes.get(b.get_id()).getImage());
-            BufferedImage redSprite = colorImage(originalSprite, 255, 0, 0);
-            g.drawImage(redSprite, x, y, spriteW, spriteH, this);
-            Thread hitThread = new Thread(() -> {
+            BufferedImage redSprite = colorImage(originalSprite, 255, 0, 0); //on colorie le sprite du bandit en rouge
+            g.drawImage(redSprite, x, y, spriteW, spriteH, this); //on dessine
+            Thread hitThread = new Thread(() -> { //on crée un thread pour lancer un delaie d'attente
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y, spriteW, spriteH, this);
+                g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y, spriteW, spriteH, this); //on redessine le sprite original du bandit
                 b.setTargeted(false);
             });
             hitThread.start();
@@ -194,6 +217,7 @@ public class VuePlateau extends JPanel implements Observer {
         else g.drawImage(spriteMapPersonnes.get(b.get_id()).getImage(), x, y,spriteW, spriteH, this);
         g.drawString(b.toString() ,x,y-10);
     }
+
 
     private void paintPersonne(Graphics g, Wagon w, int x,int yInt , int yToit) {
 

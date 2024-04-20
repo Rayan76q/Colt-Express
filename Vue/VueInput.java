@@ -14,11 +14,15 @@ import java.util.Objects;
 
 public class VueInput extends JPanel{
     private final CVue vue;
+    //flags indiquant si les parametres sont bien initialisé (par défault ou par l'utilisateur)
     private final Boolean[] flags = new Boolean[]{true,false,true,true,true,true};
     private String[][] nomsBandits;
 
 
-
+    /** Fonction Auxilière utilisé dans la création des champs de texts
+     * @param labelText text à afficher dans un JLabel
+     * @return un JPanel contenant un JLabel à gauche et un JTextField à droite
+     */
     private JPanel createLabelTextFieldPanel(String labelText) {
         JPanel labelTextFieldPanel = new JPanel(new BorderLayout());
         JLabel label = new JLabel(labelText);
@@ -130,8 +134,6 @@ public class VueInput extends JPanel{
         vue = c;
         this.setLayout(new BorderLayout());
 
-
-
         Dimension dim1 = new Dimension(CVue.screenWidth,
                 CVue.screenHeight * 3/ 10);
 
@@ -142,7 +144,7 @@ public class VueInput extends JPanel{
         JPanel title = new JPanel(new BorderLayout());
         JPanel panel = new JPanel(new BorderLayout());
 
-        //Title
+        //Affiche le Titre
         JLabel t = new JLabel(new ImageIcon((new ImageIcon(Objects.requireNonNull(CVue.class.getResource("Images/titre.png")))).getImage().getScaledInstance(dim1.width/2,dim1.height*8/10, Image.SCALE_SMOOTH)));
         t.setHorizontalAlignment(0);
         title.add(t , BorderLayout.SOUTH);
@@ -152,6 +154,7 @@ public class VueInput extends JPanel{
         JPanel constants = new JPanel(new GridLayout(3,4,20,10));
         constants.setBorder(new EmptyBorder(0,30,0,30));
 
+        //Création et ajout des champs de textes
         constants.add(new JLabel());
         constants.add(createLabelTextFieldPanel("Nombre de joueurs : "));
         constants.add(createLabelTextFieldPanel("Nombre de manches : "));
@@ -183,7 +186,7 @@ public class VueInput extends JPanel{
                 if (!flags[0] && nb_joueurs.getText().isEmpty()) {
                     nb_joueurs.setText("");
                 }
-                else if(flags[0] && nb_joueurs.getText().isEmpty()) nb_joueurs.setText(String.valueOf(Partie.NB_JOUEURS));
+                else if(flags[0] && nb_joueurs.getText().isEmpty()) nb_joueurs.setText(String.valueOf(Partie.NB_JOUEURS)); //Si l'utilisateur à entré une valeur valide mais l'a éffacé entre temps
 
             }
         });
@@ -443,7 +446,11 @@ public class VueInput extends JPanel{
     }
 
 
+    /** Fonction Auxilière qui créer une grille de champs de texte d'ou l'utilisateur peut entrer le nom de tous les bandits
+     * @param names Le JPanel qui va contenir la grille
+     */
     private void createGrid(JPanel names) {
+        //redessine la grille si le nombre de bandits à changer entre temps
         names.removeAll();
         names.revalidate();
         names.repaint();
@@ -470,7 +477,6 @@ public class VueInput extends JPanel{
                         nom_bandit.setForeground(Color.WHITE);
                     }
                 }
-
                 @Override
                 public void focusLost(FocusEvent e) {
                     if (nom_bandit.getText().isEmpty()) {
@@ -510,13 +516,6 @@ public class VueInput extends JPanel{
             names.add(cell);
             names.add(new JLabel());
             CVue.setOpacityALL(names,false);
-
         }
-
-
     }
-
-
-
-
 }

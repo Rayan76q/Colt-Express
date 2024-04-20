@@ -1,10 +1,15 @@
 package Modele;
 import java.util.*;
 
+
+/**
+ * Classe Partie <br>
+ * Contient tous les parametres liée à l'initialisation et au déroulement d'une partie<br>
+ * Intéragit avec la Vue et le Controleur
+ *
+ */
 public class Partie extends Observable {
     private static final int DELAY = 10 ;
-
-
     public static int NB_MUNITIONS = 6;
     public static double DEFAULT_PRECISION = 0.9;
     public static int DEFAULT_HP = 3;
@@ -15,16 +20,23 @@ public class Partie extends Observable {
     public static double NEVROSITE_MARSHALL = 0.9;
     public static final int NB_PASSAGER_PAR_WAGON_MAX = 4;
     public static final double PROBA_PERTE_LOOT_TOIT = 0.05;
+
+    //Permet de créer des instances d'action à partir d'une liste indéxée  (emprunt)
     public static List<Class<? extends Action>> Actions = new ArrayList<>();
-
     private Train train;
-
     private int numeroManche;
-
+    /**
+     *  Lignes -> Bandit <br>
+     *  Colonnes -> tempo (action) <br>
+     *  La matrice est remplit ligne par ligne lors de la planification<br>
+     *  puis executer colonne par colonne de haut en bas
+     * */
     private Action[][] matrice_action;
-    private Joueur[] joueurs;
+    private Joueur[] joueurs; //Array des joueurs de la partie
     private int joueurAct = 0;
     private int tempo = 0;
+
+    //Attribut liée à la gestion de la planification en graphique
     private int actionChoisie = -1;
     private Direction directionChoisie ;
 
@@ -42,21 +54,21 @@ public class Partie extends Observable {
 
 
     public Partie(Boolean gui , String[][] noms) {
+        //Initialisation de la liste d'action
         Actions.add(Deplacement.class);
         Actions.add(Tir.class);
         Actions.add(Braquage.class);
         Actions.add(Frappe.class);
 
-        if(gui) initialisation_partie_gui(noms);
+        if(gui) initialisation_partie_gui(noms); //mode graphique
         else initialisation_partie();
 
     }
 
-    public Joueur[] getJoueurs() {
-        return joueurs;
-    }
 
-
+    /** Initalise les parametres de la partie reçu par la Vue à la création d'une instance
+     * @param names Liste de {@code String} pour les noms des bandits
+     */
     public void initialisation_partie_gui(String[][] names){
         NB_WAGON= NB_JOUEURS*NB_BANDITS_JOUEUR+1;
         this.joueurs = new Joueur[NB_JOUEURS];
@@ -88,6 +100,9 @@ public class Partie extends Observable {
     }
 
 
+    /**
+     * Initalise les parametres de la partie à la création d'une instance pour l'afficahge textuelle
+     */
     public void initialisation_partie(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n\n");
@@ -129,6 +144,9 @@ public class Partie extends Observable {
         }
     }
 
+    /** Fonction principale pour le mode textuelle
+     * @param nb_manches nombre de manches à jouer avant la fin de la partie
+     */
     private void run(int nb_manches) {
         for (int k = 0; k < nb_manches; k++) {
             numeroManche = k;
@@ -153,48 +171,11 @@ public class Partie extends Observable {
 
     }
 
-    public List<Joueur> joueur_en_tete(){
-        int max = joueurs[0].compte_argent();
-        List<Joueur> premiers = new LinkedList<>();
-        for (Joueur j : joueurs){
-            int v = j.compte_argent();
-            if(v > max){
-                premiers = new LinkedList<>();
-                premiers.add(j);
-                max = v;
-            }
-            else if(v == max){
-                premiers.add(j);
-            }
-        }
-        return premiers;
-    }
 
-
-
-
-    public int getNumeroTour() {
-        return this.numeroManche;
-    }
-    public Train getTrain(){return this.train;}
-
-    public int getJoueurAct() {
-        return joueurAct;
-    }
-
-
-    public void setActionChoisie(int actionChoisie) {
-        assert  actionChoisie>=0 && actionChoisie<4 ;
-
-
-        this.actionChoisie = actionChoisie;
-    }
-
-
-    public Action[][] getMatrice_action(){return matrice_action;}
-
-
-    public Action creeActionFinale(){
+    /**Créer l'action planifier par le joueur dans la vue apres qu'il l'est spécifier son type et éventuellement uen direction
+     * @return l'action que le joueur a planifié (pas encore confirmé)
+     */
+    public Action creeActionFinale(){  //code résultant de recherche dans les docs/forums
         if(actionChoisie == 2 || actionChoisie == 3 ){
             try {
                 return Actions.get(actionChoisie).getConstructor(Bandit.class , Train.class).newInstance(joueurs[joueurAct].getPionAct() , train);
@@ -220,22 +201,25 @@ public class Partie extends Observable {
         return null;
     }
 
+    /**
+     * Ajoute l'action planifié à la matrice d'action et passe la main au pion/joueur suivant si besoin
+     */
     public void confirmeAction() {
-
-        Action actionFinale = creeActionFinale();
+        Action actionFinale = creeActionFinale(); //création de l'instance
         if(actionFinale != null) {
             Bandit pionActuelle = joueurs[joueurAct].getPionAct();
             matrice_action[pionActuelle.get_id()][tempo] = actionFinale;
             tempo++;
             if (tempo > pionActuelle.get_hitPoints() - 1) {
+                //si HP<DefaultHP le bandit perd des actions
                 for (int i = tempo; i < matrice_action[pionActuelle.get_id()].length; i++) {
-                    matrice_action[pionActuelle.get_id()][i] = null;  //blessure
+                    matrice_action[pionActuelle.get_id()][i] = null;
                 }
+                //le joueur a entré toutes les actions du pion qu'il joue
                 tempo = 0;
-                //le joueur a entrer toutes les actions du pion
-                if (!joueurs[joueurAct].getNextPion()) {
+                if (!joueurs[joueurAct].getNextPion()) { //plus de pions, passage au joueur suivant
                     getNextJoueur();
-                    if (joueurAct == 0) { //la phase de planification est terminé , on execute
+                    if (joueurAct == 0) { //plus de joueur,la phase de planification est terminé , on execute
                         executerMatrice();
                     }
                 }
@@ -257,22 +241,28 @@ public class Partie extends Observable {
         }
     }
 
+    /**
+     * Execute toutes les actions planifié pour la manche en cours en notifiant la vue
+     */
     public void executerMatrice(){
         notifyObservers("Au tour de "+getJoueurs()[0].getPions().get(0)+" ( J1 )");
+        //Créer un thread à part pour ajouter du delais de l'affichage (emprunt)
         Thread actionThread = new Thread(() -> {
             for (int j = 0; j < matrice_action[0].length; j++) {
                 for (int i = 0; i < matrice_action.length; i++) {
+                    //Message indiquant le bandit qui va mener l'action
                     joueurAct = (NB_BANDITS_JOUEUR == 2 ? i%2 : i);  //switch les joueurs et les pions pour VueCommandes
                     Bandit b = joueurs[joueurAct].getPions().get((NB_BANDITS_JOUEUR == 2 ? i/NB_BANDITS_JOUEUR : 0));
                     joueurs[joueurAct].setPionAct(b);
                     notifyObservers("Au tour de "+b+" ( J"+(joueurAct+1)+" )");
                     sleep();
+                    //Execution
                     if (matrice_action[i][j] != null) {
                         String message = matrice_action[i][j].executer();
                         notifyObservers(message);
                         matrice_action[i][j] = null;
                         sleep();
-                        notifyObservers(evenementsPassifs(false));
+                        notifyObservers(evenementsPassifs(false)); //Execution d'evenements intermédiares aux actions
                         sleep();
                     }
                 }
@@ -283,80 +273,78 @@ public class Partie extends Observable {
                 r += j.toString()+" ";
             }
             System.out.println(r+" en tête pour ce tour.\n");
-            notifyObservers(evenementsPassifs(true));
+            notifyObservers(evenementsPassifs(true)); //Execution des évenements apres que tous les bandits est joué
             numeroManche++;
-            if(numeroManche < NB_MANCHES) { //La partie continue
-                notifyObservers();
-                joueurAct = 0;
-                //Reset les pions actuelles pour partie à deux pions
-                if (NB_BANDITS_JOUEUR == 2) {
-                    for (Joueur joueur : joueurs) {
-                        joueur.setPionAct(joueur.getPions().get(0));
-                    }
+            joueurAct = 0;
+            //Reset les pions actuelles pour partie à deux pions
+            if (NB_BANDITS_JOUEUR == 2) {
+                for (Joueur joueur : joueurs) {
+                    joueur.setPionAct(joueur.getPions().get(0));
                 }
             }
-            else{
-                Arrays.sort(joueurs, Comparator.reverseOrder());
-                List<Joueur> gagnants = joueur_en_tete();
-                String message = "\n    ";
-                for (Joueur j : gagnants)
-                    message+="j"+(j.getId()+1)+" ";
-                message += (gagnants.size()==1 ? "A GAGNÉ" : "ONT GAGNÉ") + "\n\n";
-                message +="Leader Board :  \n";
-                for (int i = 0; i < joueurs.length; i++) {
-                    message += "    "+(i+1)+":  "+"Joueur"+(joueurs[i].getId()+1) + "  " + joueurs[i].compte_argent()+"$\n";
-                }
-                notifyObservers(message);
-            }
-
+            notifyObservers(); //Réinitialisation de la vue
         });
 
         actionThread.start();
 
     }
 
+    /** Détermine les joueurs menent la partie à la manche actuelle
+     * @return Renvoie la liste des joueurs qui ont ammasé le plus gros butin (plusieurs si égalité il y a)
+     */
+    public List<Joueur> joueur_en_tete(){
+        int max = joueurs[0].compte_argent();
+        List<Joueur> premiers = new LinkedList<>();
+        for (Joueur j : joueurs){
+            int v = j.compte_argent();
+            if(v > max){
+                premiers = new LinkedList<>();
+                premiers.add(j);
+                max = v;
+            }
+            else if(v == max){
+                premiers.add(j);
+            }
+        }
+        return premiers;
+    }
+
     private String evenementsPassifs(boolean endTurn) {
-
-
         if(endTurn) {
             //Gère tous ce qui se passe entre les manches comme les deplacements du marshall
-            for (Wagon w : train.get_Wagon()) {
+            for (Wagon w : train.get_Wagon()) { //perte de loot sur le toit
                 w.perte_loot_toit();
             }
-            //Mouvement du marchall
+            //Mouvement du marshall
             Random r = new Random();
             Marchall m = train.getMarchall();
             List<Direction> dirs = m.mouvementsPossibles(train);
             String message = m.move(train, dirs.get(r.nextInt(dirs.size())));
-            //Fuite
+            //Fuite éventuelle
             Wagon wagonMarshallAct = train.get_Wagon()[m.position];
             for (Bandit b : wagonMarshallAct.liste_bandits_int()) {
                 b.fuit_marshall(wagonMarshallAct);
             }
             return message;
         }
-        else{
+        else{//Gère les evenements entre deux tempo (ex: un bandit un peu trop courageux qui rentre dans la cabine du marshall)
             Wagon wagonMarshall = train.get_Wagon()[train.getMarchall().getPosition()];
             for(Bandit b : wagonMarshall.liste_bandits_int()){
                 return b.fuit_marshall(wagonMarshall);
             }
             return " ";
         }
-
-
     }
 
-
-    public void getNextJoueur(){
-        joueurAct  = (joueurAct+1)%NB_JOUEURS;
-    }
-
+    /**
+     * Permet à l'utilisateur de la vue de revenir sur ses pas lors de la planification tant
+     * qu'il n'a pas cliqué sur le bouton "Action" à sa dernière action
+     */
     public void annuleAction() {
         if(tempo>0){ //revient au tempo précédent
             tempo--;
-
         }
-        else{
+        else{ //Si plusieurs le joueurs a plusieurs pions
             if(joueurs[joueurAct].getPrevPion()){  //revient au pions précédent
                 tempo = matrice_action[joueurs[joueurAct].getPionAct().get_id()].length-1;
             }
@@ -367,13 +355,14 @@ public class Partie extends Observable {
         notifyObservers();
     }
 
-    public void setDirectionChoisie(Direction directionChoisie) {
-        this.directionChoisie = directionChoisie;
-    }
-
+    /**Fonction qui permet de connaitre les mouvements possibles pour un bandit durant toute la planification
+     * @return Liste de direction des mouvements possibles à la position ou le bandit sera à ce stade de la planification
+     */
     public List<Direction> mouvementsPossiblesPostPlan(){
         Bandit b = joueurs[joueurAct].getPionAct();
-        int positionDep = b.getPosition() +  (b.getToit()? 0 :1)*NB_WAGON;
+        int positionDep = b.getPosition() +  (b.getToit()? 0 :1)*NB_WAGON; //position de départ
+
+        //calcul de la position d'arrivé à ce stade
         for (int i = 0; i <tempo; i++) {
             if(matrice_action[b.get_id()][i] instanceof Deplacement){
                 positionDep += ((Deplacement)matrice_action[b.get_id()][i]).getDir().dir();
@@ -381,5 +370,37 @@ public class Partie extends Observable {
         }
         return train.mouvementPossibles(true,positionDep%NB_WAGON,positionDep < NB_WAGON);
     }
+
+
+    /* Getters et Setter */
+
+    public void getNextJoueur(){
+        joueurAct  = (joueurAct+1)%NB_JOUEURS;
+    }
+
+    public Joueur[] getJoueurs() {
+        return joueurs;
+    }
+
+    public int getNumeroTour() {
+        return this.numeroManche;
+    }
+    public Train getTrain(){return this.train;}
+
+    public int getJoueurAct() {
+        return joueurAct;
+    }
+    public Action[][] getMatrice_action(){return matrice_action;}
+    public void setActionChoisie(int actionChoisie) {
+        assert  actionChoisie>=0 && actionChoisie<4 ;
+
+
+        this.actionChoisie = actionChoisie;
+    }
+    public void setDirectionChoisie(Direction directionChoisie) {
+        this.directionChoisie = directionChoisie;
+    }
+
+
 
 }

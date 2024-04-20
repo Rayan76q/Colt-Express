@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
+/**
+ * Un bouton Custom qui peut être arrondi (emprunt)
+ */
 public class RoundedButton extends JButton {
     private final int cornerRadius;
 
@@ -34,7 +37,6 @@ public class RoundedButton extends JButton {
         super.paintComponent(g2d);
         g2d.dispose();
     }
-
 
 
 }
