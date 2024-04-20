@@ -50,6 +50,7 @@ public class Partie extends Observable {
         Partie partie = new Partie(false , null);
         System.out.println(partie.train);
         partie.run(NB_MANCHES);
+        partie.displayRankings();
     }
 
 
@@ -103,69 +104,70 @@ public class Partie extends Observable {
     /**
      * Initalise les parametres de la partie à la création d'une instance pour l'afficahge textuelle
      */
-    public void initialisation_partie(){
+    public void initialisation_partie() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n\n");
-        System.out.println("Hello gamer! would you like to play the special mode or not?");
-        System.out.println("Answer by 1 (for yes) or 0 (for no): ");
+        System.out.println("Bien le bonjour à toi, jeune aventurier, tentant de t'immiscer dans le cruel monde du Far West.\n");
+        System.out.println("Souhaites-tu jouer en mode spécial ou non ?");
+        System.out.println("Réponds par 1 (pour oui) ou 0 (pour non) : ");
         mode_extra = (scanner.nextInt() != 0);
         scanner.nextLine();
-        System.out.print("Enter the number of players (default is 4): ");
+        System.out.print("Entrez le nombre de joueurs (par défaut 4) : ");
         int numOfPlayers = scanner.nextInt();
-        assert numOfPlayers >0;
+        assert numOfPlayers > 0;
         NB_JOUEURS = numOfPlayers;
-        NB_WAGON = numOfPlayers+1;
+        NB_WAGON = numOfPlayers + 1;
         this.joueurs = new Joueur[numOfPlayers];
-        System.out.print("Enter the number of turns (default is 5 , min is 3): ");
+        System.out.print("Entrez le nombre de tours (par défaut 5, minimum 3) : ");
         int tours = scanner.nextInt();
         assert tours >= 3;
         NB_MANCHES = tours;
-        this.matrice_action = new Action[numOfPlayers*NB_BANDITS_JOUEUR][DEFAULT_HP];
+        this.matrice_action = new Action[numOfPlayers * NB_BANDITS_JOUEUR][DEFAULT_HP];
         train = new Train();
-        scanner.nextLine(); // Consume newline character
-        if (!this.mode_extra){
+        scanner.nextLine(); // Consomme le caractère de nouvelle ligne
+        if (!this.mode_extra) {
             for (int i = 0; i < numOfPlayers; i++) {
-                System.out.print("Enter the name of player " + (i + 1) + ": ");
+                System.out.print("Entrez le nom du joueur " + (i + 1) + " : ");
                 String name = scanner.nextLine();
                 List<Bandit> pions = new ArrayList<>();
                 for (int j = 0; j < NB_BANDITS_JOUEUR; j++) {
-                    Bandit bandit = new Bandit(name,Partie.NB_WAGON-1-i%2);
+                    Bandit bandit = new Bandit(name, Partie.NB_WAGON - 1 - i % 2);
                     pions.add(bandit);
-                    System.out.print("Welcome aboard: " + name +"\n");
+                    System.out.print("Bienvenue à bord, " + name + "\n");
                     train.get_Wagon()[bandit.position].toit.add(bandit);
                 }
 
-                joueurs[i] = new Joueur(train,pions);
-
+                joueurs[i] = new Joueur(train, pions);
             }
-        }
-        else{ //special mode to be implemented
-            return ;
+        } else { // Mode spécial à implémenter
+            return;
         }
     }
 
-    /** Fonction principale pour le mode textuelle
-     * @param nb_manches nombre de manches à jouer avant la fin de la partie
-     */
+        /** Fonction principale pour le mode textuelle
+         * @param nb_manches nombre de manches à jouer avant la fin de la partie
+         */
     private void run(int nb_manches) {
         for (int k = 0; k < nb_manches; k++) {
             numeroManche = k;
             System.out.println(train);
-            //Planification
-            for (Joueur j : joueurs){
-                System.out.println("It's player's " + j.getId() + " Turn: \n");
+            // Planification
+            for (Joueur j : joueurs) {
+                System.out.println("C'est au tour du joueur " + j.getId() + " : \n");
                 j.joue_manche(matrice_action);
             }
 
-            //Execution
+            // Exécution
 
             for (int i = 0; i < DEFAULT_HP; i++) {
                 for (int j = 0; j < NB_JOUEURS; j++) {
-                    matrice_action[j][i].executer();
+                    if (matrice_action[j][i] != null) {
+                        matrice_action[j][i].executer();
+                    }
                 }
             }
 
-            System.out.println(joueur_en_tete()+" in the lead.\n");
+            System.out.println(joueur_en_tete() + " en tête.\n");
             evenementsPassifs(true);
         }
 
@@ -308,6 +310,15 @@ public class Partie extends Observable {
         }
         return premiers;
     }
+
+    public void displayRankings() {
+        List<Joueur> premiers = joueur_en_tete();
+        System.out.println("Classement :");
+        for (int i = 0; i < premiers.size(); i++) {
+            System.out.println("À la position " + (i + 1) + " nous avons le Joueur numéro " + premiers.get(i).getId());
+        }
+    }
+
 
     private String evenementsPassifs(boolean endTurn) {
         if(endTurn) {
