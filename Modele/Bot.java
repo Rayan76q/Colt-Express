@@ -52,7 +52,7 @@ class Random_Bot extends Bandit_Bot{
 
     @Override
     List<Action> actions_bot() {
-        // tout est random j'imagine que ca serait facile de lire
+        // remplit une list d'action qui servira dans matrice action
         LinkedList<Action> acts = new LinkedList<>();
         Train train = partie.getTrain();
         for (int i = 0; i < this.get_hitPoints(); i++) {
@@ -101,6 +101,7 @@ class Blood_thirsty_Bot extends Bandit_Bot{
 
     public void target(Train train, LinkedList<Action> acts, Bandit src){
         //targets 1 bandit out of all bandits
+        //essaye de suivre un bandit et le frapper, remplit la liste d'action de cette maniere
         Bandit banditProche = targets.get(0);
         targets.remove(0);
         targets.add(banditProche);
@@ -128,6 +129,7 @@ class Blood_thirsty_Bot extends Bandit_Bot{
 
     @Override
     List<Action> actions_bot() {
+        //remplit la liste d'action avec soit des vols soit des targets
         LinkedList<Action> acts= new LinkedList<>();
         Train train = this.partie.getTrain();
         //il est greedy until il est le premier, apres il focus sur quelqu'un
@@ -192,6 +194,8 @@ class Goblin_Bot extends Bandit_Bot{
     }
 
     public void vol(Train train, LinkedList<Action> acts,int position,boolean toit){
+        //vol un des bandits d'un des joueurs en tete autree que lui meme
+        // rempli la matrice d'action
         int pos = this.butinproche_position();
         Wagon[] waggs= train.get_Wagon();
         boolean toit2 = false;
@@ -227,6 +231,7 @@ class Goblin_Bot extends Bandit_Bot{
     }
 
     public List<Joueur> autre_joueur_en_tete(Joueur[] joueurs){
+        //rend la liste des joueurs en tete autre que lui meme, ou le deuxieme joueur
         int max = (joueurs[0].pions.contains(this)?joueurs[1].compte_argent():joueurs[0].compte_argent());
         List<Joueur> premiers = new LinkedList<>();
         for (Joueur j : joueurs){
@@ -247,6 +252,7 @@ class Goblin_Bot extends Bandit_Bot{
 
     public void target(Train train, LinkedList<Action> acts, Bandit src){
         //targets 1 bandit out of all bandits (best bandit of best player)
+        //rempli la list acts de cette facon
         List<Joueur> joue = this.autre_joueur_en_tete(this.partie.getJoueurs());
         Collections.shuffle(joue);
         List<Bandit> bestBandit = joue.get(0).pions;
