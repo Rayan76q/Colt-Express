@@ -22,8 +22,8 @@ public class Joueur implements Comparable<Joueur> {
 
     //Pour tester avec affichage textuelle
     public Direction choisie_dir(Bandit b){
-        System.out.println("Choose between: " +b.mouvementsPossibles(train) +"\n");
-        System.out.println("0->forward / 1->backward / 2->up / 3->down / 4-> here\n");
+        System.out.println("Choisit entre: " +b.mouvementsPossibles(train) +"\n");
+        System.out.println("0->devant / 1->derriere/ 2->en haut / 3->en bas / 4-> ici \n");
         Scanner scanner = new Scanner(System.in);
         int choice;
         do {
