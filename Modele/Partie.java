@@ -39,8 +39,6 @@ public class Partie extends Observable {
     private int actionChoisie = -1;
     private Direction directionChoisie ;
 
-    private boolean mode_extra;
-
 
 
     //Main avec afffichage textuelle
@@ -144,10 +142,6 @@ public class Partie extends Observable {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n\n");
         System.out.println("Bien le bonjour à toi, jeune aventurier, tentant de t'immiscer dans le cruel monde du Far West.\n");
-        System.out.println("Souhaites-tu jouer en mode spécial ou non ?");
-        System.out.println("Réponds par 1 (pour oui) ou 0 (pour non) : ");
-        mode_extra = (scanner.nextInt() != 0);
-        scanner.nextLine();
         System.out.print("Entrez le nombre de joueurs (par défaut 4) : ");
         int numOfPlayers;
         do {
@@ -167,8 +161,6 @@ public class Partie extends Observable {
         NB_MANCHES = tours;
         this.matrice_action = new Action[numOfPlayers * NB_BANDITS_JOUEUR][DEFAULT_HP];
         train = new Train();
-
-        if (!this.mode_extra) {
             if(NB_JOUEURS >=2) {
                 for (int i = 0; i < numOfPlayers; i++) {
                     System.out.print("Entrez votre nom J" + (i + 1) + " puis celui de vos bandits: ");
@@ -223,9 +215,6 @@ public class Partie extends Observable {
             for(Bandit i : joueurs[1].pions){
                 if (i instanceof Blood_thirsty_Bot) ((Blood_thirsty_Bot)i).targets_initialisation();
             }
-        } else { // Mode spécial à implémenter
-            return;
-        }
     }
 
         /** Fonction principale pour le mode textuelle

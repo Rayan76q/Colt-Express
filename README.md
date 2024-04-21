@@ -16,7 +16,7 @@ Toutes les fonctionalités de bases on été implémentés:
 <li>Les bandits ont une précision et peuvent donc rater leur tir ; un tir raté touchera un passager au hasard et lui fera lâcher son butin. Le passager est considéré comme mort.</li>
 <li>Ajout d'une nouvelle action, Frappe, qui est une attaque au corps à corps ne consommant pas de munitions et qui ne peut pas échouer.</li>
 <li>Le mode deux joueurs, comme dans le vrai jeu Colt-Express, se joue avec 4 bandits (2 par joueur).</li>
-<li>Le mode solo se joue contre un bot, comme dans une partie à deux joueurs.</li>
+<li>Le mode solo se joue contre un bot, comme dans une partie à quatre joueurs (donc avec 3 bots).</li>
 <li>Un bot peut contrôler des bandits avec différents types de comportements.</li>
 <li>Les butins "dropés" sur le toit peuvent tomber du train avec une certaine probabilité.</li>
 <li>Si un bandit entre dans le wagon du marshall, il est visé par celui-ci et fuit, même si ce n'est pas la fin du tour.</li>
@@ -72,7 +72,7 @@ Une *`Personne`* peut être soit : un `Bandit` (Humain ou Bot) , un `Passager` o
 La classe `Passager` n'est fondamentalment pas nécéssaire pour implémenté le jeu telle que présenté dans le sujet, on l'a fait au début parce que ça nous donnait plus de liberté pour implémenté plus de fonctionalités: résistance au braquage, des passagers qui se servent sur les butins dropés au sol , donner au marshall la possibilité de rendre les butins aux passagers, bref plein d'idée pour étoffer un peu le gameplay même si en l'état actuelle on en tire pas vraiment partie hormis le fait que cela facilite l'affichage des sprites.
 
 La classe `Bandit` représente les agents principaux du modèle, comme ils implémente les deux interfaces ci-dessus ils peuvent se déplacer dans le train et être visé par des tires et peut effectuer les différentes actions du jeu: tir, déplacement , frappe , braquage.
-
+La classe `Marshall` implémente `Movable` est peut donc se déplacer comme le bandit.<br><br>
 Les *`Bandit_bot`* heritent tous de bandits et sont de 3 types: `Goblin` , `BloodThisrty` et `Random`, ceux-ci ont acces à toutes les actions que peut effectuer un bandit mais ont égalament une vision globale du train et ont un comportement spécifique.
 
 #### 3. Action
