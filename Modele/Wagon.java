@@ -7,6 +7,10 @@ import java.util.Random;
 
 public abstract class Wagon {
     static protected int size = 0;    //compteur pour la construction
+
+
+     //static protected int size = 1 ; //Decommenter pour les tests
+
     protected int position;
     protected List<Personne> interieur;
     protected List<Butin> loot_int;  //loot droppé à l'interieur du wagon
