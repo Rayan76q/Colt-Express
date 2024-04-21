@@ -454,7 +454,7 @@ public class VueInput extends JPanel{
         names.removeAll();
         names.revalidate();
         names.repaint();
-        Partie.NB_BANDITS_JOUEUR = (Partie.NB_JOUEURS <= 2 ? 2 : 1);
+        Partie.NB_BANDITS_JOUEUR = (Partie.NB_JOUEURS == 2 ? 2 : 1);
         nomsBandits = new String[Partie.NB_JOUEURS][Partie.NB_BANDITS_JOUEUR];
         for (int i = 0; i <Partie.NB_JOUEURS*Partie.NB_BANDITS_JOUEUR; i++) {
             names.add(new JLabel());
