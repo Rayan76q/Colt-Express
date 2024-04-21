@@ -163,8 +163,9 @@ public class Partie extends Observable {
                     System.out.print("Bienvenue à bord, " + name + "\n");
                     train.get_Wagon()[bandit.position].toit.add(bandit);
                 }
-
-                joueurs[i] = new Joueur(train, pions);
+                Joueur j  = new Joueur(train , pions);
+                j.setNom(name);
+                joueurs[i] = j;
             }
         } else { // Mode spécial à implémenter
             return;
@@ -341,8 +342,11 @@ public class Partie extends Observable {
     public void displayRankings() {
         List<Joueur> premiers = joueur_en_tete();
         System.out.println("Classement :");
-        for (int i = 0; i < premiers.size(); i++) {
-            System.out.println("À la position " + (i + 1) + " nous avons le Joueur numéro " + premiers.get(i).getId());
+        System.out.println("A la premiere position nous avons *ROULEMENT DE TAMBOUR* : " + premiers.get(0).getNom() + " GG T'ES UNE MASTERCLASS ");
+        for (int i = 1; i < premiers.size(); i++) {
+
+            System.out.println("À la  " + (i + 1) + " - ieme position  nous avons  " + premiers.get(i).getNom());
+
         }
     }
 

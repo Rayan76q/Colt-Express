@@ -12,13 +12,21 @@ public class Joueur implements Comparable<Joueur> {
     protected Bandit pionAct;
     protected int id = current_id;
 
+    protected String nom;
 
-    public Joueur(Train t , List<Bandit> b){
+
+    public Joueur(Train t , List<Bandit> b ){
         train = t;
         pions = b;
         pionAct = pions.get(0);
         current_id++;
+
     }
+
+    public void setNom(String nom ){
+        this.nom = nom ;
+    }
+
 
     //Pour tester avec affichage textuelle
     public Direction choisie_dir(Bandit b){
@@ -74,6 +82,8 @@ public class Joueur implements Comparable<Joueur> {
     public int getId() {
         return id;
     }
+
+    public String getNom() { return nom;}
 
     public List<Bandit> getPions(){return pions;}
 
