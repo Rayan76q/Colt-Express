@@ -1,10 +1,14 @@
 package Modele;
 
 
-public class Locomotive extends Wagon{
-    private final Butin mag = Butin.MAGOT;  
-    private boolean dispo = true;
+public class Locomotive extends Wagon {
+    private final Butin mag = Butin.MAGOT; // Butin dans la locomotive
+    private boolean dispo = true; // Disponibilité du magot
 
+    /**
+     * Retourne une représentation textuelle de la locomotive.
+     * @return string concernant si le magot est dispo .
+     */
     @Override
     public String toString() {
         if (dispo) {
@@ -13,9 +17,15 @@ public class Locomotive extends Wagon{
         return "C'est la locomotive.\n"+ "elle ne contient pas le magot!\n"+ super.toString();
     }
 
-
+    /**
+     * Vérifie si le magot est disponible dans la locomotive.
+     * @return True si le magot est disponible, sinon False.
+     */
     public boolean magot_dispo(){return dispo;}
 
+    /**
+     * Constructeur de la locomotive.
+     */
     public Locomotive(){
         super();
         assert size==0;
@@ -24,6 +34,10 @@ public class Locomotive extends Wagon{
         interieur.add(new Marchall());
     }
 
+    /**
+     * Vole le magot de la locomotive.
+     * @param b Bandit qui vole le magot.
+     */
     public void magot_vole(Bandit b)
     {
         if(magot_dispo()) {
@@ -32,6 +46,10 @@ public class Locomotive extends Wagon{
         }
     }
 
+    /**
+     *
+     * @return Le magot contenu dans la locomotive.
+     */
     public Butin getMag() {
         return mag;
     }

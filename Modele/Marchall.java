@@ -6,6 +6,11 @@ import java.util.Random;
 public class Marchall extends Personne implements Movable{
     double nevrosite;
 
+
+    /**
+     * Constructeur de Marshall.
+     */
+
     public Marchall(){
         super("Marshall");
         id = -1;
@@ -14,11 +19,25 @@ public class Marchall extends Personne implements Movable{
         sprite = "../Vue/Images/marshall.png";
     }
 
+
+    /**
+     * Retourne la liste des mouvements possibles du Marshal dans le train spécifié.
+     * @param t Train dans lequel le Marshal se déplace.
+     * @return Liste des directions de mouvement possibles.
+     */
+
     @Override
     public List<Direction> mouvementsPossibles(Train t) {
         return t.mouvementPossibles(false,position,false);
     }
 
+
+    /**
+     * Déplace le Marshal dans la direction spécifiée.
+     * @param T Train dans lequel le Marshal se déplace.
+     * @param d Direction dans laquelle le Marshal se déplace.
+     * @return Message indiquant le résultat du déplacement.
+     */
     @Override
     public String move(Train T , Direction d){
         Random r = new Random();
@@ -40,10 +59,18 @@ public class Marchall extends Personne implements Movable{
 
     }
 
-    //Le marshall ne peut être la cible d'un tir
+    /**
+     * Indique si le Marshall peut être la cible d'un tir.
+     * @return False, car le Marshall ne peut être la cible d'un tir par defaut .
+     */
     @Override
     public boolean isTargeted(){return false;}
 
+    /**
+     * Définit si le Marshall peut être la cible d'un tir.
+     * @param b Boolean indiquant si le Marshall peut être la cible d'un tir.
+     */
     @Override
     public void setTargeted(boolean b){}
 }
+

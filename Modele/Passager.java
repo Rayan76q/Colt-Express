@@ -3,38 +3,46 @@ package Modele;
 import java.util.Random;
 
 
+public class Passager extends Personne implements Hitable {
 
-public class Passager extends Personne implements Hitable{
-
-    //Sprites possible pour un passager
+    // Sprites possibles pour un passager
     private static final String[] sprites = {"../Vue/Images/passagerBarbu.png" , "../Vue/Images/passagerFemme.png" , "../Vue/Images/passagerJournal.png",
-                            "../Vue/Images/passagerRiche.png" , "../Vue/Images/passagerVieux.png"};
+            "../Vue/Images/passagerRiche.png" , "../Vue/Images/passagerVieux.png"};
 
+    private Butin poche; // Butin que le passager porte
 
-    private Butin poche;
-
+    /**
+     * Constructeur de Passager.
+     * @param p Position initiale du passager.
+     */
     public Passager(int p){
         super("passager"+getCurrent_id_passager--);
         Random r = new Random();
         id = getCurrent_id_passager+1;
         position = p;
-
         poche =  Butin.values()[r.nextInt(2)];
         sprite = sprites[r.nextInt(sprites.length)];
     }
 
-
+    /**
+     * Définit le butin porté par le passager.
+     * @param butin Butin à attribuer au passager.
+     */
     public void setButin(Butin butin){
         poche = butin;
     }
 
+    /**
+     * Récupère le butin porté par le passager.
+     * @return Le butin porté par le passager.
+     */
     public Butin getPoche(){
         return poche;
     }
 
-
-    /**Cede le butin du passager au bandit b <br>
-     * @param b un bandit qui est en train de braquer le passager
+    /**
+     * Cède le butin du passager au bandit b.
+     * @param b Bandit qui braque le passager.
      */
     public void cede(Bandit b){
         if(poche != null) {
@@ -44,7 +52,8 @@ public class Passager extends Personne implements Hitable{
     }
 
     /**
-     * @see Hitable
+     * Lâche le butin dans le wagon spécifié.
+     * @param w Wagon où le butin est lâché.
      */
     @Override
     public void drop_butin(Wagon w) {
@@ -55,12 +64,14 @@ public class Passager extends Personne implements Hitable{
         }
     }
 
-    /**@see Hitable
+    /**
+     * Traité lorsqu'un passager est visé par une action.
+     * @param wagon Wagon où le passager est visé.
      */
     @Override
     public void est_vise(Wagon wagon){
         drop_butin(wagon);
         targeted = false;
-        wagon.interieur.remove(this); //passager est cliniquement mort
+        wagon.interieur.remove(this); // Passager est cliniquement mort
     }
 }
