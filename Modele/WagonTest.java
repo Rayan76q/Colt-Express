@@ -11,7 +11,9 @@ public class WagonTest {
     private Cabine cabine;
     @Before
     public void setUp() {
-        cabine = new Cabine(1);
+        Wagon.reinitialise();
+        new Locomotive();
+        cabine = new Cabine(0);
     }
 
     @Test

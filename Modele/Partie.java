@@ -452,6 +452,7 @@ public class Partie extends Observable {
         this.directionChoisie = directionChoisie;
     }
 
+    public static void reinitialise(){DEFAULT_HP=6 ;NB_JOUEURS=4;NB_MANCHES=5;DEFAULT_PRECISION=0.9;NEVROSITE_MARSHALL=0.3;NB_MUNITIONS=6;}
 
-
+    public static void resetAll(){Partie.reinitialise();Wagon.reinitialise();Personne.reinitialise();Joueur.reintialise();}
 }

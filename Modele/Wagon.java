@@ -7,10 +7,8 @@ import java.util.Random;
 
 public abstract class Wagon {
 
-    //static protected int size = 0;    //compteur pour la construction
+    static protected int size = 0;    //compteur pour la construction
 
-
-    static protected int size = 1 ; //Decommenter pour les tests concernant les wagons / train/ cabine
 
     protected int position;
     protected List<Personne> interieur;

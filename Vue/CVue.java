@@ -31,8 +31,7 @@ public class CVue {
     }
 
     public CVue() {
-        Personne.reinitialise();
-        Joueur.reintialise();
+        Partie.resetAll();
         frame = new JFrame();
         frame.setTitle("Colt Express");
 
