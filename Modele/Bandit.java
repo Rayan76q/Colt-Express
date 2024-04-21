@@ -32,20 +32,14 @@ public class Bandit extends Personne implements Movable, Hitable{
         sprite = sprites[r.nextInt(sprites.length)];
     }
 
-    public int get_hitPoints(){
-        return this.hitPoints;
-    }
-    public int get_ammo(){return this.ammo;}
-
-    public List<Butin> getPoches() { return this.poches;}
-
-    public void setToit(boolean toit) {
-        this.toit = toit;
-    }
 
     public void ajoute_butin(Butin b){
         poches.add(b);
     }
+
+    /** Drop Un butin du bandit aléatoirement au sol à sa position
+     * @param w le wagon contenant le bandit
+     */
     public void drop_butin(Wagon w){
         assert this.position == w.position;
         if (!this.poches.isEmpty()){
@@ -60,6 +54,9 @@ public class Bandit extends Personne implements Movable, Hitable{
         }
     }
 
+    /**
+     * @see Hitable
+     */
     @Override
     public void est_vise(Wagon wagon){
         if(this.hitPoints>2)
@@ -68,6 +65,11 @@ public class Bandit extends Personne implements Movable, Hitable{
     }
 
 
+    /** Méthode qui permet au bandit de braquer un passager choisie aléatoirement à sa position ou de voler le magot
+     * ou un butin laissé au sol
+     * @param T une référence vers le train qui contient le bandit
+     * @return Un message contextuelle qui varie suivant le résultat de l'action
+     */
     public String braque(Train T) {
         Random r = new Random();
         Wagon wagon_actuelle = T.get_Wagon()[position];
@@ -107,16 +109,20 @@ public class Bandit extends Personne implements Movable, Hitable{
             }
         }
 
-
     }
 
 
-
+    /**
+     * @see Movable
+     */
     @Override
     public List<Direction> mouvementsPossibles(Train t) {
        return t.mouvementPossibles(true,position,toit);
     }
 
+    /**
+     * @see Movable
+     */
     @Override
     public String move(Train T , Direction d){
         if(!this.mouvementsPossibles(T).contains(d)){
@@ -134,6 +140,11 @@ public class Bandit extends Personne implements Movable, Hitable{
         return this + " se déplace.";
     }
 
+    /** Permet au bandit de tirer dans une des quatres directions , tire un bandit à la position visé au hasard et lui fait droper un butin
+     * @param train une référence vers le train contenant le bandit
+     * @param dir la direction du tir
+     * @return un message contextuelle suivant le résultat de l'action
+     */
     public String tir(Train train, Direction dir) {
         Random random = new Random();
         if(this.ammo>0) {
@@ -199,6 +210,10 @@ public class Bandit extends Personne implements Movable, Hitable{
         return "*Click* ,*Click*";   //out of ammo
     }
 
+    /** Permet au bandit de farpper un autre bandit choisie aléatoirement sur sa position et de lui faire dropé un butin
+     * @param train une référence vers le train qui contient le bandit
+     * @return une message contextuelle suivant le résultat de l'action
+     */
     public String frappe(Train train) {
         Random rand = new Random();
         Wagon w = train.get_Wagon()[position];
@@ -229,6 +244,10 @@ public class Bandit extends Personne implements Movable, Hitable{
         }
     }
 
+    /** Fonction appélé lorsque le bandit et le marshall sont au même endroit, fait furie le bandit vers le toit en lui faisant perdre 1HP
+     * @param w le wagon contenant le bandit et le marshall
+     * @return Un message à afficher dans la Vue
+     */
     public String fuit_marshall(Wagon w) {
 
         if(this.hitPoints>2) {
@@ -243,6 +262,9 @@ public class Bandit extends Personne implements Movable, Hitable{
     }
 
 
+    /**Compte la valeur totale des butins du bandit
+     * @return un entier réprésenter la valeur totale de {@code poche}
+     */
     public int compte_butins(){
         int somme = 0;
         for (Butin b : poches){
@@ -251,7 +273,18 @@ public class Bandit extends Personne implements Movable, Hitable{
         return somme;
     }
 
+    /*Getters and Setters*/
     public boolean getToit(){return toit;}
+    public int get_hitPoints(){
+        return this.hitPoints;
+    }
+    public int get_ammo(){return this.ammo;}
+
+    public List<Butin> getPoches() { return this.poches;}
+
+    public void setToit(boolean toit) {
+        this.toit = toit;
+    }
 
 
 }

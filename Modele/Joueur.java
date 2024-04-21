@@ -4,6 +4,10 @@ package Modele;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe Joueur
+ * Permet à un joueur de posséder plusieurs bandits, utile pour le mode 2 joueurs inspiré du jeu originel
+ */
 public class Joueur implements Comparable<Joueur> {
     protected static int current_id = 0;
 
@@ -28,7 +32,10 @@ public class Joueur implements Comparable<Joueur> {
     }
 
 
-    //Pour tester avec affichage textuelle
+    /** Permet au joueur de choisir une direction dans le mode textuelle
+     * @param b le bandit joué
+     * @return la direction choisie
+     */
     public Direction choisie_dir(Bandit b){
         System.out.println("Choisit entre: " +b.mouvementsPossibles(train) +"\n");
         System.out.println("0->devant / 1->derriere/ 2->en haut / 3->en bas / 4-> ici \n");
@@ -41,6 +48,9 @@ public class Joueur implements Comparable<Joueur> {
         return Direction.values()[choice];
     }
 
+    /**Pour le mode textuelle, permet à un joueur humain de jouer un tour
+     * @param mat_manche la matrice d'action de la partie en cours
+     */
     public void joue_manche(Action[][] mat_manche){
         for (Bandit b : pions){ //si il joue plusieurs pions en meme temps (par équipe)
             for (int i = 0; i < b.get_hitPoints(); i++) {
@@ -71,6 +81,9 @@ public class Joueur implements Comparable<Joueur> {
         }
     }
 
+    /** Compte le score d'un joueur
+     * @return la valeur totale des butins ammassé par tous les bandits du joueurs
+     */
     public int compte_argent(){
         int somme = 0;
         for (Bandit b : pions){
@@ -125,6 +138,9 @@ public class Joueur implements Comparable<Joueur> {
         pionAct = b;
     }
 
+    /**Permet de trier les joueurs par butin ammassé
+     * @param other the object to be compared.
+     */
     @Override
     public int compareTo(Joueur other) {
         return Integer.compare(this.compte_argent(), other.compte_argent());

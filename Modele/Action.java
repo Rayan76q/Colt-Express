@@ -1,5 +1,9 @@
 package Modele;
 
+/** Classe Action
+ * Permet d'encapsuler les différente actions planifié dans un même type d'objet
+ * @param <T> moralement peut-être un Bandit ou un Movable
+ */
 public abstract class Action<T> {
     protected Train train;
     protected T acteur;
@@ -9,6 +13,9 @@ public abstract class Action<T> {
         train = t;
     }
 
+    /** Lance l'action associée
+     * @return Un message contextuelle à afficher dans la Vue
+     */
     public abstract String executer();
 }
 
@@ -34,6 +41,9 @@ class Braquage extends Action<Bandit>{
 }
 
 
+/**
+ * Sous classe abstraite pour gérer les actions nécéssitant le choix d'une direction
+ */
 abstract class ActionDir extends Action{
     protected final Direction dir;
     ActionDir(Object act, Train t,Direction d) {
