@@ -1,5 +1,6 @@
 package Modele;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -7,9 +8,10 @@ public abstract class Bandit_Bot extends Bandit{
 
     public static Bandit_Bot create_Bandit_Bot(Partie p ,int position){
         Random r = new Random();
-        switch (r.nextInt(2)){
-            case 0: return new Random_Bot(position,p);
+        switch (r.nextInt(3)){
+            case 0 : return new Random_Bot(position,p);
             case 1: return new Blood_thirsty_Bot(position,p);
+            case 2: return new Goblin_Bot(position,p);
         }
         return null;
     }
@@ -24,7 +26,7 @@ public abstract class Bandit_Bot extends Bandit{
         super(name, pos);
         this.partie = partie;
     }
-
+    abstract void target(Train train, LinkedList<Action> acts, Bandit src);
     abstract List<Action> actions_bot();
     //distance entre deux bandit en prenant compte des toits
     public int dist(Bandit src, Bandit tgt){
@@ -34,25 +36,6 @@ public abstract class Bandit_Bot extends Bandit{
         int pos = src.position - tgt.position;
         dist += (pos>0? pos:-pos);
         return dist;
-    }
-
-    //get le bandit le plus proche de this
-    public Bandit banditProche() {
-        Joueur[] joueurs = this.partie.getJoueurs();
-        int min = Integer.MAX_VALUE;
-        Bandit banditProche = null;
-        for (Joueur i : joueurs) {
-            if (!i.getPions().contains(this)) {
-                for (Bandit j : i.getPions()) {
-                    int dist = dist(this, j);
-                    if (dist < min) {
-                        min = dist;
-                        banditProche = j;
-                    }
-                }
-            }
-        }
-        return banditProche;
     }
 
     //get la position ou le nombre du wagon dans lequel le butin est le plus proche

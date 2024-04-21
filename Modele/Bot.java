@@ -37,7 +37,6 @@ class Random_Bot extends Bandit_Bot{
         do {
             choice = random.nextInt(4);
         }while(!b.mouvementsPossibles(partie.getTrain()).contains(Direction.values()[choice]));
-        System.out.println(choice);
         return Direction.values()[choice];
     }
 
@@ -45,6 +44,12 @@ class Random_Bot extends Bandit_Bot{
     public Random_Bot(int pos, Partie partie) {
         super("Randy", pos, partie);
     }
+
+    @Override
+    void target(Train train, LinkedList<Action> acts, Bandit src) {
+        return;
+    }
+
     @Override
     List<Action> actions_bot() {
         // tout est random j'imagine que ca serait facile de lire
@@ -126,10 +131,10 @@ class Blood_thirsty_Bot extends Bandit_Bot{
         LinkedList<Action> acts= new LinkedList<>();
         Train train = this.partie.getTrain();
         //il est greedy until il est le premier, apres il focus sur quelqu'un
-        if(this.compte_butins() <= this.partie.joueur_en_tete().get(0).compte_argent()){
+        if(this.compte_butins() <= this.targets.get(0).compte_butins()){
             //essaye de trouver un butin
             int pos = this.butinproche_position();
-            System.out.println(pos);
+
             Wagon[] waggs= train.get_Wagon();
             boolean toit2 = false;
             if(!waggs[pos].loot_toit.isEmpty()){
@@ -176,8 +181,96 @@ class Goblin_Bot extends Bandit_Bot{
         super("Goblin", pos, partie);
     }
 
+
+
     @Override
     List<Action> actions_bot() {
-        return null;
+        LinkedList<Action> acts= new LinkedList<>();
+        Train train = this.partie.getTrain();
+        target(train,acts,this);
+        return acts;
+    }
+
+    public void vol(Train train, LinkedList<Action> acts,int position,boolean toit){
+        int pos = this.butinproche_position();
+        Wagon[] waggs= train.get_Wagon();
+        boolean toit2 = false;
+        if(!waggs[pos].loot_toit.isEmpty()){
+            toit2 = true;
+        }
+        int dist = abs_substraction(position,pos);
+        if(toit&&!toit2 || toit2 && !toit){
+            // car ici cette dist ne prends pas en compte les toits
+            Deplacement dep = new Deplacement(this,train, get_direction(position,pos,
+                    toit,toit2) );
+            acts.add(dep );
+        }
+        boolean braque = true;
+        while(acts.size()<this.get_hitPoints()){
+            if(dist >0 ){
+                acts.add(new Deplacement(this,train, get_direction(position,pos,
+                        true,true) ) );
+                dist--;
+            }
+            else if (braque){
+                acts.add(new Braquage(this,train));
+                braque = false;
+            }
+            else{
+                vol(train,acts,pos,toit2);
+            }
+        }
+    }
+
+    public List<Joueur> autre_joueur_en_tete(Joueur[] joueurs){
+        int max = (joueurs[0].pions.contains(this)?joueurs[1].compte_argent():joueurs[0].compte_argent());
+        List<Joueur> premiers = new LinkedList<>();
+        for (Joueur j : joueurs){
+            if(!j.pions.contains(this)){
+                int v = j.compte_argent();
+                if(v > max){
+                    premiers = new LinkedList<>();
+                    premiers.add(j);
+                    max = v;
+                }
+                else if(v == max){
+                    premiers.add(j);
+                }
+            }
+        }
+        return premiers;
+    }
+
+    public void target(Train train, LinkedList<Action> acts, Bandit src){
+        //targets 1 bandit out of all bandits (best bandit of best player)
+        List<Joueur> joue = this.autre_joueur_en_tete(this.partie.getJoueurs());
+        Collections.shuffle(joue);
+        List<Bandit> bestBandit = joue.get(0).pions;
+        Collections.shuffle(bestBandit);
+        Bandit banditProche = bestBandit.get(0);
+        //target le meilleur bandit du meilleur joueur
+        int dist = dist(src,banditProche);
+        boolean frappe = true, braque = true;
+        //on calcul la distance entre deux bandits, donc les sources(position +toit) doivent etre updated
+        //pour qu'il ne repete pas ses actions s'il a trop d'actions restantes.
+        while(acts.size()<this.get_hitPoints()){
+            if(dist !=0 ){
+                acts.add(new Deplacement(this,train, get_direction(src.position,banditProche.position,
+                        src.getToit(),banditProche.getToit()) ) );
+                dist--;
+            }
+            else if(frappe){
+                src = banditProche;
+                acts.add(new Frappe(this,train));
+                frappe = false;
+            }
+            else if(braque){
+                acts.add(new Braquage(this,train));
+                braque = false;
+            }
+            else{
+                vol(train,acts,this.position,this.getToit());
+            }
+        }
     }
 }

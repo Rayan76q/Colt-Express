@@ -8,7 +8,7 @@ import java.util.*;
  * Intéragit avec la Vue et le Controleur
  */
 public class Partie extends Observable {
-    private static final int DELAY = 1000 ;
+    private static final int DELAY = 500 ;
     public static int NB_MUNITIONS = 6;
     public static double DEFAULT_PRECISION = 0.9;
     public static int DEFAULT_HP = 3;
