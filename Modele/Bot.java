@@ -217,6 +217,8 @@ class Goblin_Bot extends Bandit_Bot{
                 braque = false;
             }
             else{
+                //on creer un bandit pour faciliter l'utilisation de target au lieu de refaire tout target
+                //avec pos et toit au lieu de bandit
                 Bandit band_pour_target =new Bandit("",pos);
                 band_pour_target.setToit(toit2);
                 target(train,acts,band_pour_target);
