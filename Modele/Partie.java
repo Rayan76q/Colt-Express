@@ -100,26 +100,37 @@ public class Partie extends Observable {
             }
         }
         else {
-            NB_JOUEURS = 2;
+            NB_JOUEURS = 4;
+            NB_BANDITS_JOUEUR = 1;
             NB_WAGON= NB_JOUEURS*NB_BANDITS_JOUEUR+1;
             this.joueurs = new Joueur[NB_JOUEURS];
             this.matrice_action = new Action[NB_JOUEURS*NB_BANDITS_JOUEUR][DEFAULT_HP];
             train = new Train();
-                this.joueurs = new Joueur[2];
                 List<Bandit> p1 = new ArrayList<>();
                 List<Bandit> p2 = new ArrayList<>();
-                for (int j = 0; j < 2; j++) {
-                    Bandit b1 = new Bandit(names[0][j], Partie.NB_WAGON - 1);
+                List<Bandit> p3 = new ArrayList<>();
+                List<Bandit> p4 = new ArrayList<>();
+                    Bandit b1 = new Bandit(names[0][0], Partie.NB_WAGON - 1);
                     p1.add(b1);
-                    Bandit b2 = Bandit_Bot.create_Bandit_Bot(this, Partie.NB_WAGON - 2);
+                    Bandit b2 = Bandit_Bot.create_Bandit_Bot(this, Partie.NB_WAGON - 1);
                     p2.add(b2);
+                    Bandit b3 = Bandit_Bot.create_Bandit_Bot(this, Partie.NB_WAGON - 2);
+                    p3.add(b3);
+                    Bandit b4 = Bandit_Bot.create_Bandit_Bot(this, Partie.NB_WAGON - 2);
+                    p4.add(b4);
                     train.get_Wagon()[b1.position].toit.add(b1);
                     train.get_Wagon()[b2.position].toit.add(b2);
-                }
+                    train.get_Wagon()[b3.position].toit.add(b3);
+                    train.get_Wagon()[b4.position].toit.add(b4);
+
                 joueurs[0] = new Joueur(train, p1);
                 joueurs[1] = new Bot(train, p2);
-                for(Bandit i : joueurs[1].pions){
-                    if (i instanceof Blood_thirsty_Bot) ((Blood_thirsty_Bot)i).targets_initialisation();
+                joueurs[2] = new Bot(train, p3);
+                joueurs[3] = new Bot(train, p4);
+                for (Joueur j : joueurs) {
+                    for (Bandit i : j.pions) {
+                        if (i instanceof Blood_thirsty_Bot) ((Blood_thirsty_Bot) i).targets_initialisation();
+                    }
                 }
         }
 
