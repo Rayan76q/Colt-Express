@@ -47,7 +47,6 @@ public class Partie extends Observable {
     public static void main(String[] args) {
         System.out.println("\n\n");
         Partie partie = new Partie(false , null);
-        System.out.println(partie.train);
         partie.run(NB_MANCHES);
         partie.displayRankings();
     }
@@ -139,32 +138,79 @@ public class Partie extends Observable {
         mode_extra = (scanner.nextInt() != 0);
         scanner.nextLine();
         System.out.print("Entrez le nombre de joueurs (par défaut 4) : ");
-        int numOfPlayers = scanner.nextInt();
-        assert numOfPlayers > 0;
+        int numOfPlayers;
+        do {
+             numOfPlayers= scanner.nextInt();
+            scanner.nextLine();
+        }while(numOfPlayers < 0);
         NB_JOUEURS = numOfPlayers;
-        NB_WAGON = numOfPlayers + 1;
-        this.joueurs = new Joueur[numOfPlayers];
+        NB_BANDITS_JOUEUR = (NB_JOUEURS <=2 ? 2 : 1);
+        NB_WAGON = NB_JOUEURS*NB_BANDITS_JOUEUR + 1;
+        this.joueurs = new Joueur[NB_JOUEURS];
         System.out.print("Entrez le nombre de tours (par défaut 5, minimum 3) : ");
-        int tours = scanner.nextInt();
-        assert tours >= 3;
+        int tours;
+        do {
+            tours = scanner.nextInt();
+            scanner.nextLine();
+        }while(tours <3);
         NB_MANCHES = tours;
         this.matrice_action = new Action[numOfPlayers * NB_BANDITS_JOUEUR][DEFAULT_HP];
         train = new Train();
-        scanner.nextLine(); // Consomme le caractère de nouvelle ligne
+
         if (!this.mode_extra) {
-            for (int i = 0; i < numOfPlayers; i++) {
-                System.out.print("Entrez le nom du joueur " + (i + 1) + " : ");
-                String name = scanner.nextLine();
+            if(NB_JOUEURS >=2) {
+                for (int i = 0; i < numOfPlayers; i++) {
+                    System.out.print("Entrez votre nom J" + (i + 1) + " puis celui de vos bandits: ");
+                    String nameJ = scanner.nextLine();
+                    List<Bandit> pions = new ArrayList<>();
+                    for (int j = 0; j < NB_BANDITS_JOUEUR; j++) {
+                        System.out.print("Bandit N°" + (j + 1) + " : ");
+                        String name = scanner.nextLine();
+                        Bandit bandit = new Bandit(name, Partie.NB_WAGON - 1 - i % 2);
+                        pions.add(bandit);
+                        System.out.print("Bienvenue à bord, " + name + "\n");
+                        train.get_Wagon()[bandit.position].toit.add(bandit);
+                    }
+                    Joueur j = new Joueur(train, pions);
+                    j.setNom(nameJ);
+                    joueurs[i] = j;
+                }
+            }
+            else{
+                NB_JOUEURS = 2;
+                NB_WAGON= NB_JOUEURS*NB_BANDITS_JOUEUR+1;
+                this.joueurs = new Joueur[NB_JOUEURS];
+                this.matrice_action = new Action[NB_JOUEURS*NB_BANDITS_JOUEUR][DEFAULT_HP];
+                train = new Train();
+                this.joueurs = new Joueur[2];
+
+                System.out.print("Entrez votre nom J1 puis celui de vos bandits: ");
+                String nameJ = scanner.nextLine();
                 List<Bandit> pions = new ArrayList<>();
                 for (int j = 0; j < NB_BANDITS_JOUEUR; j++) {
-                    Bandit bandit = new Bandit(name, Partie.NB_WAGON - 1 - i % 2);
+                    System.out.print("Bandit N°" + (j + 1) + " : ");
+                    String name = scanner.nextLine();
+                    Bandit bandit = new Bandit(name, Partie.NB_WAGON - 1);
                     pions.add(bandit);
                     System.out.print("Bienvenue à bord, " + name + "\n");
                     train.get_Wagon()[bandit.position].toit.add(bandit);
                 }
-                Joueur j  = new Joueur(train , pions);
-                j.setNom(name);
-                joueurs[i] = j;
+                Joueur j = new Joueur(train, pions);
+                j.setNom(nameJ);
+                joueurs[0] = j;
+
+                List<Bandit> pbot = new ArrayList<>();
+                for (int k = 0; k < NB_BANDITS_JOUEUR; k++) {
+                    Bandit b2 = Bandit_Bot.create_Bandit_Bot(this, Partie.NB_WAGON - 2);
+                    pbot.add(b2);
+                }
+
+                Joueur j2 = new Bot(train, pbot);
+                j2.setNom("Bot");
+                joueurs[1] = j2;
+            }
+            for(Bandit i : joueurs[1].pions){
+                if (i instanceof Blood_thirsty_Bot) ((Blood_thirsty_Bot)i).targets_initialisation();
             }
         } else { // Mode spécial à implémenter
             return;
@@ -180,7 +226,7 @@ public class Partie extends Observable {
             System.out.println(train);
             // Planification
             for (Joueur j : joueurs) {
-                System.out.println("C'est au tour du joueur " + j.getId() + " : \n");
+                System.out.println("C'est au tour du joueur " + (j.getId()+1) + " : \n");
                 j.joue_manche(matrice_action);
             }
 

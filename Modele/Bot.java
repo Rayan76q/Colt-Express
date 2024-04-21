@@ -12,7 +12,7 @@ public class Bot extends Joueur{
     public void joue_manche(Action[][] mat_manche){
         // ca c'est pour partie et non pour GUI
         for (Bandit b : pions){ //si il joue plusieurs pions en meme temps (par équipe)
-            List<Action> actions = ((Bandit_Bot)b).actions_bot();
+            List<Action> actions = ((Bandit_Bot) b).actions_bot();
             int k = 0;
             for (Action j : actions) {
                 System.out.println("Action N°" + (k+1) + "\n");
