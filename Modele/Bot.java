@@ -94,27 +94,29 @@ class Blood_thirsty_Bot extends Bandit_Bot{
         Collections.shuffle(targets);
     }
 
-    public void target(Train train, LinkedList<Action> acts){
+    public void target(Train train, LinkedList<Action> acts, Bandit src){
         //targets 1 bandit out of all bandits
         Bandit banditProche = targets.get(0);
         targets.remove(0);
         targets.add(banditProche);
-        System.out.println(banditProche);
         //fait des targets circulaire until la liste d'action devient full
-        int dist = dist(this,banditProche);
+        int dist = dist(src,banditProche);
         boolean frappe = true;
+        //on calcul la distance entre deux bandits, donc les sources(position +toit) doivent etre updated
+        //pour qu'il ne repete pas ses actions s'il a trop d'actions restantes.
         while(acts.size()<this.get_hitPoints()){
             if(dist !=0 ){
-                acts.add(new Deplacement(this,train, get_direction(this.position,banditProche.position,
-                        this.getToit(),banditProche.getToit()) ) );
+                acts.add(new Deplacement(this,train, get_direction(src.position,banditProche.position,
+                        src.getToit(),banditProche.getToit()) ) );
                 dist--;
             }
             else if(frappe){
+                src = banditProche;
                 acts.add(new Frappe(this,train));
                 frappe = false;
             }
             else{
-                target(train,acts);
+                target(train,acts,src);
             }
         }
     }
@@ -123,7 +125,8 @@ class Blood_thirsty_Bot extends Bandit_Bot{
     List<Action> actions_bot() {
         LinkedList<Action> acts= new LinkedList<>();
         Train train = this.partie.getTrain();
-        if((this.getPoches()).isEmpty()){
+        //il est greedy until il est le premier, apres il focus sur quelqu'un
+        if(this.compte_butins() <= this.partie.joueur_en_tete().get(0).compte_argent()){
             //essaye de trouver un butin
             int pos = this.butinproche_position();
             System.out.println(pos);
@@ -133,12 +136,10 @@ class Blood_thirsty_Bot extends Bandit_Bot{
                 toit2 = true;
             }
             int dist = abs_substraction(this.position,pos);
-            System.out.println(dist+"asdfgh");
             if(this.getToit()&&!toit2 || toit2 && !this.getToit()){
                 // car ici cette dist ne prends pas en compte les toits
                 Deplacement dep = new Deplacement(this,train, get_direction(this.position,pos,
                         this.getToit(),toit2) );
-                System.out.println(dep);
                 acts.add(dep );
             }
             boolean braque = true;
@@ -155,13 +156,13 @@ class Blood_thirsty_Bot extends Bandit_Bot{
                 else {
                     // si il a finit de chopper un butin il recommence a target des bandits
                     // la fonction remplirait acts ce qui terminerait la boucle while
-                    target(train,acts);
+                    target(train,acts,this);
                 }
             }
         }
         else{
             //target quelquun
-            target(train,acts);
+            target(train,acts,this);
         }
         for (int i = this.get_hitPoints(); i <Partie.DEFAULT_HP; i++) {
             acts.add(null);

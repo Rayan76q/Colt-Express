@@ -120,6 +120,9 @@ public class Partie extends Observable {
                 }
                 joueurs[0] = new Joueur(train, p1);
                 joueurs[1] = new Bot(train, p2);
+                for(Bandit i : joueurs[1].pions){
+                    if (i instanceof Blood_thirsty_Bot) ((Blood_thirsty_Bot)i).targets_initialisation();
+                }
         }
 
     }
