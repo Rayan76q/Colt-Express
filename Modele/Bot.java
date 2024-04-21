@@ -217,7 +217,9 @@ class Goblin_Bot extends Bandit_Bot{
                 braque = false;
             }
             else{
-                vol(train,acts,pos,toit2);
+                Bandit band_pour_target =new Bandit("",pos);
+                band_pour_target.setToit(toit2);
+                target(train,acts,band_pour_target);
             }
         }
     }
