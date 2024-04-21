@@ -221,11 +221,14 @@ public class Partie extends Observable {
          * @param nb_manches nombre de manches à jouer avant la fin de la partie
          */
     private void run(int nb_manches) {
-        for (int k = 0; k < nb_manches; k++) {
-            numeroManche = k;
+        for (int numeroManche = 0; numeroManche < nb_manches; numeroManche++) {
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
             System.out.println(train);
             // Planification
             for (Joueur j : joueurs) {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
                 System.out.println("C'est au tour du joueur " + (j.getId()+1) + " : \n");
                 j.joue_manche(matrice_action);
             }
@@ -239,8 +242,12 @@ public class Partie extends Observable {
                     }
                 }
             }
+            String r = "";
+            for(Joueur j:joueur_en_tete()){
 
-            System.out.println(joueur_en_tete() + " en tête.\n");
+                r += j.toString()+" ";
+            }
+            System.out.println(r+" en tête pour ce tour.\n");
             evenementsPassifs(true);
         }
 
