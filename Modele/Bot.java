@@ -99,6 +99,7 @@ class Blood_thirsty_Bot extends Bandit_Bot{
         Bandit banditProche = targets.get(0);
         targets.remove(0);
         targets.add(banditProche);
+        System.out.println(banditProche);
         //fait des targets circulaire until la liste d'action devient full
         int dist = dist(this,banditProche);
         boolean frappe = true;
@@ -125,22 +126,26 @@ class Blood_thirsty_Bot extends Bandit_Bot{
         if((this.getPoches()).isEmpty()){
             //essaye de trouver un butin
             int pos = this.butinproche_position();
+            System.out.println(pos);
             Wagon[] waggs= train.get_Wagon();
             boolean toit2 = false;
             if(!waggs[pos].loot_toit.isEmpty()){
                 toit2 = true;
             }
             int dist = abs_substraction(this.position,pos);
+            System.out.println(dist+"asdfgh");
             if(this.getToit()&&!toit2 || toit2 && !this.getToit()){
                 // car ici cette dist ne prends pas en compte les toits
-                acts.add(new Deplacement(this,train, get_direction(this.position,pos,
-                        this.getToit(),toit2) ) );
+                Deplacement dep = new Deplacement(this,train, get_direction(this.position,pos,
+                        this.getToit(),toit2) );
+                System.out.println(dep);
+                acts.add(dep );
             }
             boolean braque = true;
             while(acts.size()<this.get_hitPoints()){
                 if(dist >0 ){
                     acts.add(new Deplacement(this,train, get_direction(this.position,pos,
-                            this.getToit(),toit2) ) );
+                            true,true) ) );
                     dist--;
                 }
                 else if (braque){

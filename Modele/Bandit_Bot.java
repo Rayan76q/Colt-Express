@@ -17,7 +17,7 @@ public abstract class Bandit_Bot extends Bandit{
 
 
     //valeur absolue de la soustraction entre a et b
-    public int abs_substraction(int a, int b) {return (a>b?a-b:b-a);}
+    public int abs_substraction(int a, int b) {return (a>b? a-b : b-a);}
 
     protected Partie partie;
     public Bandit_Bot(String name, int pos, Partie partie) {
@@ -58,16 +58,20 @@ public abstract class Bandit_Bot extends Bandit{
     //get la position ou le nombre du wagon dans lequel le butin est le plus proche
     public int butinproche_position(){
         int min = Integer.MAX_VALUE;
+        int cpt = 0;
         Wagon[] wagon = this.partie.getTrain().get_Wagon();
         for (int i = 0; i < Partie.NB_WAGON; i++) {
             if(!(wagon[i].liste_passagers().isEmpty()) || !(wagon[i].loot_int.isEmpty())
-                    || !(wagon[i].loot_toit.isEmpty()) || !(wagon[i].toit.isEmpty())){
+                    || !(wagon[i].loot_toit.isEmpty())){
                 int dist = this.position - i;
-                dist = (dist>0? dist:-dist);
-                min = Math.min(min,dist);
+                dist = ( dist>=0 ? dist : -dist );
+                if(dist<min){
+                    cpt = i;
+                    min = dist;
+                }
             }
         }
-        return min;
+        return cpt;
     }
 
     //donne la direction dans laquelle on doit y aller pour partir de src a tgt

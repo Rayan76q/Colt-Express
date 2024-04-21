@@ -9,7 +9,7 @@ import java.util.*;
  *
  */
 public class Partie extends Observable {
-    private static final int DELAY = 10 ;
+    private static final int DELAY = 1000 ;
     public static int NB_MUNITIONS = 6;
     public static double DEFAULT_PRECISION = 0.9;
     public static int DEFAULT_HP = 3;
