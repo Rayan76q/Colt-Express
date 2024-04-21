@@ -461,9 +461,11 @@ public class VueInput extends JPanel{
             JPanel cell = new JPanel(new BorderLayout());
             int joueurNb = i /Partie.NB_BANDITS_JOUEUR;
             JLabel joueur = new JLabel("J"+(joueurNb+1));
+            joueur.setForeground(Color.WHITE);
             joueur.setHorizontalAlignment(0);
             int banditNb = i % Partie.NB_BANDITS_JOUEUR;
             JLabel bandit = new JLabel("Bandit "+(banditNb+1));
+            bandit.setForeground(Color.WHITE);
             bandit.setHorizontalAlignment(0);
             String defaultName = "J"+(joueurNb+1)+"b"+(banditNb+1);
             JTextField nom_bandit = new JTextField(defaultName);

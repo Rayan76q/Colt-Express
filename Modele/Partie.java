@@ -6,7 +6,6 @@ import java.util.*;
  * Classe Partie <br>
  * Contient tous les parametres liée à l'initialisation et au déroulement d'une partie<br>
  * Intéragit avec la Vue et le Controleur
- *
  */
 public class Partie extends Observable {
     private static final int DELAY = 1000 ;
