@@ -9,7 +9,7 @@ public class ButinTest {
     public void testBourse() {
         Butin bourse = Butin.BOURSE;
         assertEquals("Bourse", bourse.toString());
-        assertTrue(bourse.valeur() >= 0 && bourse.valeur() < 500); 
+        assertTrue(bourse.valeur() >= 0 && bourse.valeur() < 500);
         assertNotNull(bourse.getSprite());
         assertTrue(bourse.getSpriteH() > 0);
         assertTrue(bourse.getSpriteW() > 0);
