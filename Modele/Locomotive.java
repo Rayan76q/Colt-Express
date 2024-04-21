@@ -1,7 +1,5 @@
 package Modele;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Locomotive extends Wagon{
     private final Butin mag = Butin.MAGOT;  

@@ -148,6 +148,7 @@ public class Bandit extends Personne implements Movable, Hitable{
                     Bandit b_cible = list.get(randomIndex);
                     b_cible.est_vise(current_wagg);
                     b_cible.setTargeted(true);
+                    return this + " tire sur " + b_cible;
                 }
                 return this + " tire vers le toit du wagon.";
             }
@@ -161,19 +162,20 @@ public class Bandit extends Personne implements Movable, Hitable{
                     Passager p = passagers_cibles.get(randomIndex);
                     p.est_vise(current_wagg);
                     p.setTargeted(true);
+                    return this + "tir sur un passager.";
                 }
                 else if(current_wagg.interieur.isEmpty()){
-                    return this + "a tire sur personne puisque le wagon est vide, dommage!";
+                    return this + "a tire sur un wagon vide, dommage!";
                 }else if(bandits_cibles.isEmpty()) {
-                    return this+ "tir sur le marchall! Fais gaffe";
+                    return this+ "tir sur le marchall! Attention à lui.";
                 }
                 else{ //Le bandit touche bien un autre bandit
                     int randomIndex = random.nextInt(bandits_cibles.size());
                     Bandit b_cible = bandits_cibles.get(randomIndex);
                     b_cible.est_vise(current_wagg);
                     b_cible.setTargeted(true);
+                    return this + " tire sur " + b_cible;
                 }
-                return this + " tire sur le wagon N°" + numWagon;
 
             }
             else { //tir d'un toit vers un autre
@@ -189,6 +191,7 @@ public class Bandit extends Personne implements Movable, Hitable{
                     Bandit bandit = list.get(randomIndex);
                     bandit.est_vise(current_wagg);
                     bandit.setTargeted(true);
+                    return this + " tire sur " + bandit;
                 }
                 return this + " tire vers l'" + dir;
             }
