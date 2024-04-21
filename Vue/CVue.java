@@ -33,6 +33,7 @@ public class CVue {
     public CVue() {
         Partie.resetAll();
         frame = new JFrame();
+        frame.setMinimumSize(new Dimension(screenWidth,screenHeight));
         frame.setTitle("Colt Express");
         frame.setMinimumSize(new Dimension(screenWidth*8/10 , screenHeight*8/10));
 

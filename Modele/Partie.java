@@ -481,7 +481,7 @@ public class Partie extends Observable {
 
     public void getNextJoueur(){
         joueurAct  = (joueurAct+1)%NB_JOUEURS;
-        if(NB_JOUEURS==2 && joueurs[joueurAct] instanceof Bot){
+        if(joueurs[joueurAct] instanceof Bot){
             List<Bandit> bots = joueurs[joueurAct].getPions();
             for (Bandit b : bots) {
                 List<Action> actionsPlanifie = ((Bandit_Bot) b).actions_bot();
@@ -489,7 +489,7 @@ public class Partie extends Observable {
                     matrice_action[b.get_id()][i] = actionsPlanifie.get(i);
                 }
             }
-            joueurAct = 0; //retour au joueur humain
+            getNextJoueur();
         }
     }
 
